@@ -68,8 +68,8 @@ def side(item):
     lis = ''.join(f'<li><a href="{{{{link:{link(l)}}}}}">{escape(l)}</a></li>' for l in item['related'] if link(l))
     cat = CAT_BY_SLUG[item['cat']]
     return f'''<aside class="side">
-<div class="side-box"><h3>Get a price</h3><p class="muted" style="font-size:15px;margin-bottom:14px">Send a photo and a rough size on WhatsApp. Small jobs are often priced from the photo.</p>
-<button class="btn btn-go" style="width:100%" data-picker="{escape(item['job'])}">Get a price on WhatsApp</button>
+<div class="side-box"><h3>Talk to us</h3><p class="muted" style="font-size:15px;margin-bottom:14px">Send a photo on WhatsApp and talk the job through. We'll come and have a look before giving you a price.</p>
+<button class="btn btn-go" style="width:100%" data-picker="{escape(item['job'])}">Talk to us on WhatsApp</button>
 <a class="btn btn-line" style="width:100%;margin-top:10px" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 <div class="side-box"><h3>Related jobs</h3><ul>{lis}</ul></div>
 <div class="side-box"><h3>More in {escape(cat['name'])}</h3><ul>''' + ''.join(
@@ -94,7 +94,7 @@ def item_page(it):
 <p class="kicker">{escape(cat['name'])} · {areas_kicker}</p>
 <h1 class="h-xl">{escape(it['h1'])}</h1>
 <p class="lead">{escape(it['lead'])}</p>
-<div class="row"><button class="btn btn-go" data-picker="{escape(it['job'])}">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
+<div class="row"><button class="btn btn-go" data-picker="{escape(it['job'])}">Talk to us on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 </div>
 <div class="facts" style="margin-top:32px">{facts}</div>
 </section>
@@ -136,7 +136,7 @@ def cat_page(slug):
 <p class="kicker">{escape(c['name'])} · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">{escape(info['h1'])}</h1>
 <p class="lead">{escape(info['lead'])}</p>
-<div class="row"><button class="btn btn-go" data-picker="">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
+<div class="row"><button class="btn btn-go" data-picker="">Talk to us on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 </div>
 </section>
 <section class="wrap band"><div class="grid">{cards}</div></section>

@@ -68,7 +68,7 @@ if (house) {
     card.querySelector('p').textContent = r.text;
     const ul = card.querySelector('ul'); ul.innerHTML = '';
     r.items.forEach(([label, href]) => { const li = document.createElement('li'); const a = document.createElement('a'); a.textContent = label; a.href = href; li.appendChild(a); ul.appendChild(li); });
-    const go = card.querySelector('.room-go'); go.textContent = 'Get a price for ' + r.short;
+    const go = card.querySelector('.room-go'); go.textContent = 'Talk to us about ' + r.short;
     go.dataset.pre = r.job;
   };
   house.querySelectorAll('.room').forEach(g => {
@@ -156,7 +156,7 @@ if (builder) {
     }));
   });
   builder.querySelector('.send-store').addEventListener('click', () => {
-    const msg = 'Hi We Fitt, I\'d like a price for a garden store: ' + builder.querySelector('.summary-line').textContent + '.';
+    const msg = 'Hi We Fitt, I\'d like to talk about a garden store: ' + builder.querySelector('.summary-line').textContent + '.';
     window.location.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg);
   });
   draw();

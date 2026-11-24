@@ -35,10 +35,8 @@ NAV = [
     ('Kitchens', 'kitchen-fitting-fulham'),
     ('Bathrooms', 'bathroom-fitting-fulham'),
     ('En-suites', 'en-suite-fitting-fulham'),
-    ('Bike & bin stores', 'bike-and-bin-stores'),
-    ('Building & fitting', '#building'),
-    ('About', 'about'),
-    ('Visit the shop', 'contact'),
+    ('What we fit', '#building'),
+    ('Visit us', 'contact'),
 ]
 
 
@@ -105,7 +103,6 @@ def header(page, depth, mode):
 </a>
 <nav class="nav" id="nav" aria-label="Main">{''.join(links)}</nav>
 <div class="head-cta">
-<span class="open-badge"><i aria-hidden="true"></i><span>Shop hours</span></span>
 <a class="btn btn-go" href="tel:{TEL}">Call {PHONE}</a>
 <button class="menu-btn" aria-controls="nav" aria-expanded="false" aria-label="Menu">☰</button>
 </div>

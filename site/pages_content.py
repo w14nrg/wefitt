@@ -52,8 +52,8 @@ def _faqs(faqs):
 def _side(title, links, cta_pre):
     lis = ''.join(f'<li><a href="{{{{link:{s}}}}}">{l}</a></li>' for l, s in links)
     return f'''<aside class="side">
-<div class="side-box"><h3>Get a price</h3><p class="muted" style="font-size:15px;margin-bottom:14px">Send a photo and a rough size on WhatsApp. Small jobs are often priced from the photo.</p>
-<button class="btn btn-go" style="width:100%" data-picker="{cta_pre}">Get a price on WhatsApp</button>
+<div class="side-box"><h3>Talk to us</h3><p class="muted" style="font-size:15px;margin-bottom:14px">Send a photo on WhatsApp and talk the job through. We'll come and have a look before giving you a price.</p>
+<button class="btn btn-go" style="width:100%" data-picker="{cta_pre}">Talk to us on WhatsApp</button>
 <a class="btn btn-line" style="width:100%;margin-top:10px" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 <div class="side-box"><h3>{title}</h3><ul>{lis}</ul></div>
 </aside>'''
@@ -163,7 +163,7 @@ HOME = {
 <p class="sr-only">We fit kitchens, bathrooms, en-suites, doors, loft windows, bike stores and almost anything else.</p>
 <p class="lead">Bought it already? We'll fit it. Starting from scratch? We'll design, supply and fit it. A new tap or a whole new kitchen across Fulham, Hammersmith, Kensington and Chelsea, it's the same team from the shop on Munster Road.</p>
 <div class="row">
-<button class="btn btn-go" data-picker="">Get a price on WhatsApp</button>
+<button class="btn btn-go" data-picker="">Talk to us on WhatsApp</button>
 <a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a>
 </div>
 </div>
@@ -182,7 +182,7 @@ HOME = {
 <h3 class="h-m">In the kitchen</h3>
 <p class="muted" style="margin-top:8px"></p>
 <ul></ul>
-<button class="btn btn-go room-go" data-picker="Kitchen fitting">Get a price</button>
+<button class="btn btn-go room-go" data-picker="Kitchen fitting">Talk to us about this</button>
 </div>
 </div>
 </div>
@@ -244,8 +244,8 @@ HOME = {
 
 <section class="raised band" aria-label="How it works">
 <div class="wrap steps">
-<div class="reveal"><span class="n">1</span><h3>Send us a photo</h3><p>WhatsApp a picture of the job, or pop into the shop.</p></div>
-<div class="reveal"><span class="n">2</span><h3>Get a price</h3><p>Small jobs priced from the photo. Bigger jobs get a visit.</p></div>
+<div class="reveal"><span class="n">1</span><h3>Talk to us</h3><p>WhatsApp a picture of the job, call, or pop into the shop.</p></div>
+<div class="reveal"><span class="n">2</span><h3>We come and look</h3><p>We visit, measure up and give you a proper price.</p></div>
 <div class="reveal"><span class="n">3</span><h3>We fit it</h3><p>Our own team, the same people from the shop.</p></div>
 </div>
 </section>
@@ -282,7 +282,7 @@ KITCHEN = {
 <p class="kicker">Kitchen fitting · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">Kitchen fitters in Fulham</h1>
 <p class="lead">Got a kitchen sitting in boxes? We build it, fit it and finish it, worktops and all. Haven't bought one yet? We'll design, supply and fit it for you.</p>
-<div class="row"><button class="btn btn-go" data-picker="Kitchen fitting">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
+<div class="row"><button class="btn btn-go" data-picker="Kitchen fitting">Talk to us on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 </div>
 {_ph('Finished kitchen photo', 'A kitchen we have fitted goes here.', '400px')}
 </section>
@@ -364,7 +364,7 @@ BATHROOM = {
 <p class="kicker">Bathroom fitting · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">Bathroom fitters in Fulham</h1>
 <p class="lead">You've chosen the suite and now you need it fitted properly. Or you're starting from nothing. Either way it's the same team, from stripping out the old bathroom to the last bead of sealant.</p>
-<div class="row"><button class="btn btn-go" data-picker="Bathroom fitting">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
+<div class="row"><button class="btn btn-go" data-picker="Bathroom fitting">Talk to us on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 </div>
 {_ph('Finished bathroom photo', 'A bathroom we have fitted goes here.', '400px')}
 </section>
@@ -443,7 +443,7 @@ ENSUITE = {
 <p class="kicker">En-suite fitting · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">En-suite fitting in Fulham</h1>
 <p class="lead">A shower room in the bedroom changes how a house works in the morning. We find the space, solve the drainage, build the walls and fit it out.</p>
-<div class="row"><button class="btn btn-go" data-picker="En-suite fitting">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
+<div class="row"><button class="btn btn-go" data-picker="En-suite fitting">Talk to us on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 </div>
 {_ph('En-suite photo', 'An en-suite we have built goes here.', '400px')}
 </section>
@@ -526,7 +526,7 @@ STORES = {
 <div class="opt"><span>Roof</span><div class="seg" data-key="roof"><button data-v="Green sedum roof" aria-pressed="true">Green sedum</button><button data-v="Plain roof" aria-pressed="false">Plain</button></div></div>
 <div class="opt"><span>Cladding</span><div class="seg" data-key="clad"><button data-v="Natural larch" aria-pressed="true">Natural larch</button><button data-v="Black stained" aria-pressed="false">Black stained</button><button data-v="Painted grey" aria-pressed="false">Painted grey</button></div></div>
 <button class="btn btn-go send-store" style="width:100%">Send this design on WhatsApp</button>
-<p class="muted" style="font-size:14px;margin-top:10px">We'll reply with questions about your space and a price. Every store is built to measure, so the drawing is a starting point.</p>
+<p class="muted" style="font-size:14px;margin-top:10px">We'll reply with a few questions about your space and arrange a visit to measure up. Every store is built to measure, so the drawing is a starting point.</p>
 </div>
 </div>
 </section>
