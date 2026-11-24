@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /
+Sitemap: https://www.wefitt.uk/sitemap.xml
