@@ -75,7 +75,7 @@ def schema(page):
             {'@type': 'OpeningHoursSpecification', 'dayOfWeek': 'Saturday', 'opens': '08:00', 'closes': '18:00'},
             {'@type': 'OpeningHoursSpecification', 'dayOfWeek': 'Sunday', 'opens': '10:00', 'closes': '18:00'},
         ],
-        'areaServed': ['Fulham', 'Parsons Green', 'Putney', 'Hammersmith', 'Chelsea', 'Wandsworth'],
+        'areaServed': ['Fulham', 'Hammersmith', 'Kensington', 'Chelsea', 'Parsons Green', 'Putney', 'Wandsworth', 'West Kensington', "Earl's Court", 'Barons Court'],
     }
     out = [base]
     if page.get('faqs'):

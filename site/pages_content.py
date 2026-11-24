@@ -153,15 +153,15 @@ cat_cards = ''.join(
     '</span><span class="go">See what\'s involved →</span></a>' for c in CATEGORIES)
 
 HOME = {
-    'slug': '', 'title': 'Kitchen & Bathroom Fitters in Fulham | We Fitt',
-    'description': 'Kitchen fitting, bathroom fitting, en-suites, doors, loft windows and garden bike & bin stores from the We Fitt shop on Munster Road, Fulham.',
+    'slug': '', 'title': 'Kitchen & Bathroom Fitters in Fulham, Chelsea & Kensington | We Fitt',
+    'description': 'Kitchen fitting, bathroom fitting, en-suites, doors, loft windows and bike & bin stores across Fulham, Hammersmith, Kensington and Chelsea, from our shop on Munster Road.',
     'body': f'''
 <section class="wrap hero">
 <div class="stack" style="gap:22px">
 <h1 class="tag">Kitchen fitters &amp; bathroom fitters in Fulham</h1>
-<p class="big" aria-hidden="true">We Fitt<span class="dots"><span>.</span><span>.</span><span>.</span></span><br><span class="rotor"><span class="word" data-words='["kitchens","bathrooms","en-suites","doors","loft windows","bike stores","anything you want"]'>kitchens</span><span class="caret"></span></span></p>
-<p class="sr-only">We fit kitchens, bathrooms, en-suites, doors, loft windows, bike stores and much more.</p>
-<p class="lead">Bought it already? We'll fit it. Starting from scratch? We'll design, supply and fit it. A new tap or a whole new kitchen, it's the same team from the shop on Munster Road.</p>
+<p class="big" aria-hidden="true">We fit<span class="dots"><span>.</span><span>.</span><span>.</span></span><br><span class="rotor"><span class="word" data-words='["kitchens","bathrooms","en-suites","doors","loft windows","bike stores","almost anything"]'>kitchens</span><span class="caret"></span></span></p>
+<p class="sr-only">We fit kitchens, bathrooms, en-suites, doors, loft windows, bike stores and almost anything else.</p>
+<p class="lead">Bought it already? We'll fit it. Starting from scratch? We'll design, supply and fit it. A new tap or a whole new kitchen across Fulham, Hammersmith, Kensington and Chelsea, it's the same team from the shop on Munster Road.</p>
 <div class="row">
 <button class="btn btn-go" data-picker="">Get a price on WhatsApp</button>
 <a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a>
@@ -214,7 +214,17 @@ HOME = {
 </div>
 </section>
 
-<section class="wrap band" aria-labelledby="stores-title">
+<section class="wrap band" id="building" aria-labelledby="bf-title" >
+<div class="stack reveal" style="max-width:760px;margin-bottom:36px">
+<p class="kicker">Building &amp; fitting in Fulham</p>
+<h2 id="bf-title" class="h-l">We fit<span style="color:var(--go)">…</span></h2>
+<p class="lead">Big or small, inside or out. One team, one call.</p>
+</div>
+<div class="grid">{cat_cards}</div>
+<p class="lead" style="margin-top:28px">Something not on the list? Ask us. If it goes in a home or a garden, chances are we fit it.</p>
+</section>
+
+<section class="wrap band" aria-labelledby="stores-title" style="padding-top:0">
 <div class="garden reveal">
 <div class="stack" style="gap:20px">
 <p class="kicker">New at We Fitt</p>
@@ -232,16 +242,6 @@ HOME = {
 </div>
 </section>
 
-<section class="wrap band" id="building" aria-labelledby="bf-title" style="padding-top:0">
-<div class="stack reveal" style="max-width:760px;margin-bottom:36px">
-<p class="kicker">Building &amp; fitting in Fulham</p>
-<h2 id="bf-title" class="h-l">We fit<span style="color:var(--go)">…</span></h2>
-<p class="lead">Big or small, inside or out. One team, one call.</p>
-</div>
-<div class="grid">{cat_cards}</div>
-<p class="lead" style="margin-top:28px">Something not on the list? Ask us. If it goes in a home or a garden, chances are we fit it.</p>
-</section>
-
 <section class="raised band" aria-label="How it works">
 <div class="wrap steps">
 <div class="reveal"><span class="n">1</span><h3>Send us a photo</h3><p>WhatsApp a picture of the job, or pop into the shop.</p></div>
@@ -256,7 +256,7 @@ HOME = {
 <h2 id="visit-title" class="h-l">Pop into the shop</h2>
 <p class="lead">287 Munster Road, Fulham, London SW6 6BW</p>
 <p class="muted">Mon–Fri 7am–8pm · Sat 8am–6pm · Sun 10am–6pm</p>
-<p class="muted">Covering Fulham, Parsons Green, Putney, Hammersmith, Chelsea, Wandsworth and nearby.</p>
+<p class="muted">Covering Fulham, Hammersmith, Kensington, Chelsea and the areas around them: Parsons Green, Putney, Wandsworth, West Kensington, Earl's Court and Barons Court.</p>
 <div class="row"><a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&amp;query=287+Munster+Road+London+SW6+6BW">Open in Google Maps</a></div>
 </div>
 {_ph('Map of Munster Road', 'A simple drawn map of the shop and nearby streets goes here.', '320px')}
@@ -273,13 +273,13 @@ KITCHEN_FAQ = [
     ('Do I need to be in?', 'Only at the start and the end, and for any decisions on the day. Plenty of customers leave us a key.'),
 ]
 KITCHEN = {
-    'slug': 'kitchen-fitting-fulham', 'title': 'Kitchen Fitters in Fulham – We Fit Your Kitchen | We Fitt',
-    'description': 'Kitchen fitters in Fulham. We fit IKEA, Howdens, Wickes and online kitchens, or design, supply and fit. Worktops, plumbing and electrics included. Shop on Munster Road.',
+    'slug': 'kitchen-fitting-fulham', 'title': 'Kitchen Fitters Fulham, Hammersmith, Chelsea & Kensington | We Fitt',
+    'description': 'Kitchen fitters in Fulham, Hammersmith, Kensington and Chelsea. We fit IKEA, Howdens, Wickes and online kitchens, or design, supply and fit. Shop on Munster Road.',
     'faqs': KITCHEN_FAQ, 'crumbs': [('Kitchen fitting', 'kitchen-fitting-fulham')],
     'body': _crumbs([('Kitchen fitting', 'kitchen-fitting-fulham')]) + f'''
 <section class="wrap hero" style="padding-top:28px">
 <div class="stack" style="gap:20px">
-<p class="kicker">Kitchen fitting</p>
+<p class="kicker">Kitchen fitting · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">Kitchen fitters in Fulham</h1>
 <p class="lead">Got a kitchen sitting in boxes? We build it, fit it and finish it, worktops and all. Haven't bought one yet? We'll design, supply and fit it for you.</p>
 <div class="row"><button class="btn btn-go" data-picker="Kitchen fitting">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
@@ -335,8 +335,14 @@ KITCHEN = {
 <h2>Questions people ask</h2>
 {_faqs(KITCHEN_FAQ)}
 
-<h2>Kitchen fitting around Fulham</h2>
-<p>We fit kitchens across Fulham, Parsons Green, Putney, Hammersmith, Chelsea, Wandsworth and nearby, from our shop at 287 Munster Road. Pop in to talk it through.</p>
+<h2>Kitchen fitters in Fulham, Hammersmith, Kensington and Chelsea</h2>
+<p>Most of our kitchen fitting is within a couple of miles of the shop on Munster Road, and every area brings its own quirks.</p>
+<ul>
+<li><strong>Fulham and Parsons Green.</strong> Victorian terraces where the kitchen often sits in the back addition, so long, narrow layouts and walls that aren't square are normal. Scribing filler panels to those walls is everyday work for us.</li>
+<li><strong>Hammersmith.</strong> A mix of terraced houses and converted flats. In a flat, the new sink and appliances have to connect to a shared waste stack, so we plan the layout around it.</li>
+<li><strong>Kensington and Chelsea.</strong> Mansion blocks and tall period houses. Managing agents often set working hours, lift bookings and floor-protection rules, and parking needs a permit. We sort that out before the fit day, not on it.</li>
+</ul>
+<p>We also fit kitchens in Putney, Wandsworth, West Kensington, Earl's Court and Barons Court. Pop into the shop at 287 Munster Road to talk it through.</p>
 </div>
 ''' + _side('Kitchen jobs we fit', [('Worktops', 'doors-joinery/worktop-fitting'), ('Taps', 'plumbing-fittings/tap-fitting'), ('Basins & sinks', 'plumbing-fittings/basins-sinks'), ('Tiling', 'floors-walls-tiling/tiling'), ('Sockets', 'electrics/sockets'), ('Extractor fans', 'electrics/extractor-fans'), ('Bathroom fitting', 'bathroom-fitting-fulham')], 'Kitchen fitting') + '</div>'}
 
@@ -349,13 +355,13 @@ BATH_FAQ = [
     ('Does a new bathroom need an extractor fan?', 'A bathroom with a bath or shower needs mechanical extraction under Part F of the Building Regulations when the room is newly formed or the fan is replaced. Even where it is not required, a good fan is the best defence against mould.'),
 ]
 BATHROOM = {
-    'slug': 'bathroom-fitting-fulham', 'title': 'Bathroom Fitters in Fulham – Supply or Fit Only | We Fitt',
-    'description': 'Bathroom fitters in Fulham. We fit the suite you have bought, or design, supply and fit. Showers, baths, toilets, tiling and waterproofing. Shop on Munster Road.',
+    'slug': 'bathroom-fitting-fulham', 'title': 'Bathroom Fitters Fulham, Hammersmith, Chelsea & Kensington | We Fitt',
+    'description': 'Bathroom fitters in Fulham, Hammersmith, Kensington and Chelsea. We fit the suite you have bought, or design, supply and fit. Showers, tiling and waterproofing.',
     'faqs': BATH_FAQ, 'crumbs': [('Bathroom fitting', 'bathroom-fitting-fulham')],
     'body': _crumbs([('Bathroom fitting', 'bathroom-fitting-fulham')]) + f'''
 <section class="wrap hero" style="padding-top:28px">
 <div class="stack" style="gap:20px">
-<p class="kicker">Bathroom fitting</p>
+<p class="kicker">Bathroom fitting · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">Bathroom fitters in Fulham</h1>
 <p class="lead">You've chosen the suite and now you need it fitted properly. Or you're starting from nothing. Either way it's the same team, from stripping out the old bathroom to the last bead of sealant.</p>
 <div class="row"><button class="btn btn-go" data-picker="Bathroom fitting">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
@@ -409,8 +415,14 @@ BATHROOM = {
 <h2>Questions people ask</h2>
 {_faqs(BATH_FAQ)}
 
-<h2>Bathroom fitting around Fulham</h2>
-<p>We fit bathrooms across Fulham, Parsons Green, Putney, Hammersmith, Chelsea, Wandsworth and nearby, from our shop at 287 Munster Road.</p>
+<h2>Bathroom fitters in Fulham, Hammersmith, Kensington and Chelsea</h2>
+<p>We fit bathrooms from our shop at 287 Munster Road, mostly within a couple of miles of it.</p>
+<ul>
+<li><strong>Fulham and Parsons Green.</strong> Many terraces still have the bathroom in the back addition, often with a gravity hot water system. That decides which showers and taps will work well, so we check pressure before you buy.</li>
+<li><strong>Hammersmith.</strong> Plenty of flat conversions, where the bathroom has been squeezed in. Getting the waste to fall properly to the stack is usually the main puzzle.</li>
+<li><strong>Kensington and Chelsea.</strong> In mansion blocks your bathroom usually sits over a neighbour's ceiling. Waterproofing, tanking and pressure-testing every joint matter even more, and building managers often want to see how it is done.</li>
+</ul>
+<p>We also cover Putney, Wandsworth, West Kensington, Earl's Court and Barons Court.</p>
 </div>
 ''' + _side('Bathroom jobs we fit', [('Showers', 'plumbing-fittings/shower-fitting'), ('Toilets', 'plumbing-fittings/toilet-fitting'), ('Taps', 'plumbing-fittings/tap-fitting'), ('Basins & sinks', 'plumbing-fittings/basins-sinks'), ('Radiators & towel rails', 'plumbing-fittings/radiators-towel-rails'), ('Tiling', 'floors-walls-tiling/tiling'), ('En-suite fitting', 'en-suite-fitting-fulham')], 'Bathroom fitting') + '</div>'}
 
@@ -422,13 +434,13 @@ ENS_FAQ = [
     ('Will it make the bedroom noisy or damp?', 'Not if it is built right. We insulate the stud walls for sound, and fit an extractor ducted to the outside, so steam goes out rather than into the bedroom.'),
 ]
 ENSUITE = {
-    'slug': 'en-suite-fitting-fulham', 'title': 'En-Suite Fitting in Fulham – Shower Rooms in Bedrooms | We Fitt',
-    'description': 'En-suite fitting in Fulham. We build shower rooms into bedrooms and box rooms: drainage, stud walls, extraction, tiling and fitting. Shop on Munster Road.',
+    'slug': 'en-suite-fitting-fulham', 'title': 'En-Suite Fitting Fulham, Hammersmith, Chelsea & Kensington | We Fitt',
+    'description': 'En-suite fitting in Fulham, Hammersmith, Kensington and Chelsea. Shower rooms built into bedrooms and box rooms: drainage, stud walls, extraction and tiling.',
     'faqs': ENS_FAQ, 'crumbs': [('En-suite fitting', 'en-suite-fitting-fulham')],
     'body': _crumbs([('En-suite fitting', 'en-suite-fitting-fulham')]) + f'''
 <section class="wrap hero" style="padding-top:28px">
 <div class="stack" style="gap:20px">
-<p class="kicker">En-suite fitting</p>
+<p class="kicker">En-suite fitting · Fulham, Hammersmith, Kensington &amp; Chelsea</p>
 <h1 class="h-xl">En-suite fitting in Fulham</h1>
 <p class="lead">A shower room in the bedroom changes how a house works in the morning. We find the space, solve the drainage, build the walls and fit it out.</p>
 <div class="row"><button class="btn btn-go" data-picker="En-suite fitting">Get a price on WhatsApp</button><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
@@ -467,6 +479,14 @@ ENSUITE = {
 <h2>Questions people ask</h2>
 {_faqs(ENS_FAQ)}
 
+<h2>En-suites in Fulham, Hammersmith, Kensington and Chelsea</h2>
+<ul>
+<li><strong>Fulham and Parsons Green.</strong> In most terraces the back bedroom sits next to the bathroom or over the back addition, close to the soil stack. That often makes an en-suite simpler than people expect.</li>
+<li><strong>Hammersmith.</strong> In converted flats, new drainage usually needs the freeholder's consent under the lease, so we help you check that early.</li>
+<li><strong>Kensington and Chelsea.</strong> Tall houses mean top-floor en-suites, where water pressure is the thing to plan around. In mansion flats, the building's rules on wet rooms and drainage come first.</li>
+</ul>
+<p>We also build en-suites in Putney, Wandsworth, West Kensington, Earl's Court and Barons Court.</p>
+
 <h2>Bigger plans?</h2>
 <p>If the en-suite is part of a wider renovation, such as a loft conversion layout or moving bedrooms around, our full renovation side <a href="https://www.en-suite.co.uk">En-Suites &amp; Bathrooms</a> handles the design and build. Same team, same shop.</p>
 </div>
@@ -481,8 +501,8 @@ STORE_FAQ = [
     ('Can bikes be locked inside?', 'Yes. We fit lockable doors, and can add a ground anchor or wall rail inside for locking the bikes themselves.'),
 ]
 STORES = {
-    'slug': 'bike-and-bin-stores', 'title': 'Bike & Bin Stores with Green Roofs in Fulham | We Fitt',
-    'description': 'Bike stores and bin stores built to measure in Fulham, with an optional sedum green roof. Design yours online and send it to us on WhatsApp.',
+    'slug': 'bike-and-bin-stores', 'title': 'Bike & Bin Stores with Green Roofs – Fulham, Chelsea & Kensington | We Fitt',
+    'description': 'Bike and bin stores built to measure in Fulham, Hammersmith, Kensington and Chelsea, with an optional sedum green roof. Design yours online.',
     'faqs': STORE_FAQ, 'crumbs': [('Outside', 'outside'), ('Bike & bin stores', 'bike-and-bin-stores')],
     'body': _crumbs([('Outside', 'outside'), ('Bike & bin stores', 'bike-and-bin-stores')]) + f'''
 <section class="wrap hero" style="padding-top:28px">
@@ -532,6 +552,13 @@ STORES = {
 <h3>Planning in Fulham</h3>
 <p>Under the householder permitted development rules, outbuildings in front of a house generally aren't covered, and flats have no permitted development rights at all. Much of Fulham is also in conservation areas. That means a front-garden store can need planning permission. We check with Hammersmith &amp; Fulham Council before building, so you're not caught out.</p>
 </div>
+
+<h2>Bike and bin stores across Fulham, Hammersmith, Kensington and Chelsea</h2>
+<ul>
+<li><strong>Fulham and Hammersmith.</strong> Small front gardens with wheelie bins in full view of the street are the norm, and both are in the London Borough of Hammersmith &amp; Fulham, so planning questions go to H&amp;F.</li>
+<li><strong>Kensington and Chelsea.</strong> Much of the borough is covered by conservation areas, so materials and height matter more, and planning questions go to the Royal Borough of Kensington and Chelsea. A living roof often helps a store sit better in the street.</li>
+</ul>
+<p>We also build stores in Putney, Wandsworth, West Kensington, Earl's Court and Barons Court.</p>
 
 <h2>Questions people ask</h2>
 {_faqs(STORE_FAQ)}
@@ -595,7 +622,7 @@ CONTACT = {
 <div class="wrap band" style="padding-top:0">
 <div class="prose" style="max-width:760px">
 <h2>Areas we cover</h2>
-<p>Fulham, Parsons Green, Sands End, Putney, Hammersmith, West Kensington, Chelsea, Wandsworth and the streets around them.</p>
+<p>Fulham first, as it's on our doorstep, then Hammersmith, Kensington and Chelsea. We also cover Parsons Green, Sands End, Putney, Wandsworth, West Kensington, Earl's Court and Barons Court.</p>
 <h2>Full renovations</h2>
 <p>For a full design-and-build renovation, see <a href="https://www.en-suite.co.uk">En-Suites &amp; Bathrooms</a>. It's the same company, the same team and the same shop.</p>
 </div>
