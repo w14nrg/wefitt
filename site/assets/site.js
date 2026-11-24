@@ -34,10 +34,29 @@ function updateBadge(){
 }
 updateBadge(); setInterval(updateBadge, 60000);
 
-/* scroll reveal */
+/* scroll animations — tag content automatically on every page */
+document.documentElement.classList.add('js');
+const AUTO = [
+  ['main h1, main .kicker, main .lead, main .crumbs, main .row', 'up'],
+  ['.prose > h2, .prose > h3, .prose > p, .prose > ul, .prose > ol, .prose > .check, .prose > .faq', 'up'],
+  ['.facts > div, .grid > *, .steps > div, .ticks p, .faq details, .side-box, .room-card li', 'pop'],
+  ['.house, .mini-store, .builder, .renov, .card, .cat, .garden, .ph, .contact-band h2', 'up'],
+];
+AUTO.forEach(([sel, kind]) => document.querySelectorAll(sel).forEach(el => {
+  if (el.closest('.site-head, .picker') || el.classList.contains('reveal')) return;
+  el.classList.add('reveal', 'rv-' + kind);
+}));
+// ripple: siblings that animate together get a short stagger
+document.querySelectorAll('.reveal').forEach(el => {
+  const sibs = [...el.parentElement.children].filter(c => c.classList.contains('reveal'));
+  const i = sibs.indexOf(el);
+  if (sibs.length > 1) el.style.transitionDelay = Math.min(i, 6) * 70 + 'ms';
+});
 const revealEls = document.querySelectorAll('.reveal');
 if (!reduce && 'IntersectionObserver' in window) {
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), {rootMargin:'0px 0px -8% 0px'});
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), {rootMargin: '0px 0px -6% 0px', threshold: 0.08});
   revealEls.forEach(el => io.observe(el));
 } else { revealEls.forEach(el => el.classList.add('in')); }
 

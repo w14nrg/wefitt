@@ -201,12 +201,13 @@ a{color:var(--copper)}a:hover{color:#E0A56B}
 .site-foot a{color:var(--cream-2);text-decoration:none}.site-foot a:hover{color:var(--copper)}
 .legal{border-top:1px solid var(--black-3);margin-top:36px;padding-top:20px}
 
-/* reveal */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.reveal.in{opacity:1;transform:none}
+/* reveal — only hidden once JS is running, so content is never lost */
+.js .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.js .reveal.rv-pop{transform:translateY(22px) scale(.96)}
+.js .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .reveal{opacity:1;transform:none;transition:none}
+  .js .reveal{opacity:1;transform:none;transition:none}
   .rotor .caret,.dots span{animation:none}
 }
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
