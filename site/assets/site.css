@@ -211,3 +211,12 @@ a{color:var(--copper)}a:hover{color:#E0A56B}
 }
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .room-go{white-space:normal;text-align:center}
+
+.mini-store{display:flex;flex-direction:column;justify-content:center}
+.mini-store .stage{background:#16211B;border-radius:18px;padding:16px;display:flex;align-items:flex-end;justify-content:center}
+.mini-store .seg button{min-height:44px;padding:8px 16px;border-radius:999px;border:1.5px solid var(--garden-line);background:var(--garden-2);color:#E6F0E9;font:inherit;font-size:15px;cursor:pointer}
+.mini-store .seg button[aria-pressed=true]{background:var(--go);border-color:var(--go);color:#fff}
+.garden-grid{grid-template-areas:"text draw" "extra draw";align-items:start}
+.g-text{grid-area:text}.g-draw{grid-area:draw;align-self:center}.g-extra{grid-area:extra}
+@media(max-width:900px){.garden-grid{grid-template-areas:"text" "draw" "extra";gap:24px}}
+@media(max-width:600px){.ticks{grid-template-columns:repeat(2,minmax(0,1fr))}.ticks p{font-size:14px;padding:13px 14px}}

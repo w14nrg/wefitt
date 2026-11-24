@@ -111,12 +111,13 @@ if (picker) {
   document.querySelectorAll('[data-picker]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); openPicker(b.dataset.pre || b.dataset.picker || ''); }));
 }
 
-/* bike & bin store builder */
-const builder = document.querySelector('.builder');
-if (builder) {
+/* bike & bin store builder (full on the stores page, mini on the home page) */
+document.querySelectorAll('[data-store]').forEach(builder => {
   const st = {bikes: 2, bins: 2, roof: 'Green sedum roof', clad: 'Natural larch'};
+  const mixes = {Bikes: [3, 0], Bins: [0, 2], Both: [2, 2]};
   const clads = {'Natural larch':['#B98A5A','#9C7146'], 'Black stained':['#2B2B2B','#1E1E1E'], 'Painted grey':['#8C918E','#727875']};
   const svg = builder.querySelector('svg');
+  const summary = builder.querySelector('.summary-line');
   function draw(){
     const bikeW = st.bikes ? 70 + st.bikes * 46 : 0;
     const binW = st.bins * 78;
@@ -127,7 +128,7 @@ if (builder) {
     const unit = (x, w, label) => {
       let u = `<rect x="${x}" y="${base-H}" width="${w}" height="${H}" fill="${c1}" rx="3"/>`;
       for (let y = base - H + 12; y < base; y += 14) u += `<rect x="${x+4}" y="${y}" width="${w-8}" height="6" fill="${c2}" rx="1"/>`;
-      u += `<text x="${x + w/2}" y="${base + 26}" text-anchor="middle" fill="#C9D9CE" font-size="13" font-family="Inter,sans-serif">${label}</text>`;
+      u += `<text x="${x + w/2}" y="${base + 26}" text-anchor="middle" fill="#E6F0E9" font-size="17" font-weight="600" font-family="Inter,sans-serif">${label}</text>`;
       return u;
     };
     let x = X0;
@@ -143,24 +144,29 @@ if (builder) {
       }
     }
     svg.innerHTML = s;
-    builder.querySelector('.summary-line').textContent = (st.bikes ? st.bikes + ' bikes' : 'No bikes') + ' · ' + (st.bins ? st.bins + (st.bins > 1 ? ' bins' : ' bin') : 'no bins') + ' · ' + st.roof.toLowerCase() + ' · ' + st.clad.toLowerCase();
+    if (summary) summary.textContent = (st.bikes ? st.bikes + ' bikes' : 'No bikes') + ' · ' + (st.bins ? st.bins + (st.bins > 1 ? ' bins' : ' bin') : 'no bins') + ' · ' + st.roof.toLowerCase() + ' · ' + st.clad.toLowerCase();
   }
   builder.querySelectorAll('.seg').forEach(seg => {
     seg.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-      const k = seg.dataset.key; let v = b.dataset.v; if (k === 'bikes' || k === 'bins') v = parseInt(v, 10);
-      if (k === 'bikes' && v === 0 && st.bins === 0) return;
-      if (k === 'bins' && v === 0 && st.bikes === 0) return;
-      st[k] = v;
+      const k = seg.dataset.key; let v = b.dataset.v;
+      if (k === 'mix') { [st.bikes, st.bins] = mixes[v]; }
+      else {
+        if (k === 'bikes' || k === 'bins') v = parseInt(v, 10);
+        if (k === 'bikes' && v === 0 && st.bins === 0) return;
+        if (k === 'bins' && v === 0 && st.bikes === 0) return;
+        st[k] = v;
+      }
       seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
       draw();
     }));
   });
-  builder.querySelector('.send-store').addEventListener('click', () => {
-    const msg = 'Hi We Fitt, I\'d like to talk about a garden store: ' + builder.querySelector('.summary-line').textContent + '.';
+  const send = builder.querySelector('.send-store');
+  if (send) send.addEventListener('click', () => {
+    const msg = 'Hi We Fitt, I\'d like to talk about a garden store: ' + summary.textContent + '.';
     window.location.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(msg);
   });
   draw();
-}
+});
 
 document.querySelectorAll('.year').forEach(y => y.textContent = new Date().getFullYear());
 }
