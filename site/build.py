@@ -7,6 +7,8 @@ Run:  python3 build.py
 """
 import json, os, re, shutil
 from pages_content import PAGES, CATEGORIES, ITEMS, ROOMS
+from pages_items import ITEM_PAGES
+PAGES = PAGES + ITEM_PAGES
 
 SITE = 'https://www.wefitt.uk'
 PHONE = '020 7386 0000'
@@ -24,7 +26,7 @@ PICKER_JOBS = [
     ('Doors & joinery', ['Internal doors', 'Front or back door', 'Staircase', 'Skirting & architraves', 'Fitted wardrobes', 'Worktops']),
     ('Windows', ['Loft or roof window', 'Skylight']),
     ('Outside', ['Bike or bin store', 'Fencing & gates', 'Decking', 'Shed or summer house', 'Patio', 'Guttering']),
-    ('Plumbing & bathroom', ['Taps', 'Toilet', 'Shower', 'Basin or sink', 'Radiator or towel rail']),
+    ('Plumbing & bathroom', ['Taps', 'Toilet', 'Shower', 'Basin or sink', 'Radiator or towel rail', 'Mirror or cabinet', 'Appliance fitting']),
     ('Floors, walls & tiling', ['Tiling', 'Flooring', 'Stud wall', 'Plastering']),
     ('Electrics', ['Sockets', 'Downlights', 'Extractor fan']),
 ]

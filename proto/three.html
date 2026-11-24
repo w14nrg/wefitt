@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>We Fitt – bathroom (3D)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: shop-counter friendly. IDEA: a showroom you walk round. PICTURE: real 3D bathroom. COLOUR: black/copper/stone + racing green. TYPE: Space Grotesk + Inter. LAYOUT: room left, panel right. */
+:root{--bg:#141414;--ink:#F2EEE8;--muted:#B8B1A7;--copper:#C9874A;--go:#1F7A4D;--panel:#201E1B;--line:#3A3631}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+h1,h2{font-family:"Space Grotesk",Inter,sans-serif;margin:0;line-height:1.1}
+.top{max-width:1240px;margin:0 auto;padding:28px 24px 8px}
+.top p{color:var(--copper);font-weight:600;text-transform:uppercase;letter-spacing:2px;font-size:13px}
+.top h1{font-size:clamp(28px,4vw,44px);margin-top:6px}
+.wrap{max-width:1240px;margin:0 auto;padding:16px 24px 48px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.stage{position:relative;background:#1B1917;border-radius:22px;overflow:hidden;aspect-ratio:4/3;touch-action:none}
+.stage canvas{display:block;width:100%;height:100%;cursor:grab}
+.back{position:absolute;left:14px;top:14px;display:none;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:#141414cc;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.back.show{display:inline-block}
+.hint{position:absolute;right:14px;bottom:12px;font-size:13px;color:var(--muted);background:#141414aa;padding:4px 10px;border-radius:999px}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px}
+.panel h2{font-size:26px}
+.panel p{color:#D6D0C7;margin:10px 0 18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chips button{min-height:40px;padding:6px 14px;border-radius:999px;border:1.5px solid #3A3631;background:#2C2925;color:#E4DED5;font:inherit;font-size:14px;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--go);border-color:var(--go);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:999px;background:var(--go);color:#fff;font-weight:600;text-decoration:none;width:100%}
+</style>
+</head>
+<body>
+<div class="top"><p>Prototype A · real 3D</p><h1>Pick something in the bathroom</h1></div>
+<div class="wrap">
+<div class="stage" id="stage">
+<div class="loading" id="loading">Loading the room…</div>
+<button class="back" id="back">← Whole room</button>
+<span class="hint">Drag to look round · tap anything</span>
+</div>
+<div class="panel" aria-live="polite">
+<h2 id="pt">The bathroom</h2>
+<p id="pp">Drag to turn the room. Tap the bath, toilet, basin, mirror, taps or anything else to fly in and see what's involved in fitting it.</p>
+<div class="chips" id="chips"></div>
+<a class="btn" id="pgo" href="#" target="_blank" rel="noopener">Get a price on WhatsApp</a>
+</div>
+</div>
+<script>window.ROOM_ITEMS = {
+  bath:   {name:'Bath', text:'Levelled on its feet, supported under the rim, then filled with water before sealing so the seal does not split the first time someone gets in.'},
+  shower: {name:'Shower & screen', text:'Valve set into the wall at the right depth, the shower area tanked before any tiles go on, and the screen fixed into solid wall, not just tile.'},
+  taps:   {name:'Taps', text:'Chosen to suit your water pressure, connected with isolation valves so a washer can be changed without turning off the house.'},
+  toilet: {name:'Toilet', text:'Set out to line up with your soil pipe, fixed down so it never rocks, connected and leak-tested.'},
+  basin:  {name:'Basin & vanity', text:'Vanity fixed level to the wall, basin waste and trap lined up with the existing waste so there is no strain on the joints.'},
+  mirror: {name:'Mirror & cabinet', text:'Fixed into solid wall or proper plasterboard fixings. Illuminated mirrors and shaver points are wired and certified by our electrician.'},
+  rail:   {name:'Towel rail', text:'Plumbed into the heating, or electric. Electric rails near a bath or shower are notifiable work under Part P.'},
+  fan:    {name:'Extractor fan', text:'Sized for the room and ducted all the way outside, so steam leaves the house instead of turning into mould.'},
+  tiles:  {name:'Wall & floor tiles', text:'Set out from the centre lines so the cuts are even, with wet areas on tile backer board rather than plasterboard.'}
+};
+window.waLink = function(name){ return 'https://wa.me/442073860000?text=' + encodeURIComponent('Hi We Fitt, I need: ' + name + ' (bathroom).'); };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+{
+const stage = document.getElementById('stage');
+const chips = document.getElementById('chips');
+const back = document.getElementById('back');
+Object.entries(ROOM_ITEMS).forEach(([k,it]) => { const b = document.createElement('button'); b.textContent = it.name; b.dataset.k = k; b.setAttribute('aria-pressed','false'); b.onclick = () => select(k); chips.appendChild(b); });
+document.getElementById('pgo').href = waLink('Bathroom fitting');
+let select = () => {};
+
+if (!window.THREE) {
+  document.getElementById('loading').textContent = 'The 3D room could not load on this device.';
+} else {
+document.getElementById('loading').remove();
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+stage.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#1B1917');
+const camera = new THREE.PerspectiveCamera(42, 4/3, 0.05, 60);
+const HOME_POS = new THREE.Vector3(5.6, 3.9, 5.2), HOME_TGT = new THREE.Vector3(1.7, 0.9, 1.3);
+camera.position.copy(HOME_POS);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.target.copy(HOME_TGT);
+controls.enableDamping = true;
+controls.minPolarAngle = 0.35; controls.maxPolarAngle = 1.45;
+controls.minAzimuthAngle = 0.05; controls.maxAzimuthAngle = 1.5;
+controls.minDistance = 1.2; controls.maxDistance = 9;
+controls.enablePan = false;
+
+scene.add(new THREE.HemisphereLight(0xfff6ea, 0x3a3631, 0.75));
+const sun = new THREE.DirectionalLight(0xffffff, 0.85);
+sun.position.set(6, 8, 5); sun.castShadow = true; sun.shadow.mapSize.set(1024,1024);
+sun.shadow.camera.left = -6; sun.shadow.camera.right = 6; sun.shadow.camera.top = 6; sun.shadow.camera.bottom = -6;
+scene.add(sun);
+
+const mat = (c, o={}) => new THREE.MeshStandardMaterial(Object.assign({color:c, roughness:.55, metalness:0}, o));
+const pickables = [];
+const groups = {};
+function add(key, w, h, d, x, y, z, material){
+  // x across (0..4), y up, z depth (0..3). Positions are the box's minimum corner.
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+  m.position.set(x + w/2, y + h/2, z + d/2);
+  m.castShadow = true; m.receiveShadow = true;
+  if (key) { m.userData.key = key; pickables.push(m); (groups[key] = groups[key] || []).push(m); }
+  scene.add(m); return m;
+}
+// room shell
+const floorTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = '#8E8A84'; g.fillRect(0,0,256,256); g.strokeStyle = '#6F6B66'; g.lineWidth = 3;
+  for (let i=0;i<=256;i+=64){ g.beginPath(); g.moveTo(i,0); g.lineTo(i,256); g.stroke(); g.beginPath(); g.moveTo(0,i); g.lineTo(256,i); g.stroke(); }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(2,1.5); t.encoding = THREE.sRGBEncoding; return t; })();
+add('tiles', 4, .04, 3, 0, -.04, 0, mat('#ffffff', {map: floorTex}));
+add('tiles', .06, 2.6, 3, -.06, 0, 0, mat('#D9D2C7'));
+add('tiles', 4, 2.6, .06, 0, 0, -.06, mat('#E9E4DC'));
+// window on back wall
+add(null, .6, .75, .02, 3.1, 1.4, 0, mat('#9BC7DD', {emissive:'#26414f', roughness:.2}));
+add(null, .04, .75, .03, 3.38, 1.4, 0, mat('#F2EEE8'));
+// extractor fan
+add('fan', .3, .3, .04, 2.0, 2.15, 0, mat('#F7F5F1'));
+// mirror
+add('mirror', .84, .75, .03, .98, 1.0, 0, mat('#C9874A', {metalness:.6, roughness:.35}));
+add('mirror', .76, .67, .02, 1.02, 1.04, .03, mat('#BFD9E6', {metalness:.9, roughness:.08}));
+// towel rail on left wall
+for (let y=.95; y<1.65; y+=.12) add('rail', .05, .035, .6, 0, y, .35, mat('#C9874A', {metalness:.7, roughness:.3}));
+add('rail', .06, .8, .04, 0, .9, .33, mat('#B07438', {metalness:.7, roughness:.3}));
+add('rail', .06, .8, .04, 0, .9, .93, mat('#B07438', {metalness:.7, roughness:.3}));
+// bath along left wall
+add('bath', .8, .55, 1.75, 0, 0, 1.2, mat('#F4F1EC', {roughness:.25}));
+add('bath', .64, .02, 1.55, .08, .54, 1.3, mat('#9BC7DD', {roughness:.1, transparent:true, opacity:.9}));
+// shower
+add('shower', .05, .15, .12, 0, 1.1, 2.2, mat('#D7D2CA', {metalness:.6, roughness:.3}));
+add('shower', .04, .7, .04, 0, 1.25, 2.24, mat('#CFCAC2', {metalness:.6, roughness:.3}));
+add('shower', .3, .05, .04, 0, 1.95, 2.24, mat('#CFCAC2', {metalness:.6, roughness:.3}));
+add('shower', .14, .04, .2, .24, 1.9, 2.16, mat('#E6E2DB', {metalness:.6, roughness:.3}));
+add('shower', .78, 1.45, .015, 0, .55, 1.24, mat('#AAD2E6', {transparent:true, opacity:.28, roughness:.05}));
+// taps
+add('taps', .12, .17, .1, .02, .55, 2.6, mat('#C9874A', {metalness:.7, roughness:.3}));
+add('taps', .26, .04, .06, .02, .68, 2.62, mat('#C9874A', {metalness:.7, roughness:.3}));
+add('taps', .08, .18, .06, 1.36, .72, .08, mat('#C9874A', {metalness:.7, roughness:.3}));
+add('taps', .08, .04, .18, 1.36, .86, .08, mat('#C9874A', {metalness:.7, roughness:.3}));
+// vanity + basin
+add('basin', .8, .54, .48, 1.0, .08, 0, mat('#1F4F3A'));
+add('basin', .04, .3, .01, 1.38, .2, .48, mat('#C9874A', {metalness:.6}));
+add('basin', .7, .1, .44, 1.05, .62, .02, mat('#F7F5F1', {roughness:.25}));
+// toilet
+add('toilet', .55, .5, .2, 2.55, .35, 0, mat('#F7F5F1', {roughness:.25}));
+add('toilet', .41, .4, .52, 2.62, 0, .2, mat('#F4F1EC', {roughness:.25}));
+add('toilet', .45, .04, .56, 2.6, .4, .18, mat('#EDEAE4', {roughness:.3}));
+add('toilet', .08, .03, .05, 2.9, .85, .05, mat('#C9874A', {metalness:.7}));
+
+function resize(){ const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+const ro = new ResizeObserver(resize); ro.observe(stage); resize();
+
+// fly-to tween
+let fly = null;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flyTo(pos, tgt){
+  if (reduce) { camera.position.copy(pos); controls.target.copy(tgt); return; }
+  fly = {p0: camera.position.clone(), t0: controls.target.clone(), p1: pos, t1: tgt, start: performance.now()};
+}
+const glow = new THREE.Color('#0F5A36');
+select = function(k){
+  const it = ROOM_ITEMS[k];
+  pickables.forEach(m => m.material.emissive && m.material.emissive.set(m.userData.key === k ? glow : (m.userData.baseEmissive || 0x000000)));
+  chips.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === k)));
+  document.getElementById('pt').textContent = it.name;
+  document.getElementById('pp').textContent = it.text;
+  const go = document.getElementById('pgo'); go.href = waLink(it.name); go.textContent = 'Get a price for ' + it.name.toLowerCase();
+  const bb = new THREE.Box3(); groups[k].forEach(m => bb.expandByObject(m));
+  const c = bb.getCenter(new THREE.Vector3()), size = bb.getSize(new THREE.Vector3()).length();
+  const dist = Math.max(1.3, size * 1.6);
+  const dir = new THREE.Vector3(1, .55, .9).normalize();
+  if (k === 'tiles') { flyTo(HOME_POS.clone().multiplyScalar(.85), HOME_TGT.clone()); }
+  else flyTo(c.clone().add(dir.multiplyScalar(dist)), c);
+  back.classList.add('show');
+};
+pickables.forEach(m => { m.material = m.material.clone(); m.userData.baseEmissive = m.material.emissive ? m.material.emissive.clone() : null; });
+back.onclick = () => { flyTo(HOME_POS.clone(), HOME_TGT.clone()); back.classList.remove('show'); pickables.forEach(m => m.material.emissive && m.material.emissive.copy(m.userData.baseEmissive)); chips.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed','false')); };
+
+// picking (tap, not drag)
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let down = null;
+renderer.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left)/r.width)*2 - 1, -((e.clientY - r.top)/r.height)*2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hit = ray.intersectObjects(pickables, false)[0];
+  if (hit) select(hit.object.userData.key);
+});
+renderer.domElement.addEventListener('pointermove', e => {
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left)/r.width)*2 - 1, -((e.clientY - r.top)/r.height)*2 + 1);
+  ray.setFromCamera(ndc, camera);
+  renderer.domElement.style.cursor = ray.intersectObjects(pickables, false).length ? 'pointer' : 'grab';
+});
+
+function loop(now){
+  if (fly) {
+    const k = Math.min(1, (now - fly.start)/900), e = 1 - Math.pow(1-k, 3);
+    camera.position.lerpVectors(fly.p0, fly.p1, e);
+    controls.target.lerpVectors(fly.t0, fly.t1, e);
+    if (k >= 1) fly = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+}
+}
+</script>
+</body>
+</html>

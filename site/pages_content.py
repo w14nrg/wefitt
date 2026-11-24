@@ -7,14 +7,14 @@ CATEGORIES = [
         ('Staircases & balustrades', 'doors-joinery/staircases'), ('Skirting & architraves', 'doors-joinery/skirting-architraves'),
         ('Fitted wardrobes', 'doors-joinery/fitted-wardrobes'), ('Worktops', 'doors-joinery/worktop-fitting')]},
     {'name': 'Loft windows & windows', 'slug': 'loft-windows', 'parts': [
-        ('Loft & roof windows', 'loft-windows/roof-window-fitting'), ('Skylights', 'loft-windows/skylights'),
-        ('Replacement windows', 'loft-windows/replacement-windows')]},
+        ('Loft & roof windows', 'loft-windows/roof-window-fitting'), ('Skylights', 'loft-windows/skylights')]},
     {'name': 'Outside', 'slug': 'outside', 'parts': [
         ('Bike & bin stores', 'bike-and-bin-stores'), ('Fencing & gates', 'outside/fencing-gates'), ('Decking', 'outside/decking'),
         ('Sheds & summer houses', 'outside/sheds-summer-houses'), ('Patios', 'outside/patios'), ('Guttering', 'outside/guttering')]},
     {'name': 'Plumbing & bathroom fittings', 'slug': 'plumbing-fittings', 'parts': [
         ('Taps', 'plumbing-fittings/tap-fitting'), ('Toilets', 'plumbing-fittings/toilet-fitting'), ('Showers', 'plumbing-fittings/shower-fitting'),
-        ('Basins & sinks', 'plumbing-fittings/basins-sinks'), ('Radiators & towel rails', 'plumbing-fittings/radiators-towel-rails')]},
+        ('Basins & sinks', 'plumbing-fittings/basins-sinks'), ('Radiators & towel rails', 'plumbing-fittings/radiators-towel-rails'),
+        ('Mirrors & cabinets', 'plumbing-fittings/mirrors-cabinets'), ('Appliance fitting', 'plumbing-fittings/appliance-fitting')]},
     {'name': 'Floors, walls & tiling', 'slug': 'floors-walls-tiling', 'parts': [
         ('Tiling', 'floors-walls-tiling/tiling'), ('Flooring', 'floors-walls-tiling/flooring'),
         ('Stud walls', 'floors-walls-tiling/stud-walls'), ('Plastering', 'floors-walls-tiling/plastering')]},
@@ -28,13 +28,13 @@ ROOMS = {
     'loft': {'job': 'Loft or roof window', 'title': 'In the loft', 'short': 'loft work', 'text': 'Bring daylight into the top of the house and turn a dark loft into a usable room.',
              'items': ['Loft & roof windows', 'Skylights', 'Stud walls', 'Plastering']},
     'bathroom': {'job': 'Bathroom fitting', 'title': 'In the bathroom', 'short': 'bathroom fitting', 'text': 'A whole new bathroom, or just the one thing that has stopped working.',
-                 'items': ['Bathroom fitting', 'Showers', 'Toilets', 'Taps', 'Basins & sinks', 'Tiling', 'Radiators & towel rails', 'Extractor fans']},
+                 'items': ['Bathroom fitting', 'Showers', 'Toilets', 'Taps', 'Basins & sinks', 'Mirrors & cabinets', 'Tiling', 'Radiators & towel rails', 'Extractor fans']},
     'bedroom': {'job': 'En-suite fitting', 'title': 'In the bedroom', 'short': 'en-suite fitting', 'text': 'Squeeze a shower room in, or build the storage the room is missing.',
                 'items': ['En-suite fitting', 'Fitted wardrobes', 'Flooring', 'Sockets', 'Downlights']},
     'hall': {'job': 'Internal doors', 'title': 'Hall and stairs', 'short': 'door fitting', 'text': 'The first thing anyone sees: doors that close properly, stairs that feel solid, clean joinery.',
              'items': ['Front & back doors', 'Internal doors', 'Staircases & balustrades', 'Skirting & architraves', 'Flooring']},
     'kitchen': {'job': 'Kitchen fitting', 'title': 'In the kitchen', 'short': 'kitchen fitting', 'text': 'Fit the kitchen you have bought, or let us design, supply and fit one for you.',
-                'items': ['Kitchen fitting', 'Worktops', 'Taps', 'Basins & sinks', 'Tiling', 'Sockets', 'Downlights', 'Extractor fans']},
+                'items': ['Kitchen fitting', 'Worktops', 'Appliance fitting', 'Taps', 'Basins & sinks', 'Tiling', 'Sockets', 'Downlights', 'Extractor fans']},
     'garden': {'job': 'Bike or bin store', 'title': 'In the garden', 'short': 'garden work', 'text': 'Tidy away the bins and bikes, and build the outside space properly.',
                'items': ['Bike & bin stores', 'Fencing & gates', 'Decking', 'Sheds & summer houses', 'Patios', 'Guttering']},
 }

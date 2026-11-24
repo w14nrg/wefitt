@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>We Fitt – bathroom (isometric)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: shop-counter friendly. IDEA: architect's cutaway. PICTURE: isometric bathroom. COLOUR: black/copper/stone + racing green. TYPE: Space Grotesk + Inter. LAYOUT: room left, panel right. */
+:root{--bg:#141414;--ink:#F2EEE8;--muted:#B8B1A7;--copper:#C9874A;--go:#1F7A4D;--panel:#201E1B;--line:#3A3631}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+h1,h2{font-family:"Space Grotesk",Inter,sans-serif;margin:0;line-height:1.1}
+.top{max-width:1240px;margin:0 auto;padding:28px 24px 8px}
+.top p{color:var(--copper);font-weight:600;text-transform:uppercase;letter-spacing:2px;font-size:13px}
+.top h1{font-size:clamp(28px,4vw,44px);margin-top:6px}
+.wrap{max-width:1240px;margin:0 auto;padding:16px 24px 48px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px;align-items:start}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.stage{position:relative;background:#1B1917;border-radius:22px;overflow:hidden}
+svg{display:block;width:100%;height:auto;aspect-ratio:800/610}
+.obj{cursor:pointer;transition:filter .2s}
+.obj:hover{filter:brightness(1.18)}
+.obj.on{filter:brightness(1.25) drop-shadow(0 0 6px rgba(31,122,77,.9))}
+.obj:focus{outline:none}.obj:focus-visible{filter:drop-shadow(0 0 4px #C9874A)}
+.back{position:absolute;left:14px;top:14px;display:none;min-height:44px;padding:8px 16px;border-radius:999px;border:0;background:#141414cc;color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.back.show{display:inline-block}
+.hint{position:absolute;right:14px;bottom:12px;font-size:13px;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:24px}
+.panel h2{font-size:26px}
+.panel p{color:#D6D0C7;margin:10px 0 18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.chips button{min-height:40px;padding:6px 14px;border-radius:999px;border:1.5px solid #3A3631;background:#2C2925;color:#E4DED5;font:inherit;font-size:14px;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--go);border-color:var(--go);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:999px;background:var(--go);color:#fff;font-weight:600;text-decoration:none;width:100%}
+@media(prefers-reduced-motion:reduce){.obj{transition:none}}
+</style>
+</head>
+<body>
+<div class="top"><p>Prototype B · isometric</p><h1>Pick something in the bathroom</h1></div>
+<div class="wrap">
+<div class="stage">
+<svg id="room" viewBox="0 0 800 610" role="group" aria-label="Isometric bathroom. Choose an item."></svg>
+<button class="back" id="back">← Whole room</button>
+<span class="hint">Tap anything in the room</span>
+</div>
+<div class="panel" aria-live="polite">
+<h2 id="pt">The bathroom</h2>
+<p id="pp">Tap the bath, toilet, basin, mirror, taps or anything else to zoom in and see what's involved in fitting it.</p>
+<div class="chips" id="chips"></div>
+<a class="btn" id="pgo" href="#" target="_blank" rel="noopener">Get a price on WhatsApp</a>
+</div>
+</div>
+<script>window.ROOM_ITEMS = {
+  bath:   {name:'Bath', text:'Levelled on its feet, supported under the rim, then filled with water before sealing so the seal does not split the first time someone gets in.'},
+  shower: {name:'Shower & screen', text:'Valve set into the wall at the right depth, the shower area tanked before any tiles go on, and the screen fixed into solid wall, not just tile.'},
+  taps:   {name:'Taps', text:'Chosen to suit your water pressure, connected with isolation valves so a washer can be changed without turning off the house.'},
+  toilet: {name:'Toilet', text:'Set out to line up with your soil pipe, fixed down so it never rocks, connected and leak-tested.'},
+  basin:  {name:'Basin & vanity', text:'Vanity fixed level to the wall, basin waste and trap lined up with the existing waste so there is no strain on the joints.'},
+  mirror: {name:'Mirror & cabinet', text:'Fixed into solid wall or proper plasterboard fixings. Illuminated mirrors and shaver points are wired and certified by our electrician.'},
+  rail:   {name:'Towel rail', text:'Plumbed into the heating, or electric. Electric rails near a bath or shower are notifiable work under Part P.'},
+  fan:    {name:'Extractor fan', text:'Sized for the room and ducted all the way outside, so steam leaves the house instead of turning into mould.'},
+  tiles:  {name:'Wall & floor tiles', text:'Set out from the centre lines so the cuts are even, with wet areas on tile backer board rather than plasterboard.'}
+};
+window.waLink = function(name){ return 'https://wa.me/442073860000?text=' + encodeURIComponent('Hi We Fitt, I need: ' + name + ' (bathroom).'); };
+</script>
+<script>
+{
+const S = 95, C = Math.cos(Math.PI/6)*S, Sn = Math.sin(Math.PI/6)*S, OX = 400, OY = 262;
+const P = (x,y,z) => [OX + (x - y)*C, OY + (x + y)*Sn - z*S];
+const pts = a => a.map(p => P(...p).map(v => v.toFixed(1)).join(',')).join(' ');
+const shade = (hex, f) => { const n = parseInt(hex.slice(1),16); const c = [n>>16, n>>8&255, n&255].map(v => Math.max(0, Math.min(255, Math.round(v*f)))); return '#' + c.map(v => v.toString(16).padStart(2,'0')).join(''); };
+const poly = (a, fill, extra='') => `<polygon points="${pts(a)}" fill="${fill}" ${extra}/>`;
+function box(x0,x1,y0,y1,z0,z1,col){
+  return poly([[x0,y0,z1],[x1,y0,z1],[x1,y1,z1],[x0,y1,z1]], shade(col,1.12)) +
+         poly([[x1,y0,z0],[x1,y1,z0],[x1,y1,z1],[x1,y0,z1]], shade(col,.82)) +
+         poly([[x0,y1,z0],[x1,y1,z0],[x1,y1,z1],[x0,y1,z1]], shade(col,.66));
+}
+let s = '';
+// floor tiles
+s += '<g class="obj" data-k="tiles" tabindex="0" role="button" aria-label="Wall and floor tiles">';
+s += poly([[0,0,0],[4,0,0],[4,3,0],[0,3,0]], '#8E8A84');
+for (let i=0;i<=8;i++) s += `<line x1="${P(i*.5,0,0)[0]}" y1="${P(i*.5,0,0)[1]}" x2="${P(i*.5,3,0)[0]}" y2="${P(i*.5,3,0)[1]}" stroke="#6F6B66" stroke-width="1"/>`;
+for (let j=0;j<=6;j++) s += `<line x1="${P(0,j*.5,0)[0]}" y1="${P(0,j*.5,0)[1]}" x2="${P(4,j*.5,0)[0]}" y2="${P(4,j*.5,0)[1]}" stroke="#6F6B66" stroke-width="1"/>`;
+// walls
+s += poly([[0,0,0],[0,3,0],[0,3,2.6],[0,0,2.6]], '#D9D2C7');
+s += poly([[0,0,0],[4,0,0],[4,0,2.6],[0,0,2.6]], '#E9E4DC');
+for (let z=.3; z<1.2; z+=.3) s += `<line x1="${P(0,0,z)[0]}" y1="${P(0,0,z)[1]}" x2="${P(0,3,z)[0]}" y2="${P(0,3,z)[1]}" stroke="#C6BEB2"/><line x1="${P(0,0,z)[0]}" y1="${P(0,0,z)[1]}" x2="${P(4,0,z)[0]}" y2="${P(4,0,z)[1]}" stroke="#D3CCC1"/>`;
+// wall cut edges
+s += poly([[0,3,0],[0,3.08,0],[0,3.08,2.6],[0,3,2.6]], '#3A3631') + poly([[4,0,0],[4.08,0,0],[4.08,0,2.6],[4,0,2.6]], '#3A3631');
+s += '</g>';
+// window (decor)
+s += poly([[3.1,0,1.4],[3.7,0,1.4],[3.7,0,2.15],[3.1,0,2.15]], '#9BC7DD') + poly([[3.38,0,1.4],[3.42,0,1.4],[3.42,0,2.15],[3.38,0,2.15]], '#F2EEE8');
+// fan
+s += `<g class="obj" data-k="fan" tabindex="0" role="button" aria-label="Extractor fan">${poly([[2.0,0,2.15],[2.3,0,2.15],[2.3,0,2.4],[2.0,0,2.4]], '#F7F5F1')}<circle cx="${P(2.15,0,2.275)[0]}" cy="${P(2.15,0,2.275)[1]}" r="8" fill="none" stroke="#9C968E" stroke-width="2"/></g>`;
+// mirror
+s += `<g class="obj" data-k="mirror" tabindex="0" role="button" aria-label="Mirror and cabinet">${poly([[0.98,0,1.0],[1.82,0,1.0],[1.82,0,1.75],[0.98,0,1.75]], '#C9874A')}${poly([[1.02,0,1.04],[1.78,0,1.04],[1.78,0,1.71],[1.02,0,1.71]], '#BFD9E6')}${poly([[1.1,0,1.5],[1.3,0,1.68],[1.36,0,1.68],[1.16,0,1.5]], '#E8F3F8')}</g>`;
+// towel rail on left wall
+let rail = '';
+for (let z=.95; z<1.65; z+=.12) rail += box(0,.06,.35,.95,z,z+.035,'#C9874A');
+rail += box(0,.08,.33,.37,.9,1.7,'#B07438') + box(0,.08,.93,.97,.9,1.7,'#B07438');
+s += `<g class="obj" data-k="rail" tabindex="0" role="button" aria-label="Towel rail">${rail}</g>`;
+// shower valve + head on left wall above bath
+s += `<g class="obj" data-k="shower" tabindex="0" role="button" aria-label="Shower and screen">${box(0,.05,2.2,2.32,1.1,1.25,'#D7D2CA')}${box(0,.05,2.24,2.28,1.25,1.95,'#CFCAC2')}${box(0,.3,2.2,2.32,1.95,2.0,'#CFCAC2')}${box(.26,.36,2.16,2.36,1.9,1.95,'#E6E2DB')}${poly([[0,1.25,.55],[.78,1.25,.55],[.78,1.25,2.0],[0,1.25,2.0]], 'rgba(170,210,230,.35)', 'stroke="#D8E8F0" stroke-width="2"')}</g>`;
+// bath
+s += `<g class="obj" data-k="bath" tabindex="0" role="button" aria-label="Bath">${box(0,.8,1.2,2.95,0,.55,'#F4F1EC')}${poly([[.08,1.3,.55],[.72,1.3,.55],[.72,2.85,.55],[.08,2.85,.55]], '#9BC7DD')}</g>`;
+// bath taps
+s += `<g class="obj" data-k="taps" tabindex="0" role="button" aria-label="Taps">${box(.02,.14,2.6,2.7,.55,.72,'#C9874A')}${box(.02,.28,2.62,2.68,.68,.72,'#C9874A')}${box(1.36,1.44,.08,.14,.72,.9,'#C9874A')}${box(1.36,1.44,.08,.26,.86,.9,'#C9874A')}</g>`;
+// vanity + basin
+s += `<g class="obj" data-k="basin" tabindex="0" role="button" aria-label="Basin and vanity">${box(1.0,1.8,0,.48,.08,.62,'#1F4F3A')}${poly([[1.38,.48,.2],[1.42,.48,.2],[1.42,.48,.5],[1.38,.48,.5]], '#C9874A')}${box(1.05,1.75,.02,.46,.62,.72,'#F7F5F1')}${poly([[1.15,.08,.72],[1.65,.08,.72],[1.65,.4,.72],[1.15,.4,.72]], '#DCE7EC')}</g>`;
+// toilet
+s += `<g class="obj" data-k="toilet" tabindex="0" role="button" aria-label="Toilet">${box(2.55,3.1,0,.2,.35,.85,'#F7F5F1')}${box(2.9,2.98,.05,.1,.85,.88,'#C9874A')}${box(2.62,3.03,.2,.72,0,.4,'#F4F1EC')}${box(2.6,3.05,.18,.74,.4,.44,'#EDEAE4')}</g>`;
+document.getElementById('room').innerHTML = s;
+
+const svg = document.getElementById('room'), back = document.getElementById('back');
+const chips = document.getElementById('chips');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let vb = [0,0,800,610], anim;
+function animateTo(t){
+  cancelAnimationFrame(anim);
+  if (reduce) { vb = t; svg.setAttribute('viewBox', t.join(' ')); return; }
+  const from = vb.slice(), t0 = performance.now(), D = 650;
+  const step = now => { const k = Math.min(1,(now - t0)/D), e = 1 - Math.pow(1-k,3);
+    vb = from.map((v,i) => v + (t[i]-v)*e); svg.setAttribute('viewBox', vb.join(' ')); if (k<1) anim = requestAnimationFrame(step); };
+  anim = requestAnimationFrame(step);
+}
+function select(k){
+  const it = ROOM_ITEMS[k];
+  svg.querySelectorAll('.obj').forEach(g => g.classList.toggle('on', g.dataset.k === k));
+  chips.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === k)));
+  document.getElementById('pt').textContent = it.name;
+  document.getElementById('pp').textContent = it.text;
+  document.getElementById('pgo').href = waLink(it.name);
+  document.getElementById('pgo').textContent = 'Get a price for ' + it.name.toLowerCase();
+  const g = svg.querySelector(`.obj[data-k="${k}"]`).getBBox();
+  const pad = Math.max(g.width, g.height) * .55 + 40; let w = g.width + pad*2, h = g.height + pad*2;
+  if (w/h > 800/610) h = w*610/800; else w = h*800/610;
+  animateTo([g.x + g.width/2 - w/2, g.y + g.height/2 - h/2, w, h]);
+  back.classList.add('show');
+}
+Object.entries(ROOM_ITEMS).forEach(([k,it]) => { const b = document.createElement('button'); b.textContent = it.name; b.dataset.k = k; b.setAttribute('aria-pressed','false'); b.onclick = () => select(k); chips.appendChild(b); });
+svg.querySelectorAll('.obj').forEach(g => { g.addEventListener('click', () => select(g.dataset.k)); g.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); select(g.dataset.k); } }); });
+back.onclick = () => { animateTo([0,0,800,610]); back.classList.remove('show'); svg.querySelectorAll('.obj').forEach(g => g.classList.remove('on')); };
+document.getElementById('pgo').href = waLink('Bathroom fitting');
+}
+</script>
+</body>
+</html>
