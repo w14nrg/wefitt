@@ -67,14 +67,14 @@ def _crumbs(trail):
 
 # ---------------- house SVG ----------------
 HOUSE_SVG = '''<svg viewBox="0 0 640 500" role="group" aria-label="A house cut open. Choose a room to see what we fit there.">
-<rect x="0" y="440" width="640" height="60" fill="#1C2A22"/>
-<rect x="0" y="440" width="640" height="6" fill="#2F4A3A"/>
+<rect x="0" y="440" width="640" height="60" fill="#1E1B18"/>
+<rect x="0" y="440" width="640" height="6" fill="#3A3530"/>
 <path d="M26 166 L245 22 L464 166 Z" fill="#3A3631"/>
 <rect x="36" y="160" width="418" height="282" fill="#3A3631"/>
 <g class="room" data-room="loft" tabindex="0" role="button" aria-pressed="false" aria-label="Loft">
 <path class="fill" d="M66 158 L245 44 L424 158 Z" fill="#26231F"/>
 <path d="M318 92 L352 114 L340 132 L306 110 Z" fill="#5BA0C8" opacity=".85"/>
-<path d="M318 92 L352 114" stroke="#C9874A" stroke-width="3"/>
+<path d="M318 92 L352 114" stroke="#FF7900" stroke-width="3"/>
 <rect x="170" y="140" width="60" height="18" fill="#4A453F" rx="2"/>
 <text x="245" y="128" text-anchor="middle">Loft</text>
 </g>
@@ -84,8 +84,8 @@ HOUSE_SVG = '''<svg viewBox="0 0 640 500" role="group" aria-label="A house cut o
 <rect x="64" y="268" width="84" height="16" rx="8" fill="#9BC7DD"/>
 <rect x="196" y="252" width="22" height="38" rx="6" fill="#CFC8BE"/>
 <rect x="192" y="240" width="30" height="14" rx="3" fill="#CFC8BE"/>
-<rect x="168" y="214" width="20" height="4" fill="#C9874A"/>
-<path d="M176 214 v-12 h8" stroke="#C9874A" stroke-width="3" fill="none"/>
+<rect x="168" y="214" width="20" height="4" fill="#FF7900"/>
+<path d="M176 214 v-12 h8" stroke="#FF7900" stroke-width="3" fill="none"/>
 <text x="141" y="198" text-anchor="middle">Bathroom</text>
 </g>
 <g class="room" data-room="bedroom" tabindex="0" role="button" aria-pressed="false" aria-label="Bedroom and en-suite">
@@ -94,7 +94,7 @@ HOUSE_SVG = '''<svg viewBox="0 0 640 500" role="group" aria-label="A house cut o
 <rect x="258" y="248" width="30" height="16" rx="4" fill="#CFC8BE"/>
 <rect x="378" y="190" width="6" height="108" fill="#4A453F"/>
 <rect x="392" y="272" width="44" height="18" rx="2" fill="#CFC8BE"/>
-<path d="M414 210 v14 M406 226 h16" stroke="#C9874A" stroke-width="3"/>
+<path d="M414 210 v14 M406 226 h16" stroke="#FF7900" stroke-width="3"/>
 <path d="M402 232 l-4 30 M414 232 v30 M426 232 l4 30" stroke="#9BC7DD" stroke-width="2" stroke-dasharray="4 5"/>
 <text x="312" y="198" text-anchor="middle">Bedroom</text>
 <text x="412" y="198" text-anchor="middle" style="font-size:12px">En-suite</text>
@@ -102,16 +102,16 @@ HOUSE_SVG = '''<svg viewBox="0 0 640 500" role="group" aria-label="A house cut o
 <g class="room" data-room="hall" tabindex="0" role="button" aria-pressed="false" aria-label="Hall and stairs">
 <rect class="fill" x="46" y="306" width="122" height="134" fill="#26231F"/>
 <path d="M92 440 h76 v-16 h-14 v-16 h-14 v-16 h-14 v-16 h-14 v-16 h-14 v-16 h-6 z" fill="#6B6259"/>
-<path d="M92 342 L168 430" stroke="#C9874A" stroke-width="3"/>
-<rect x="52" y="356" width="32" height="84" fill="#1F7A4D"/>
-<circle cx="78" cy="400" r="3" fill="#C9874A"/>
+<path d="M92 342 L168 430" stroke="#FF7900" stroke-width="3"/>
+<rect x="52" y="356" width="32" height="84" fill="#FF7900"/>
+<circle cx="78" cy="400" r="3" fill="#FF7900"/>
 <text x="107" y="330" text-anchor="middle">Hall</text>
 </g>
 <g class="room" data-room="kitchen" tabindex="0" role="button" aria-pressed="false" aria-label="Kitchen">
 <rect class="fill" x="176" y="306" width="268" height="134" fill="#26231F"/>
 <rect x="196" y="352" width="160" height="26" fill="#4A453F"/>
 <rect x="196" y="402" width="236" height="38" fill="#4A453F"/>
-<rect x="192" y="396" width="244" height="8" fill="#C9874A"/>
+<rect x="192" y="396" width="244" height="8" fill="#FF7900"/>
 <rect x="300" y="390" width="36" height="6" fill="#CFC8BE"/>
 <path d="M318 390 v-14 h10" stroke="#CFC8BE" stroke-width="3" fill="none"/>
 <rect x="232" y="390" width="40" height="6" fill="#141414"/>
@@ -123,7 +123,7 @@ HOUSE_SVG = '''<svg viewBox="0 0 640 500" role="group" aria-label="A house cut o
 <text x="400" y="330" text-anchor="middle">Kitchen</text>
 </g>
 <g class="room" data-room="garden" tabindex="0" role="button" aria-pressed="false" aria-label="Garden">
-<rect class="fill" x="468" y="250" width="166" height="190" fill="#1F2E25" rx="6"/>
+<rect class="fill" x="468" y="250" width="166" height="190" fill="#2A2622" rx="6"/>
 <g fill="#6B5A44"><rect x="474" y="372" width="8" height="68"/><rect x="620" y="372" width="8" height="68"/><rect x="474" y="384" width="154" height="6"/><rect x="474" y="414" width="154" height="6"/></g>
 <rect x="500" y="356" width="104" height="84" fill="#B98A5A"/>
 <g fill="#9C7146"><rect x="504" y="366" width="96" height="5"/><rect x="504" y="380" width="96" height="5"/><rect x="504" y="394" width="96" height="5"/><rect x="504" y="408" width="96" height="5"/><rect x="504" y="422" width="96" height="5"/></g>
@@ -231,13 +231,13 @@ HOME = {
 <rect x="300" y="20" width="240" height="210" rx="4" fill="#9a5b43"/>
 <g fill="#874d38"><rect x="300" y="20" width="240" height="2"/><rect x="300" y="38" width="240" height="2"/><rect x="300" y="56" width="240" height="2"/><rect x="300" y="74" width="240" height="2"/><rect x="300" y="92" width="240" height="2"/><rect x="300" y="110" width="240" height="2"/><rect x="300" y="128" width="240" height="2"/><rect x="300" y="146" width="240" height="2"/><rect x="300" y="164" width="240" height="2"/><rect x="300" y="182" width="240" height="2"/><rect x="300" y="200" width="240" height="2"/><rect x="300" y="218" width="240" height="2"/></g>
 <rect x="330" y="60" width="70" height="90" rx="3" fill="#cfe3ef"/><rect x="333" y="63" width="64" height="40" fill="#e6f1f7"/>
-<rect x="440" y="96" width="62" height="134" rx="3" fill="#1f4f3a"/><circle cx="492" cy="166" r="4" fill="#C9874A"/>
+<rect x="440" y="96" width="62" height="134" rx="3" fill="#FF7900"/><circle cx="492" cy="166" r="4" fill="#FF7900"/>
 <rect x="420" y="40" width="102" height="14" fill="#e9e1d4"/>
 <rect x="0" y="230" width="560" height="10" fill="#b9b2a6"/><rect x="0" y="240" width="560" height="26" fill="#8d877d"/><rect x="0" y="266" width="560" height="34" fill="#3d3f42"/>
 <rect x="280" y="200" width="280" height="30" fill="#8d5a46"/>
 <rect x="300" y="150" width="12" height="80" rx="2" fill="#2b2d30"/><rect x="292" y="132" width="28" height="40" rx="6" fill="#f2f2ef"/>
-<circle class="ev-led" cx="306" cy="150" r="7" fill="none" stroke="#3ddc84" stroke-width="3"/>
-<path class="ev-cable" d="M306 172 L306 236 L306 252 C 306 262, 250 262, 232 250" fill="none" stroke="#3ddc84" stroke-width="5" stroke-linecap="round"/>
+<circle class="ev-led" cx="306" cy="150" r="7" fill="none" stroke="#FF7900" stroke-width="3"/>
+<path class="ev-cable" d="M306 172 L306 236 L306 252 C 306 262, 250 262, 232 250" fill="none" stroke="#FF7900" stroke-width="5" stroke-linecap="round"/>
 <rect x="296" y="244" width="20" height="6" fill="#2b2d30"/>
 <g class="ev-car">
 <path d="M20 252 L30 214 Q40 196 70 192 L120 170 Q140 162 170 162 L220 162 Q246 164 260 190 L272 214 L272 252 Z" fill="#2d4b6b"/>
@@ -246,9 +246,9 @@ HOME = {
 <circle cx="78" cy="256" r="24" fill="#1d1e20"/><circle cx="78" cy="256" r="11" fill="#b9bfc4"/>
 <circle cx="220" cy="256" r="24" fill="#1d1e20"/><circle cx="220" cy="256" r="11" fill="#b9bfc4"/>
 <rect x="22" y="222" width="20" height="7" rx="3" fill="#fff6d8"/><rect x="262" y="220" width="10" height="9" rx="2" fill="#d0473b"/>
-<rect x="226" y="236" width="10" height="10" rx="2" fill="#3ddc84"/>
+<rect x="226" y="236" width="10" height="10" rx="2" fill="#FF7900"/>
 </g>
-<g class="ev-batt" transform="translate(120 70)"><rect x="0" y="0" width="80" height="36" rx="7" fill="none" stroke="#E6F0E9" stroke-width="3"/><rect x="80" y="11" width="6" height="14" rx="2" fill="#E6F0E9"/><rect class="ev-fill" x="5" y="5" width="70" height="26" rx="4" fill="#3ddc84"/></g>
+<g class="ev-batt" transform="translate(120 70)"><rect x="0" y="0" width="80" height="36" rx="7" fill="none" stroke="#F2EEE8" stroke-width="3"/><rect x="80" y="11" width="6" height="14" rx="2" fill="#F2EEE8"/><rect class="ev-fill" x="5" y="5" width="70" height="26" rx="4" fill="#FF7900"/></g>
 </svg>
 </div>
 <div class="ev-extra"><div class="ticks">
@@ -555,7 +555,7 @@ STORES = {
 <p class="lead">Wheelie bins on show and bikes in the hallway are a London front-garden problem. We build timber stores to measure, with lockable doors and an optional roof of growing sedum.</p>
 <div class="row"><a class="btn btn-go" href="#builder">Design your store</a><a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a></div>
 </div>
-{_ph('Bike / bin store photo', 'Your first finished store with its green roof goes here.', '400px').replace('class="ph"', 'class="ph" style="background:#243A2E;border-color:#4E7A60"')}
+{_ph('Bike / bin store photo', 'Your first finished store with its green roof goes here.', '400px').replace('class="ph"', 'class="ph" style="background:#2A2622;border-color:#6B6259"')}
 </section>
 
 <section class="wrap" id="builder" aria-labelledby="builder-title">

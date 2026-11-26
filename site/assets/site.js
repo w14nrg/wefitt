@@ -145,16 +145,16 @@ document.querySelectorAll('[data-store]').forEach(builder => {
     const gap = bikeW && binW ? 10 : 0;
     const W = bikeW + binW + gap; const X0 = (520 - W) / 2; const H = 150; const base = 260;
     const [c1, c2] = clads[st.clad];
-    let s = `<rect x="0" y="${base}" width="520" height="40" fill="#24382C"/>`;
+    let s = `<rect x="0" y="${base}" width="520" height="40" fill="#262320"/>`;
     const unit = (x, w, label) => {
       let u = `<rect x="${x}" y="${base-H}" width="${w}" height="${H}" fill="${c1}" rx="3"/>`;
       for (let y = base - H + 12; y < base; y += 14) u += `<rect x="${x+4}" y="${y}" width="${w-8}" height="6" fill="${c2}" rx="1"/>`;
-      u += `<text x="${x + w/2}" y="${base + 26}" text-anchor="middle" fill="#E6F0E9" font-size="17" font-weight="600" font-family="Inter,sans-serif">${label}</text>`;
+      u += `<text x="${x + w/2}" y="${base + 26}" text-anchor="middle" fill="#F2EEE8" font-size="17" font-weight="600" font-family="Inter,sans-serif">${label}</text>`;
       return u;
     };
     let x = X0;
     if (bikeW) { s += unit(x, bikeW, st.bikes + ' bikes'); x += bikeW + gap; }
-    for (let b = 0; b < st.bins; b++) { s += unit(x, 72, 'Bin'); s += `<rect x="${x+30}" y="${base-H+50}" width="12" height="4" fill="#C9874A"/>`; x += 78; }
+    for (let b = 0; b < st.bins; b++) { s += unit(x, 72, 'Bin'); s += `<rect x="${x+30}" y="${base-H+50}" width="12" height="4" fill="#FF7900"/>`; x += 78; }
     const rx = X0 - 8, rw = W + 16, ry = base - H - 16;
     s += `<rect x="${rx}" y="${ry}" width="${rw}" height="16" fill="#3A3631" rx="2"/>`;
     if (st.roof === 'Green sedum roof') {

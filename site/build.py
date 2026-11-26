@@ -253,7 +253,7 @@ def render_3d(mode):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{{--bg:#141414;--ink:#F2EEE8;--muted:#B8B1A7;--copper:#C9874A;--go:#1F7A4D;--panel:#201E1B;--line:#3A3631}}
+:root{{--bg:#141414;--ink:#F2EEE8;--muted:#B8B1A7;--copper:#FF7900;--go:#FF7900;--panel:#201E1B;--line:#3A3631}}
 *{{box-sizing:border-box;min-width:0}}
 html,body{{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif}}
 a{{color:var(--copper)}}
@@ -261,14 +261,14 @@ a{{color:var(--copper)}}
 .h3-logo{{color:var(--ink);text-decoration:none;font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:24px;white-space:nowrap}}
 .h3-logo span{{color:var(--go)}}
 .h3-bar .btn{{display:inline-flex;align-items:center;min-height:42px;padding:8px 16px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap}}
-.btn-go{{background:var(--go);color:#fff}} .btn-line{{border:1.5px solid var(--ink);color:var(--ink)}}
+.btn-go{{background:var(--go);color:#141414}} .btn-line{{border:1.5px solid var(--ink);color:var(--ink)}}
 #h3-stage{{position:relative;height:calc(100vh - 58px);height:calc(100dvh - 58px);overflow:hidden;background:#c9dbe8}}
 #h3-stage canvas{{display:block;width:100%;height:100%;cursor:grab}}
 #h3-loading{{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#2a2d30;font-weight:600;font-size:18px}}
 #h3-rooms{{position:absolute;left:0;right:0;top:0;display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none}}
 #h3-rooms::-webkit-scrollbar{{display:none}}
 #h3-rooms button{{flex:none;min-height:40px;padding:8px 14px;border-radius:999px;border:0;background:rgba(20,20,20,.78);color:#fff;font:inherit;font-size:14px;font-weight:600;cursor:pointer;backdrop-filter:blur(6px)}}
-#h3-rooms button:hover{{background:var(--go)}}
+#h3-rooms button:hover{{background:var(--go);color:#141414}}
 .h3-hint{{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(20,20,20,.72);color:#fff;padding:8px 16px;border-radius:999px;font-size:14px;white-space:nowrap;pointer-events:none}}
 .h3-cross{{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 0 2px rgba(0,0,0,.25);pointer-events:none}}
 #h3-joy{{position:absolute;left:22px;bottom:70px;width:120px;height:120px;border-radius:50%;background:rgba(20,20,20,.35);border:2px solid rgba(255,255,255,.55);display:none;touch-action:none}}
@@ -278,12 +278,12 @@ a{{color:var(--copper)}}
 #h3-panel{{position:absolute;right:16px;bottom:16px;width:min(380px,calc(100% - 32px));background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:transform .25s,opacity .25s}}
 #h3-panel.open{{transform:none;opacity:1;pointer-events:auto}}
 #h3-panel h2{{font-family:"Space Grotesk",sans-serif;font-size:26px;margin:0 40px 6px 0;line-height:1.1}}
-.h3-price{{display:inline-block;background:var(--go);color:#fff;font-weight:700;border-radius:999px;padding:6px 14px;font-size:16px;margin:6px 0 10px}}
+.h3-price{{display:inline-block;background:var(--go);color:#141414;font-weight:700;border-radius:999px;padding:6px 14px;font-size:16px;margin:6px 0 10px}}
 .h3-price.ask{{background:#2C2925;color:#E4DED5}}
 #h3-panel p{{color:#D6D0C7;margin:0 0 16px;font-size:15px}}
 #h3-panel .row{{display:flex;gap:8px;flex-wrap:wrap}}
 #h3-panel .row a{{flex:1 1 140px;justify-content:center;display:inline-flex;align-items:center;min-height:46px;border-radius:999px;font-weight:600;text-decoration:none;font-size:15px}}
-.h3-door{{display:flex;width:100%;justify-content:center;align-items:center;min-height:46px;margin:0 0 10px;border-radius:999px;border:1.5px solid var(--go);background:rgba(31,122,77,.15);color:var(--ink);font:inherit;font-weight:600;font-size:15px;cursor:pointer}}
+.h3-door{{display:flex;width:100%;justify-content:center;align-items:center;min-height:46px;margin:0 0 10px;border-radius:999px;border:1.5px solid var(--go);background:rgba(255,121,0,.15);color:var(--ink);font:inherit;font-weight:600;font-size:15px;cursor:pointer}}
 .h3-door[hidden]{{display:none}}
 .h3-close{{position:absolute;right:10px;top:10px;width:44px;height:44px;border:0;background:none;color:var(--muted);font-size:26px;cursor:pointer}}
 @media (max-width:600px){{#h3-panel{{left:12px;right:12px;width:auto;bottom:12px}} .h3-bar .btn-line{{display:none}} #h3-joy{{bottom:60px}}}}
