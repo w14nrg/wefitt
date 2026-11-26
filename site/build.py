@@ -28,7 +28,7 @@ PICKER_JOBS = [
     ('Outside', ['Bike or bin store', 'Fencing & gates', 'Decking', 'Shed or summer house', 'Patio', 'Guttering']),
     ('Plumbing & bathroom', ['Taps', 'Toilet', 'Shower', 'Basin or sink', 'Radiator or towel rail', 'Mirror or cabinet', 'Appliance fitting']),
     ('Floors, walls & tiling', ['Tiling', 'Flooring', 'Stud wall', 'Plastering']),
-    ('Electrics', ['Sockets', 'Downlights', 'Extractor fan']),
+    ('Electrics', ['EV charger', 'Sockets', 'Downlights', 'Extractor fan']),
 ]
 
 NAV = [
@@ -224,7 +224,7 @@ def render(page, mode):
 
 
 H3_ROOMS = [
-    ('Front garden', ['Front path', 'Front wall & gate', 'Bike & bin store (bins and bike inside)', 'Front door', 'Guttering']),
+    ('Front garden', ['EV charger & car', 'Front path', 'Front wall & gate', 'Bike & bin store (bins and bike inside)', 'Front door', 'Guttering']),
     ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cloakroom (toilet & basin)', 'Internal doors', 'Fuse board (consumer unit)', 'Radiator', 'Skirting & architraves']),
     ('Living room', ['Wood flooring', 'Alcove units', 'Decorating – plastering & painting', 'Radiator', 'Sockets', 'Downlights']),
     ('Kitchen', ['Full kitchen', 'Worktops', 'Kitchen sink', 'Kitchen tap', 'Washing machine', 'Dishwasher', 'Fridge freezer', 'Oven', 'Hob', 'Cooker hood', 'Splashback tiles', 'Kitchen island', 'Boiler & central heating', 'French doors']),

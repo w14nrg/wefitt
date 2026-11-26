@@ -51,9 +51,9 @@ CAT_INFO = {
   'areas': 'Across Fulham, Hammersmith, Kensington and Chelsea we work on everything from Victorian lath and plaster to concrete-floored mansion flats.'},
  'electrics': {
   'h1': 'Electrical fitting in Fulham',
-  'title': 'Sockets, Downlights & Extractor Fans Fulham, Hammersmith & Chelsea | We Fitt',
-  'desc': 'Extra sockets, LED downlights and extractor fans fitted in Fulham, Hammersmith, Kensington and Chelsea. Tested and certified.',
-  'lead': 'More sockets where you need them, better light and fans that actually clear the steam. Done neatly, with cables in the walls, tested and certified.',
+  'title': 'EV Chargers, Sockets, Downlights & Fans Fulham, Hammersmith & Chelsea | We Fitt',
+  'desc': 'Home EV chargers, extra sockets, LED downlights and extractor fans fitted in Fulham, Hammersmith, Kensington and Chelsea. Tested and certified.',
+  'lead': 'Home chargers for electric cars, more sockets where you need them, better light and fans that actually clear the steam. Done neatly, with cables in the walls, tested and certified.',
   'why': ('Why electrical work is certified', 'Electrical work in homes in England has to meet the wiring regulations, and some of it, like new circuits and work around baths and showers, is notifiable under Part P of the Building Regulations. Every job we do is tested, and you get the certificate.'),
   'faqs': [('Will I get a certificate?', 'Yes, for every job, and notifiable work is registered so it shows when you sell the house.'), ('Can you do electrics alongside other work?', 'Yes. Moving sockets and lights before plastering or a new kitchen is the best time to do it.')],
   'areas': 'We do electrical work across Fulham, Hammersmith, Kensington and Chelsea, in houses and in flats where wiring often runs in concrete.'},

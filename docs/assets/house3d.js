@@ -76,6 +76,7 @@ const ITEMS = {
   binstore: ['Bike & bin store', 'Built to measure for your bins and bikes, with lockable doors and an optional living sedum roof.', L.store],
   decorating: ['Decorating – plastering & painting', 'Cracked or blown plaster cut out and made good, or the whole wall re-skimmed, then a mist coat and finish coats so the repair disappears.', L.plas],
   walkin: ['Walk-in shower', 'Low-profile tray or wet-room floor, fully tanked before tiling, with a fixed glass panel and a ceiling rain head.', L.shower],
+  evcharger: ['EV charger', 'A smart 7kW home charger on its own circuit, on the wall or on a post, tested, certified and notified. Parking on the street? Ask about a cable channel across the pavement, where the council allows it.', 'electrics/ev-chargers'],
   fuseboard: ['Fuse board (consumer unit)', 'Old fuse boards replaced with a modern consumer unit with RCD protection, then the circuits tested and certified.', 'electrics'],
   boiler: ['Boiler & central heating', 'New combi or system boilers, radiators and full central heating systems, flushed and balanced. Gas work is done by a Gas Safe registered engineer.', 'plumbing-fittings'],
   eaves: ['Eaves storage', 'Cupboards built into the low space under the roof slope, lined, with doors to match the room.', L.ward],
@@ -445,6 +446,39 @@ function bikeAt(cx, cz) {
   [[4.95, 5.75], [5.85, 6.65], [6.75, 7.55]].forEach(([a, b]) => makeDoor({ ax: 'x', p: zp, a, b, y0: dy, h: dh, side: 1, key: k, level: 0, open: true, slatted: true }));
   bikeAt(3.95, -6.4);
   wheelieBin(5.35, -6.4, MAT.binBlack); wheelieBin(6.25, -6.4, MAT.binGreen); wheelieBin(7.15, -6.4, MAT.binBlue);
+})();
+// EV charger on a post inside the front wall, cable channel across the pavement, car at the kerb
+(function () {
+  const k = 'evcharger', px = 2.36, glow = M({ color: '#3ddc84', emissive: '#3ddc84', emissiveIntensity: 1.4 });
+  box(px - .06, 0, -6.86, .12, 1.25, .1, MAT.dCharcoal, k, { uv: false });
+  box(px - .14, .95, -6.78, .28, .42, .13, M({ color: '#f2f2ef', roughness: .3 }), k, { uv: false });
+  box(px - .1, 1.0, -6.64, .2, .3, .012, MAT.screen, k, { uv: false });
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(.055, .012, 8, 24), glow); ring.position.set(px, 1.2, -6.63); scene.add(ring); tag(ring, k);
+  cyl(px + .17, .9, -6.72, .05, .12, MAT.black, k, { rz: Math.PI / 2 });
+  solid(0, px - .16, -6.9, px + .16, -6.62);
+  // channel set into the pavement, from the front wall to the kerb
+  box(px - .07, .049, -9.86, .14, .006, 2.74, MAT.gutter, k, { uv: false });
+  for (let z = -9.8; z < -7.15; z += .3) box(px - .065, .053, z, .13, .004, .02, MAT.steel, k, { uv: false });
+  // the cable: down the post, through the channel, up to the car's charge port
+  const C = M({ color: '#18191b', roughness: .6 });
+  rod([px, .95, -6.73], [px, .06, -6.95], .014, C, k); rod([px, .06, -6.95], [px, .06, -9.86], .014, C, k);
+  rod([px, .06, -9.86], [2.05, .05, -10.02], .014, C, k); rod([2.05, .05, -10.02], [1.75, .4, -10.1], .014, C, k); rod([1.75, .4, -10.1], [1.62, .76, -10.13], .014, C, k);
+  // the car: modern electric hatchback, nose to the left (parked on the near side)
+  const body = M({ color: '#2d4b6b', roughness: .25, metalness: .6, envMapIntensity: 1 }), z0 = -11.95, z1 = -10.15, x0 = .9, x1 = 5.2;
+  box(x0 + .1, .3, z0, x1 - x0 - .2, .5, z1 - z0, body, k, { uv: false });
+  box(x0, .34, z0 + .05, .2, .4, z1 - z0 - .1, body, k, { uv: false }); box(x1 - .2, .34, z0 + .05, .2, .44, z1 - z0 - .1, body, k, { uv: false });
+  const hood = box(x0 + .15, .74, z0 + .05, 1.25, .12, z1 - z0 - .1, body, k, { uv: false }); hood.rotation.z = .1;
+  box(x0 + 1.35, .8, z0 + .12, 2.4, .5, z1 - z0 - .24, M({ color: '#1b2833', roughness: .05, metalness: .3, envMapIntensity: 1.2 }), k, { uv: false });
+  box(x0 + 1.55, 1.28, z0 + .16, 2.0, .06, z1 - z0 - .32, body, k, { uv: false });
+  [x0 + 2.45].forEach(x => box(x, .8, z0 + .1, .07, .5, z1 - z0 - .2, body, k, { uv: false }));
+  const head = M({ color: '#fff', emissive: '#fff6d8', emissiveIntensity: 1 }); box(x0 - .005, .58, z0 + .15, .03, .07, .5, head, k, { uv: false });
+  box(x0 - .005, .58, z1 - .65, .03, .07, .5, head, k, { uv: false });
+  box(x1 - .02, .7, z0 + .1, .03, .08, z1 - z0 - .2, M({ color: '#a11', emissive: '#d02020', emissiveIntensity: .9 }), k, { uv: false });
+  [[x0 + .8, z0 + .02], [x0 + .8, z1 - .24], [x1 - .85, z0 + .02], [x1 - .85, z1 - .24]].forEach(([x, z]) => {
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(.34, .34, .22, 28), MAT.black); w.rotation.x = Math.PI / 2; w.position.set(x, .34, z + .11); w.castShadow = true; scene.add(w); tag(w, k);
+    const hub = new THREE.Mesh(new THREE.CylinderGeometry(.21, .21, .23, 20), MAT.steel); hub.rotation.x = Math.PI / 2; hub.position.set(x, .34, z + .11); scene.add(hub); tag(hub, k);
+  });
+  box(1.5, .7, z1 - .01, .22, .14, .02, glow, k, { uv: false });
 })();
 // hedges + plants front
 bush(7.3, .45, -2.2, .6); bush(3, .35, -1, .45); bush(6.4, .3, -.9, .38);
@@ -980,7 +1014,7 @@ panel.querySelector('.h3-close').addEventListener('click', () => { panel.classLi
 
 /* teleport menu */
 const SPOTS = {
-  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -3.2, 0, 0, -.25], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
+  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -3.2, 0, 0, -.25], 'EV charger & car': [4.4, -8.7, 0, 1.25, -.22], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
   'Kitchen': [3.0, 6.9, 0, Math.PI * .85, -.15], 'Rear garden': [4, D + 7.5, 0, 0, -.05], 'Landing': [1.7, 5.7, 1, 0, -.05],
   'Bathroom': [2.6, 8.0, 1, Math.PI * .75, -.15], 'Front bedroom': [2.9, 5.0, 1, -2.2, -.1], 'Bedroom 2': [5.6, 7.6, 1, -2.5, -.1],
   'Loft & en-suite': [3.3, 6.3, 2, Math.PI, -.12]

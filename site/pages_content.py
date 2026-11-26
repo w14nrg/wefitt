@@ -19,7 +19,8 @@ CATEGORIES = [
         ('Tiling', 'floors-walls-tiling/tiling'), ('Flooring', 'floors-walls-tiling/flooring'),
         ('Stud walls', 'floors-walls-tiling/stud-walls'), ('Plastering', 'floors-walls-tiling/plastering')]},
     {'name': 'Electrics', 'slug': 'electrics', 'parts': [
-        ('Sockets', 'electrics/sockets'), ('Downlights', 'electrics/downlights'), ('Extractor fans', 'electrics/extractor-fans')]},
+        ('Sockets', 'electrics/sockets'), ('Downlights', 'electrics/downlights'), ('Extractor fans', 'electrics/extractor-fans'),
+        ('EV chargers', 'electrics/ev-chargers')]},
 ]
 
 ITEMS = {label: slug for c in CATEGORIES for label, slug in c['parts']}
@@ -36,7 +37,7 @@ ROOMS = {
     'kitchen': {'job': 'Kitchen fitting', 'title': 'In the kitchen', 'short': 'kitchen fitting', 'text': 'Fit the kitchen you have bought, or let us design, supply and fit one for you.',
                 'items': ['Kitchen fitting', 'Worktops', 'Appliance fitting', 'Taps', 'Basins & sinks', 'Tiling', 'Sockets', 'Downlights', 'Extractor fans']},
     'garden': {'job': 'Bike or bin store', 'title': 'In the garden', 'short': 'garden work', 'text': 'Tidy away the bins and bikes, and build the outside space properly.',
-               'items': ['Bike & bin stores', 'Fencing & gates', 'Decking', 'Sheds & summer houses', 'Patios', 'Guttering']},
+               'items': ['Bike & bin stores', 'EV chargers', 'Fencing & gates', 'Decking', 'Sheds & summer houses', 'Patios', 'Guttering']},
 }
 BIG = {'Bathroom fitting': 'bathroom-fitting-fulham', 'Kitchen fitting': 'kitchen-fitting-fulham', 'En-suite fitting': 'en-suite-fitting-fulham'}
 
@@ -223,6 +224,48 @@ HOME = {
 </div>
 <div class="grid">{cat_cards}</div>
 <p class="lead" style="margin-top:28px">Something not on the list? Ask us. If it goes in a home or a garden, chances are we fit it.</p>
+</section>
+
+<section class="wrap band" aria-labelledby="ev-title" style="padding-top:0">
+<div class="ev-band reveal">
+<div class="ev-text stack" style="gap:18px">
+<p class="kicker">New at We Fitt</p>
+<h2 id="ev-title" class="h-l">EV chargers fitted at home</h2>
+<p class="lead">Charge overnight on cheap home electricity. Smart 7kW chargers on their own circuit, on the house wall or on a post by the front wall.</p>
+<div class="row"><a class="btn btn-go" href="{{{{link:electrics/ev-chargers}}}}">EV chargers</a><a class="btn btn-line ev-wa" href="https://wa.me/442073860000?text=Hi%20We%20Fitt%2C%20I%27m%20interested%20in%20an%20EV%20charger." rel="noopener">Talk to us on WhatsApp</a></div>
+</div>
+<div class="ev-draw" aria-hidden="true">
+<svg viewBox="0 0 560 300" role="img">
+<rect x="300" y="20" width="240" height="210" rx="4" fill="#9a5b43"/>
+<g fill="#874d38"><rect x="300" y="20" width="240" height="2"/><rect x="300" y="38" width="240" height="2"/><rect x="300" y="56" width="240" height="2"/><rect x="300" y="74" width="240" height="2"/><rect x="300" y="92" width="240" height="2"/><rect x="300" y="110" width="240" height="2"/><rect x="300" y="128" width="240" height="2"/><rect x="300" y="146" width="240" height="2"/><rect x="300" y="164" width="240" height="2"/><rect x="300" y="182" width="240" height="2"/><rect x="300" y="200" width="240" height="2"/><rect x="300" y="218" width="240" height="2"/></g>
+<rect x="330" y="60" width="70" height="90" rx="3" fill="#cfe3ef"/><rect x="333" y="63" width="64" height="40" fill="#e6f1f7"/>
+<rect x="440" y="96" width="62" height="134" rx="3" fill="#1f4f3a"/><circle cx="492" cy="166" r="4" fill="#C9874A"/>
+<rect x="420" y="40" width="102" height="14" fill="#e9e1d4"/>
+<rect x="0" y="230" width="560" height="10" fill="#b9b2a6"/><rect x="0" y="240" width="560" height="26" fill="#8d877d"/><rect x="0" y="266" width="560" height="34" fill="#3d3f42"/>
+<rect x="280" y="200" width="280" height="30" fill="#8d5a46"/>
+<rect x="300" y="150" width="12" height="80" rx="2" fill="#2b2d30"/><rect x="292" y="132" width="28" height="40" rx="6" fill="#f2f2ef"/>
+<circle class="ev-led" cx="306" cy="150" r="7" fill="none" stroke="#3ddc84" stroke-width="3"/>
+<path class="ev-cable" d="M306 172 L306 236 L306 252 C 306 262, 250 262, 232 250" fill="none" stroke="#3ddc84" stroke-width="5" stroke-linecap="round"/>
+<rect x="296" y="244" width="20" height="6" fill="#2b2d30"/>
+<g class="ev-car">
+<path d="M20 252 L30 214 Q40 196 70 192 L120 170 Q140 162 170 162 L220 162 Q246 164 260 190 L272 214 L272 252 Z" fill="#2d4b6b"/>
+<path d="M108 192 L132 172 Q144 168 160 168 L200 168 Q220 168 232 190 Z" fill="#cfe3ef"/>
+<rect x="150" y="168" width="5" height="24" fill="#2d4b6b"/>
+<circle cx="78" cy="256" r="24" fill="#1d1e20"/><circle cx="78" cy="256" r="11" fill="#b9bfc4"/>
+<circle cx="220" cy="256" r="24" fill="#1d1e20"/><circle cx="220" cy="256" r="11" fill="#b9bfc4"/>
+<rect x="22" y="222" width="20" height="7" rx="3" fill="#fff6d8"/><rect x="262" y="220" width="10" height="9" rx="2" fill="#d0473b"/>
+<rect x="226" y="236" width="10" height="10" rx="2" fill="#3ddc84"/>
+</g>
+<g class="ev-batt" transform="translate(120 70)"><rect x="0" y="0" width="80" height="36" rx="7" fill="none" stroke="#E6F0E9" stroke-width="3"/><rect x="80" y="11" width="6" height="14" rx="2" fill="#E6F0E9"/><rect class="ev-fill" x="5" y="5" width="70" height="26" rx="4" fill="#3ddc84"/></g>
+</svg>
+</div>
+<div class="ev-extra"><div class="ticks">
+<p><strong>Driveway or front garden</strong>On the house wall or a post, with the cable kept tidy.</p>
+<p><strong>Street parking?</strong>Pavement cable channels, where your council allows them.</p>
+<p><strong>Grants checked</strong>We'll tell you if a government grant could apply.</p>
+<p><strong>Paperwork done</strong>Tested, certified, notified and set up on the app.</p>
+</div></div>
+</div>
 </section>
 
 <section class="wrap band" aria-labelledby="stores-title" style="padding-top:0">
