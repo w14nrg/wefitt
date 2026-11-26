@@ -399,7 +399,7 @@ const STAIRS = [Object.assign({ from: 0, to: 1, base: 0, rise: F1, blockTo: 6 },
 
 /* ------------------------------------------------------------------ outside: street, gardens, neighbours */
 box(-30, -.1, -40, 70, .1, 30, MAT.road, null, { uv: 4 });
-box(-30, -.05, -9.4, 70, .1, 2.4, MAT.paving, null, { uv: 2.4 });
+box(-30, -.05, -9.86, 70, .1, 2.86, MAT.paving, null, { uv: 2.4 });
 box(-30, -.05, -10, 70, .15, .15, MAT.stone, null, { uv: false });
 // front garden
 box(0, -.1, -7, W, .1, 7, MAT.grass, null, { uv: 2 });
@@ -464,7 +464,7 @@ function bikeAt(cx, cz) {
   rod([px, .95, -6.73], [px, .06, -6.95], .014, C, k); rod([px, .06, -6.95], [px, .06, -9.86], .014, C, k);
   rod([px, .06, -9.86], [2.05, .05, -10.02], .014, C, k); rod([2.05, .05, -10.02], [1.75, .4, -10.1], .014, C, k); rod([1.75, .4, -10.1], [1.62, .76, -10.13], .014, C, k);
   // the car: modern electric hatchback, nose to the left (parked on the near side)
-  const body = M({ color: '#2d4b6b', roughness: .25, metalness: .6, envMapIntensity: 1 }), z0 = -11.95, z1 = -10.15, x0 = .9, x1 = 5.2;
+  const body = M({ color: '#16324d', roughness: .32, metalness: .25, envMapIntensity: .5 }), z0 = -11.95, z1 = -10.15, x0 = .9, x1 = 5.2;
   box(x0 + .1, .3, z0, x1 - x0 - .2, .5, z1 - z0, body, k, { uv: false });
   box(x0, .34, z0 + .05, .2, .4, z1 - z0 - .1, body, k, { uv: false }); box(x1 - .2, .34, z0 + .05, .2, .44, z1 - z0 - .1, body, k, { uv: false });
   const hood = box(x0 + .15, .74, z0 + .05, 1.25, .12, z1 - z0 - .1, body, k, { uv: false }); hood.rotation.z = .1;
@@ -479,6 +479,8 @@ function bikeAt(cx, cz) {
     const hub = new THREE.Mesh(new THREE.CylinderGeometry(.21, .21, .23, 20), MAT.steel); hub.rotation.x = Math.PI / 2; hub.position.set(x, .34, z + .11); scene.add(hub); tag(hub, k);
   });
   box(1.5, .7, z1 - .01, .22, .14, .02, glow, k, { uv: false });
+  box(x0 + .5, .22, z0 - .01, x1 - x0 - 1, .12, z1 - z0 + .02, MAT.black, k, { uv: false });
+  box(x0 - .03, .3, z0 + .1, .06, .16, z1 - z0 - .2, MAT.black, k, { uv: false }); box(x1 - .03, .3, z0 + .1, .06, .16, z1 - z0 - .2, MAT.black, k, { uv: false });
 })();
 // hedges + plants front
 bush(7.3, .45, -2.2, .6); bush(3, .35, -1, .45); bush(6.4, .3, -.9, .38);
@@ -1014,7 +1016,7 @@ panel.querySelector('.h3-close').addEventListener('click', () => { panel.classLi
 
 /* teleport menu */
 const SPOTS = {
-  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -3.2, 0, 0, -.25], 'EV charger & car': [4.4, -8.7, 0, 1.25, -.22], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
+  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -3.2, 0, 0, -.25], 'EV charger & car': [6.9, -8.5, 0, Math.PI / 2 + .12, -.18], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
   'Kitchen': [3.0, 6.9, 0, Math.PI * .85, -.15], 'Rear garden': [4, D + 7.5, 0, 0, -.05], 'Landing': [1.7, 5.7, 1, 0, -.05],
   'Bathroom': [2.6, 8.0, 1, Math.PI * .75, -.15], 'Front bedroom': [2.9, 5.0, 1, -2.2, -.1], 'Bedroom 2': [5.6, 7.6, 1, -2.5, -.1],
   'Loft & en-suite': [3.3, 6.3, 2, Math.PI, -.12]
