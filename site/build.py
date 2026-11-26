@@ -225,7 +225,7 @@ def render(page, mode):
 
 H3_ROOMS = [
     ('Front garden', ['Front path', 'Front wall & gate', 'Bike & bin store (bins and bike inside)', 'Front door', 'Guttering']),
-    ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cupboard or cloakroom', 'Internal doors', 'Radiator', 'Skirting & architraves']),
+    ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cloakroom (toilet & basin)', 'Internal doors', 'Radiator', 'Skirting & architraves']),
     ('Living room', ['Wood flooring', 'Alcove units', 'Decorating – plastering & painting', 'Radiator', 'Sockets', 'Downlights']),
     ('Kitchen', ['Full kitchen', 'Worktops', 'Kitchen sink', 'Kitchen tap', 'Washing machine', 'Dishwasher', 'Fridge freezer', 'Oven', 'Hob', 'Cooker hood', 'Splashback tiles', 'Kitchen island', 'French doors']),
     ('Bathroom', ['Bath', 'Walk-in shower', 'Toilet', 'Basin & vanity unit', 'Taps', 'Mirror cabinet', 'Heated towel rail', 'Extractor fan', 'Bathroom tiles']),
@@ -307,7 +307,7 @@ a{{color:var(--copper)}}
 <nav id="h3-rooms" aria-label="Jump to a room"></nav>
 <div class="h3-cross" aria-hidden="true"></div>
 <div id="h3-joy" aria-label="Walk"><div id="h3-knob"></div></div>
-<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · click anything, doors open</span><span class="h3-touch">Drag to look · circle to walk · tap anything</span></div>
+<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · scroll to zoom · click anything, doors open</span><span class="h3-touch">Drag to look · pinch to zoom · tap anything</span></div>
 <aside id="h3-panel" aria-live="polite">
 <button class="h3-close" type="button" aria-label="Close">×</button>
 <h2>Item</h2>

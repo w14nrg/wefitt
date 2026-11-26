@@ -87,7 +87,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'hi
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(pointer: coarse)').matches ? 1.5 : 1.75));
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = .98;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 stage.prepend(renderer.domElement);
@@ -213,7 +213,7 @@ const T = {
 /* ------------------------------------------------------------------ materials */
 function M(o) { const m = new THREE.MeshStandardMaterial(Object.assign({ roughness: .8, metalness: 0 }, o)); if (o.envMapIntensity === undefined) m.envMapIntensity = (o.metalness || 0) > .5 ? .8 : .25; return m; }
 const MAT = {
-  plaster: M({ map: T.plaster, roughness: .95 }), ceiling: M({ map: T.ceiling, roughness: .95 }),
+  plaster: M({ map: T.plaster, color: '#e4d3bb', roughness: .95 }), ceiling: M({ map: T.ceiling, roughness: .95 }),
   wood: M({ map: T.wood, roughness: .55 }), oak: M({ map: T.oak, roughness: .5 }), victorian: M({ map: T.victorian, roughness: .35 }),
   metro: M({ map: T.metro, roughness: .25 }), bigtile: M({ map: T.bigtile, roughness: .4 }), carpet: M({ map: T.carpet, roughness: 1 }),
   carpet2: M({ map: T.carpet2, roughness: 1 }), runner: M({ map: T.runner, roughness: 1 }), brick: M({ map: T.brick, roughness: .9 }),
@@ -231,6 +231,9 @@ const MAT = {
   light: M({ color: '#ffffff', emissive: '#fff3dd', emissiveIntensity: 1.2 }), screen: M({ color: '#111', roughness: .2 }),
   washer: M({ map: T.washer, roughness: .3 }), oven: M({ map: T.oven, roughness: .3 }), hob: M({ map: T.hob, roughness: .1 }),
   stone: M({ color: '#d7cfc0', roughness: .8 }),
+  sage: M({ map: T.plaster, color: '#b4c2a6', roughness: .95 }),
+  dGreen: M({ color: '#3d5547', roughness: .45 }), dNavy: M({ color: '#2c3b52', roughness: .45 }), dGrey: M({ color: '#6f7b80', roughness: .45 }),
+  dCharcoal: M({ color: '#36383b', roughness: .45 }), dOak: M({ map: T.oak, roughness: .5 }), dPlum: M({ color: '#5b3d45', roughness: .45 }),
   damaged: M({ map: T.damaged, roughness: .95 }), tray: M({ color: '#ebe8e2', roughness: .35 }),
   sky: M({ color: '#dcebf7', emissive: '#b9d6ee', emissiveIntensity: .9, roughness: .2 }),
   bike: M({ color: '#a8362a', roughness: .35, metalness: .3 }), felt: M({ color: '#2a2b2d', roughness: .7 }), pot: M({ color: '#a8553a', roughness: .8 }),
@@ -474,7 +477,7 @@ box(W, 0, -7, .2, 1, 7, MAT.brick, null, { uv: 1 }); solid(0, W, -7, W + .3, 0);
 
 /* ------------------------------------------------------------------ house shell (party walls, front, back) */
 // party walls x=0 and x=W (plaster inside, brick outside the house line)
-wallZ(-.06, 0, D, 0, TOP, [], MAT.plaster, 'plaster', 0, { t: .12 }); solid(1, -.12, 0, 0, D);
+wallZ(-.06, 0, D, 0, TOP, [], MAT.sage, 'plaster', 0, { t: .12 }); solid(1, -.12, 0, 0, D);
 wallZ(W + .06, 0, D, 0, TOP, [], MAT.plaster, 'plaster', 0, { t: .12 }); solid(1, W, 0, W + .12, D);
 // front wall z=0: brick outer skin + plaster inner
 const FRONT_G = [[.9, 1.9, 0, 2.2], [3.4, 7, .75, 2.25], [.5, 1.6, F1 + 1, F1 + 2.05], [3.4, 7, F1 + .85, F1 + 2.2]];
@@ -551,7 +554,7 @@ function roofY(z) { return TOP + ROOF.rise * (z + .45) / ROOF.half; }
     const sh = new THREE.Shape(); sh.moveTo(0, TOP); sh.lineTo(0, roofY(0)); sh.lineTo(6, TOP + 2.6); sh.lineTo(D + .26, TOP + 2.6); sh.lineTo(D + .26, TOP); sh.lineTo(0, TOP);
     const gm = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false }), mat); gm.rotation.y = -Math.PI / 2; gm.position.set(x, 0, 0); gm.castShadow = gm.receiveShadow = true; scene.add(gm); if (key) tag(gm, key);
   };
-  gable(0, .2, MAT.brick); gable(W + .2, .2, MAT.brick); gable(.02, .02, MAT.plaster, 'plaster'); gable(W, .02, MAT.plaster, 'plaster');
+  gable(0, .2, MAT.brick); gable(W + .2, .2, MAT.brick); gable(.02, .02, MAT.sage, 'plaster'); gable(W, .02, MAT.plaster, 'plaster');
   // dormer face with windows
   const DG = [[.6, 1.6, TOP + 1.0, TOP + 2.05], [5.2, 7.2, TOP + .8, TOP + 2.1]];
   wallX(D + .16, 0, W, TOP, TOP + 2.45, DG, MAT.brick, null, undefined, { t: .2 });
@@ -580,10 +583,10 @@ function roofY(z) { return TOP + ROOF.rise * (z + .45) / ROOF.half; }
 /* ------------------------------------------------------------------ ground floor interior */
 // hall | living wall x=2.2 (door z 4.4..5.3)
 wallZ(2.2, 0, 6, 0, G1, [[4.4, 5.3, 0, 2.05]], MAT.plaster, 'plaster', 0, { skirt: [-1, 1] });
-architraveZ(2.2, 4.4, 5.3, 0); makeDoor({ ax: 'z', p: 2.2, a: 4.4, b: 5.3, y0: 0, side: 1, mat: MAT.white, key: 'intdoor', level: 0, open: true });
+architraveZ(2.2, 4.4, 5.3, 0); makeDoor({ ax: 'z', p: 2.2, a: 4.4, b: 5.3, y0: 0, side: 1, mat: MAT.dOak, key: 'intdoor', level: 0, open: true });
 // hall | kitchen z=6 (door x 1.2..2.1); living | kitchen z=6 wide opening x 4.4..7
 wallX(6, 0, 2.2, 0, G1, [[1.2, 2.1, 0, 2.05]], MAT.plaster, 'plaster', 0, { skirt: [-1, 1] });
-architraveX(6, 1.2, 2.1, 0); makeDoor({ ax: 'x', p: 6, a: 1.2, b: 2.1, y0: 0, side: 1, mat: MAT.white, key: 'intdoor', level: 0, open: true });
+architraveX(6, 1.2, 2.1, 0); makeDoor({ ax: 'x', p: 6, a: 1.2, b: 2.1, y0: 0, side: 1, mat: MAT.dGreen, key: 'intdoor', level: 0, open: true });
 wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt: [-1, 1] });
 // stairs: 14 steps rising +z
 (function () {
@@ -599,9 +602,16 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
   const sh = new THREE.Shape(); sh.moveTo(STAIR.z0, 0); sh.lineTo(4.28, 0); sh.lineTo(4.28, 1.74); sh.lineTo(4.92, 1.74); sh.lineTo(4.92, 0); sh.lineTo(STAIR.z1 + .5, 0); sh.lineTo(STAIR.z1 + .5, G1); sh.lineTo(STAIR.z0 + (G1 / F1) * (STAIR.z1 - STAIR.z0), G1); sh.lineTo(STAIR.z0, 0);
   const pg = new THREE.ExtrudeGeometry(sh, { depth: .06, bevelEnabled: false });
   const panel = new THREE.Mesh(pg, MAT.white); panel.rotation.y = -Math.PI / 2; panel.position.set(STAIR.x1 + .06, 0, 0); panel.castShadow = panel.receiveShadow = true; scene.add(panel); tag(panel, 'understairs');
-  makeDoor({ ax: 'z', p: STAIR.x1 + .09, a: 4.28, b: 4.92, y0: 0, h: 1.72, t: .035, side: 1, mat: MAT.white, key: 'understairs', level: 0, open: false });
-  box(.14, 0, 4.0, .02, 1.6, 1.3, MAT.ceiling, 'understairs', { uv: 1 }); box(.16, .9, 4.0, .4, .03, 1.2, MAT.oak, 'understairs', { uv: false });
-  cyl(.55, 0, 4.7, .13, .38, MAT.navy, 'understairs'); sphere(.4, 1.45, 4.6, .05, MAT.light, 'understairs');
+  makeDoor({ ax: 'z', p: STAIR.x1 + .09, a: 4.28, b: 4.92, y0: 0, h: 1.72, t: .035, side: 1, mat: MAT.dPlum, key: 'understairs', level: 0, open: true });
+  // cloakroom under the stairs: toilet, small basin, tiles and a light
+  const k = 'understairs';
+  box(.12, 0, 4.1, .02, 1.2, 1.88, MAT.metro, k, { uv: .6 });
+  box(.14, .35, 5.2, .18, .5, .42, MAT.porcelain, k, { uv: false }); box(.32, 0, 5.24, .46, .4, .34, MAT.porcelain, k, { uv: false }); box(.3, .4, 5.22, .5, .04, .38, MAT.gloss, k, { uv: false });
+  box(.14, .78, 4.38, .32, .12, .4, MAT.porcelain, k, { uv: false }); box(.2, .86, 4.44, .2, .03, .28, MAT.frosted, k, { uv: false });
+  cyl(.17, .9, 4.58, .01, .14, MAT.chrome, k); box(.17, 1.03, 4.57, .1, .015, .02, MAT.chrome, k, { uv: false });
+  box(.14, 1.0, 4.38, .02, .5, .4, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: .85 }), k, { uv: false });
+  for (let yy = .7; yy < 1.2; yy += .1) box(.5, yy, 5.94, .4, .02, .03, MAT.copper, k, { uv: false });
+  sphere(.6, 2.1, 5.6, .05, MAT.light, k); pointLight(.6, 1.9, 5.1, .45, 3);
   [[4.23, 4.25], [4.95, 4.97]].forEach(([a]) => box(STAIR.x1 + .07, 0, a, .02, 1.78, .03, MAT.white, 'understairs', { uv: false }));
   // banister (hall side) + newel posts
   const slope = F1 / (STAIR.z1 - STAIR.z0);
@@ -690,17 +700,17 @@ downlights(0, 6, W, D, G1, 3, 2); pointLight(2.5, 2.2, 9, 1.0, 9); pointLight(6,
 /* ------------------------------------------------------------------ first floor */
 // landing | front bedroom x=2.2 (door z 4.4..5.3)
 wallZ(2.2, 0, 6, F1, C1, [[4.4, 5.3, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
-architraveZ(2.2, 4.4, 5.3, F1); makeDoor({ ax: 'z', p: 2.2, a: 4.4, b: 5.3, y0: F1, side: 1, mat: MAT.white, key: 'intdoor', level: 1, open: true });
+architraveZ(2.2, 4.4, 5.3, F1); makeDoor({ ax: 'z', p: 2.2, a: 4.4, b: 5.3, y0: F1, side: 1, mat: MAT.dNavy, key: 'intdoor', level: 1, open: true });
 // front bedroom | rear z=6 x 2.2..8 solid; corridor top wall z=6 x 0..2.2 open (landing continues)
 wallX(6, 2.2, W, F1, C1, [], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
 // corridor | bathroom z=7.4 x 0..4 (door 1.2..2.0)
 wallX(7.4, 0, 4, F1, C1, [[1.2, 2.0, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
-architraveX(7.4, 1.2, 2.0, F1); makeDoor({ ax: 'x', p: 7.4, a: 1.2, b: 2.0, y0: F1, side: 1, mat: MAT.white, key: 'intdoor', level: 1, open: true });
+architraveX(7.4, 1.2, 2.0, F1); makeDoor({ ax: 'x', p: 7.4, a: 1.2, b: 2.0, y0: F1, side: 1, mat: MAT.dGrey, key: 'intdoor', level: 1, open: true });
 // bathroom | loft stairs wall x=4 (the corridor runs on into the stair lobby x 4..5)
 wallZ(4, 7.4, D, F1, C1, [], MAT.plaster, 'plaster', 1);
 // stair lobby | bedroom 2 wall x=5 (door z 6.5..7.3)
 wallZ(5, 6, D, F1, C1, [[6.5, 7.3, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
-architraveZ(5, 6.5, 7.3, F1); makeDoor({ ax: 'z', p: 5, a: 6.5, b: 7.3, y0: F1, side: 1, mat: MAT.white, key: 'intdoor', level: 1, open: true });
+architraveZ(5, 6.5, 7.3, F1); makeDoor({ ax: 'z', p: 5, a: 6.5, b: 7.3, y0: F1, side: 1, mat: MAT.dCharcoal, key: 'intdoor', level: 1, open: true });
 // stair void protection for level 1 (balustrade lines)
 solid(1, STAIR.x1 - .03, STAIR.z0 - .06, STAIR.x1 + .03, STAIR.z1 - .9);
 solid(1, 0, STAIR.z0 - .06, STAIR.x1 + .03, STAIR.z0);
@@ -807,7 +817,7 @@ downlights(5, 6, W, D, C1, 2, 2); pointLight(6.5, F1 + 2.2, 9, .7, 7);
   // en-suite in the rear corner x 0..2.6, z 9.6..12
   wallX(9.6, 0, 2.6, y, y + 2.45, [[1.5, 2.3, y, y + 2.05]], MAT.plaster, 'ensuite', 2, { t: .1, skirt: [-1] });
   wallZ(2.6, 9.6, D, y, y + 2.45, [], MAT.plaster, 'ensuite', 2, { t: .1, skirt: [1] });
-  architraveX(9.6, 1.5, 2.3, y); makeDoor({ ax: 'x', p: 9.6, a: 1.5, b: 2.3, y0: y, side: 1, mat: MAT.white, key: 'intdoor', level: 2, open: true });
+  architraveX(9.6, 1.5, 2.3, y); makeDoor({ ax: 'x', p: 9.6, a: 1.5, b: 2.3, y0: y, side: 1, mat: MAT.dOak, key: 'intdoor', level: 2, open: true });
   box(.02, y + .001, 9.65, 2.53, .008, D - 9.65, MAT.bigtile, 'ensuite', { uv: .8 });
   box(.02, y, 9.65, .02, 1.2, D - 9.65, MAT.metro, 'ensuite', { uv: .6 });
   box(1.72, y, D - .02, .83, 2.2, .02, MAT.metro, 'ensuite', { uv: .6 }); box(2.53, y, 10.95, .02, 2.2, D - 10.95, MAT.metro, 'ensuite', { uv: .6 });
@@ -888,8 +898,22 @@ addEventListener('keyup', e => { keys[e.code] = false; });
 const cvs = renderer.domElement; cvs.style.touchAction = 'none';
 let drag = null; const joy = { id: null, x: 0, y: 0, cx: 0, cy: 0 };
 const joyEl = document.getElementById('h3-joy'), knob = document.getElementById('h3-knob');
-cvs.addEventListener('pointerdown', e => { drag = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: 0 }; cvs.setPointerCapture(e.pointerId); });
+/* zoom: pinch on touch screens, scroll wheel on a computer */
+const ptrs = new Map(); let pinch = null, fov = 70, zoomed = false;
+function setFov(v) { fov = Math.max(32, Math.min(105, v)); camera.fov = fov; camera.updateProjectionMatrix(); }
+function spread() { const [a, b] = [...ptrs.values()]; return Math.hypot(a.x - b.x, a.y - b.y); }
+cvs.addEventListener('wheel', e => { e.preventDefault(); zoomed = true; setFov(fov * Math.exp(e.deltaY * .0012)); }, { passive: false });
+cvs.addEventListener('pointerdown', e => {
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (ptrs.size === 2) { pinch = { d: Math.max(20, spread()), fov }; drag = null; zoomed = true; return; }
+  if (ptrs.size > 2) return;
+  drag = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: 0 }; cvs.setPointerCapture(e.pointerId);
+});
+const ptrUp = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; };
+cvs.addEventListener('pointerup', ptrUp); cvs.addEventListener('pointercancel', ptrUp);
 cvs.addEventListener('pointermove', e => {
+  if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pinch && ptrs.size === 2) { setFov(pinch.fov * pinch.d / Math.max(20, spread())); return; }
   if (drag && drag.id === e.pointerId) {
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY; drag.moved += Math.abs(dx) + Math.abs(dy);
     player.yaw -= dx * .0042; player.pitch = Math.max(-1.2, Math.min(1.2, player.pitch - dy * .0036));
@@ -937,7 +961,7 @@ panel.querySelector('.h3-close').addEventListener('click', () => { panel.classLi
 
 /* teleport menu */
 const SPOTS = {
-  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -4.1, 0, 0, -.3], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
+  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -3.2, 0, 0, -.25], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
   'Kitchen': [3.0, 6.9, 0, Math.PI * .85, -.15], 'Rear garden': [4, D + 7.5, 0, 0, -.05], 'Landing': [1.7, 5.7, 1, 0, -.05],
   'Bathroom': [2.6, 8.0, 1, Math.PI * .75, -.15], 'Front bedroom': [2.9, 5.0, 1, -2.2, -.1], 'Bedroom 2': [5.6, 7.6, 1, -2.5, -.1],
   'Loft & en-suite': [3.3, 6.3, 2, Math.PI, -.12]
@@ -946,7 +970,7 @@ const nav = document.getElementById('h3-rooms');
 Object.keys(SPOTS).forEach(name => { const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.addEventListener('click', () => { const [x, z, lv, yaw, pitch] = SPOTS[name]; Object.assign(player, { x, z, level: lv, stairs: false, yaw, pitch }); player.y = targetY(); }); nav.appendChild(b); });
 
 /* resize + loop */
-function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (!zoomed) fov = w / h < .9 ? 88 : 70; camera.fov = fov; camera.updateProjectionMatrix(); }
 new ResizeObserver(resize).observe(stage); resize();
 player.y = targetY();
 let last = performance.now();
