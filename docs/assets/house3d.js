@@ -76,6 +76,8 @@ const ITEMS = {
   binstore: ['Bike & bin store', 'Built to measure for your bins and bikes, with lockable doors and an optional living sedum roof.', L.store],
   decorating: ['Decorating – plastering & painting', 'Cracked or blown plaster cut out and made good, or the whole wall re-skimmed, then a mist coat and finish coats so the repair disappears.', L.plas],
   walkin: ['Walk-in shower', 'Low-profile tray or wet-room floor, fully tanked before tiling, with a fixed glass panel and a ceiling rain head.', L.shower],
+  fuseboard: ['Fuse board (consumer unit)', 'Old fuse boards replaced with a modern consumer unit with RCD protection, then the circuits tested and certified.', 'electrics'],
+  boiler: ['Boiler & central heating', 'New combi or system boilers, radiators and full central heating systems, flushed and balanced. Gas work is done by a Gas Safe registered engineer.', 'plumbing-fittings'],
   eaves: ['Eaves storage', 'Cupboards built into the low space under the roof slope, lined, with doors to match the room.', L.ward],
   outsidetap: ['Outside tap', 'With a double check valve to protect your drinking water.', L.tap],
   outdoorsocket: ['Outdoor socket', 'Weatherproof and RCD protected, tested and certified.', L.sock]
@@ -231,6 +233,9 @@ const MAT = {
   light: M({ color: '#ffffff', emissive: '#fff3dd', emissiveIntensity: 1.2 }), screen: M({ color: '#111', roughness: .2 }),
   washer: M({ map: T.washer, roughness: .3 }), oven: M({ map: T.oven, roughness: .3 }), hob: M({ map: T.hob, roughness: .1 }),
   stone: M({ color: '#d7cfc0', roughness: .8 }),
+  metroSage: M({ map: T.metro, color: '#a9c2b2', roughness: .25 }), matBlack: M({ color: '#1d1e20', roughness: .35, metalness: .4 }),
+  brass: M({ color: '#c9a45c', roughness: .25, metalness: 1, envMapIntensity: .9 }), sinkIn: M({ color: '#6d7276', roughness: .3, metalness: .8 }),
+  string: M({ color: '#6b7a71', roughness: .5 }),
   sage: M({ map: T.plaster, color: '#b4c2a6', roughness: .95 }),
   dGreen: M({ color: '#3d5547', roughness: .45 }), dNavy: M({ color: '#2c3b52', roughness: .45 }), dGrey: M({ color: '#6f7b80', roughness: .45 }),
   dCharcoal: M({ color: '#36383b', roughness: .45 }), dOak: M({ map: T.oak, roughness: .5 }), dPlum: M({ color: '#5b3d45', roughness: .45 }),
@@ -601,14 +606,14 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
   // stringer / understairs panel under the stairs on hall side (x=1.1)
   const sh = new THREE.Shape(); sh.moveTo(STAIR.z0, 0); sh.lineTo(4.28, 0); sh.lineTo(4.28, 1.74); sh.lineTo(4.92, 1.74); sh.lineTo(4.92, 0); sh.lineTo(STAIR.z1 + .5, 0); sh.lineTo(STAIR.z1 + .5, G1); sh.lineTo(STAIR.z0 + (G1 / F1) * (STAIR.z1 - STAIR.z0), G1); sh.lineTo(STAIR.z0, 0);
   const pg = new THREE.ExtrudeGeometry(sh, { depth: .06, bevelEnabled: false });
-  const panel = new THREE.Mesh(pg, MAT.white); panel.rotation.y = -Math.PI / 2; panel.position.set(STAIR.x1 + .06, 0, 0); panel.castShadow = panel.receiveShadow = true; scene.add(panel); tag(panel, 'understairs');
+  const panel = new THREE.Mesh(pg, MAT.string); panel.rotation.y = -Math.PI / 2; panel.position.set(STAIR.x1 + .06, 0, 0); panel.castShadow = panel.receiveShadow = true; scene.add(panel); tag(panel, 'understairs');
   makeDoor({ ax: 'z', p: STAIR.x1 + .09, a: 4.28, b: 4.92, y0: 0, h: 1.72, t: .035, side: 1, mat: MAT.dPlum, key: 'understairs', level: 0, open: true });
   // cloakroom under the stairs: toilet, small basin, tiles and a light
   const k = 'understairs';
   box(.12, 0, 4.1, .02, 1.2, 1.88, MAT.metro, k, { uv: .6 });
   box(.14, .35, 5.2, .18, .5, .42, MAT.porcelain, k, { uv: false }); box(.32, 0, 5.24, .46, .4, .34, MAT.porcelain, k, { uv: false }); box(.3, .4, 5.22, .5, .04, .38, MAT.gloss, k, { uv: false });
   box(.14, .78, 4.38, .32, .12, .4, MAT.porcelain, k, { uv: false }); box(.2, .86, 4.44, .2, .03, .28, MAT.frosted, k, { uv: false });
-  cyl(.17, .9, 4.58, .01, .14, MAT.chrome, k); box(.17, 1.03, 4.57, .1, .015, .02, MAT.chrome, k, { uv: false });
+  cyl(.17, .9, 4.58, .013, .16, MAT.matBlack, k); box(.17, 1.05, 4.57, .12, .02, .02, MAT.matBlack, k, { uv: false });
   box(.14, 1.0, 4.38, .02, .5, .4, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: .85 }), k, { uv: false });
   for (let yy = .7; yy < 1.2; yy += .1) box(.5, yy, 5.94, .4, .02, .03, MAT.copper, k, { uv: false });
   sphere(.6, 2.1, 5.6, .05, MAT.light, k); pointLight(.6, 1.9, 5.1, .45, 3);
@@ -625,12 +630,17 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
     if (x0 === x1) { box(x0 - .03, F1 + .9, z0, .06, .06, len, MAT.oak, 'banister', { uv: false }); for (let z = z0 + .06; z < z1; z += .12) box(x0 - .015, F1, z, .03, .9, .03, MAT.white, 'banister', { uv: false }); }
     else { box(x0, F1 + .9, z0 - .03, len, .06, .06, MAT.oak, 'banister', { uv: false }); for (let x = x0 + .06; x < x1; x += .12) box(x, F1, z0 - .015, .03, .9, .03, MAT.white, 'banister', { uv: false }); }
   };
-  bal(STAIR.x1, STAIR.z0 - .03, STAIR.x1, STAIR.z1 - .9);
+  bal(STAIR.x1, STAIR.z0 - .03, STAIR.x1, 3.85);
+  box(STAIR.x1 - .05, F1 - .35, 3.8, .1, 1.4, .1, MAT.oak, 'banister', { uv: false });
+  box(STAIR.x1 - .055, F1 - .02, STAIR.z1 - .1, .11, 1.07, .11, MAT.oak, 'banister', { uv: false }); box(STAIR.x1 - .07, F1 + 1.05, STAIR.z1 - .115, .14, .05, .14, MAT.oak, 'banister', { uv: false });
   bal(0, STAIR.z0 - .03, STAIR.x1, STAIR.z0 - .03);
   box(STAIR.x1 - .05, F1, STAIR.z0 - .08, .1, 1.05, .1, MAT.oak, 'banister', { uv: false });
 })();
 // hall radiator, socket, lights
 radiatorZ(2.2, 1.6, .9, 0, -1); socketX(.0, 1.95, 0, 1);
+box(2.2 - .06 - .11, 1.75, .3, .11, .32, .5, MAT.gloss, 'fuseboard', { uv: false }); box(2.2 - .06 - .115, 1.8, .34, .006, .2, .42, M({ color: '#cfd6d9', roughness: .2, transparent: true, opacity: .75 }), 'fuseboard', { uv: false });
+for (let i = 0; i < 9; i++) box(2.2 - .06 - .1, 1.86, .37 + i * .042, .01, .07, .03, i === 0 ? MAT.bike : MAT.white, 'fuseboard', { uv: false });
+box(2.2 - .06 - .1, 1.62, .48, .1, .13, .14, MAT.white, 'fuseboard', { uv: false });
 downlights(1.2, 0, 2.2, 6, G1, 1, 3); pointLight(1.6, 2.2, 2.5, .7, 7);
 // living room
 (function () {
@@ -669,8 +679,8 @@ downlights(2.2, 0, W, 6, G1, 2, 2); pointLight(5, 2.2, 3, .9, 9);
   box(0, 0, 6.15, .65, 2.1, .7, MAT.shaker, 'fridge', { uv: .7 }); box(.65, 1.0, 6.2, .02, .4, .02, MAT.copper, 'fridge', { uv: false });
   solid(0, 0, 6.1, .65, 11.4);
   // worktop
-  box(0, bh, 6.9, .64, wt, 4.5, MAT.quartz, 'worktop', { uv: .8 });
-  box(0, bh, 11.4, 4.1, wt, .64, MAT.quartz, 'worktop', { uv: .8 });
+  box(0, bh, 6.9, .64, wt, 4.5, MAT.oak, 'worktop', { uv: .8 });
+  box(0, bh, 11.4, 4.1, wt, .64, MAT.oak, 'worktop', { uv: .8 });
   // hob + hood
   box(.08, bh + wt, 9.35, .5, .006, .5, MAT.hob, 'hob', { uv: false });
   box(.0, 1.6, 9.3, .5, .12, .6, MAT.steel, 'hood', { uv: false }); box(.05, 1.72, 9.45, .28, .78, .3, MAT.steel, 'hood', { uv: false });
@@ -682,9 +692,11 @@ downlights(2.2, 0, W, 6, G1, 2, 2); pointLight(5, 2.2, 3, .9, 9);
   // rear run along z=D (under window) x 0.64..4.1, sink at 1.8..2.6
   [[.64, 1.5], [1.5, 2.9], [2.9, 3.5], [3.5, 4.1]].forEach(([a, b], i) => { box(a, .1, D - .6, b - a, bh - .1, .6, MAT.shaker, 'kitchen', { uv: .62 }); box(a, 0, D - .57, b - a, .1, .55, MAT.black, 'kitchen', { uv: false }); });
   solid(0, 0, D - .65, 4.1, D);
-  box(1.75, bh + .005, D - .5, .9, .04, .42, MAT.steel, 'sink', { uv: false });
-  box(1.8, bh - .15, D - .47, .8, .18, .36, MAT.steel, 'sink', { uv: false });
-  cyl(2.2, bh + wt, D - .1, .02, .32, MAT.chrome, 'tap'); box(2.19, bh + wt + .3, D - .3, .03, .03, .22, MAT.chrome, 'tap', { uv: false });
+  box(1.74, bh + wt, D - .56, .92, .012, .46, MAT.steel, 'sink', { uv: false });
+  box(1.79, bh + wt + .004, D - .52, .38, .012, .38, MAT.sinkIn, 'sink', { uv: false }); box(2.21, bh + wt + .004, D - .52, .4, .012, .38, MAT.sinkIn, 'sink', { uv: false });
+  cyl(1.98, bh + wt + .012, D - .33, .025, .003, MAT.black, 'sink'); cyl(2.41, bh + wt + .012, D - .33, .025, .003, MAT.black, 'sink');
+  cyl(2.2, bh + wt, D - .1, .022, .42, MAT.brass, 'tap'); rod([2.2, bh + wt + .42, D - .1], [2.2, bh + wt + .44, D - .25], .02, MAT.brass, 'tap'); rod([2.2, bh + wt + .44, D - .25], [2.2, bh + wt + .3, D - .33], .018, MAT.brass, 'tap');
+  box(2.26, bh + wt + .22, D - .12, .07, .025, .025, MAT.brass, 'tap', { uv: false });
   // island with stools
   box(3, .1, 8.2, 1.8, bh - .1, .9, MAT.shaker, 'island', { uv: .62 }); box(2.95, bh, 8.15, 1.9, wt, 1.15, MAT.quartz, 'island', { uv: .8 }); solid(0, 2.95, 8.15, 4.85, 9.3);
   [3.3, 3.9, 4.5].forEach(x => { cyl(x, 0, 9.55, .02, .65, MAT.black); cyl(x, .65, 9.55, .17, .05, MAT.oak); });
@@ -693,6 +705,11 @@ downlights(2.2, 0, W, 6, G1, 2, 2); pointLight(5, 2.2, 3, .9, 9);
   [[6.35, 8.2], [7.15, 8.2], [6.35, 9.75], [7.15, 9.75]].forEach(([x, z]) => { box(x, 0, z, .42, .45, .42, MAT.oak, null, { uv: false }); box(x, .45, z + (z > 9 ? .36 : 0), .42, .45, .05, MAT.oak, null, { uv: false }); });
   sphere(6.85, .95, 9.05, .12, MAT.leaf);
 })();
+// wall-hung boiler with pipes
+box(W - .34, 1.35, 10.2, .34, .72, .44, MAT.gloss, 'boiler', { uv: false }); box(W - .345, 1.55, 10.3, .005, .12, .24, MAT.screen, 'boiler', { uv: false });
+box(W - .346, 1.58, 10.33, .003, .05, .08, M({ color: '#2a6', emissive: '#3c8', emissiveIntensity: .8 }), 'boiler', { uv: false });
+[10.25, 10.33, 10.41, 10.49, 10.57].forEach((z, i) => cyl(W - .12 - (i % 2) * .05, .3, z, .011, 1.05, MAT.copper, 'boiler'));
+box(W - .3, .15, 10.15, .3, .15, .5, MAT.white, 'boiler', { uv: false });
 radiatorZ(W, 7, 1.2, 0, -1); socketZ(0, 7.6, bhOffset(), 1); socketZ(0, 10.7, bhOffset(), 1); socketX(D, 3.7, bhOffset(), -1);
 function bhOffset() { return .7; }
 downlights(0, 6, W, D, G1, 3, 2); pointLight(2.5, 2.2, 9, 1.0, 9); pointLight(6, 2.2, 9, .8, 8);
@@ -719,13 +736,15 @@ downlights(1.1, 0, 2.2, 7.4, C1, 1, 3); pointLight(1.6, F1 + 2.2, 4, .6, 7); rad
 // front bedroom
 (function () {
   const y = F1;
-  box(3.4, y, 2.2, 2.0, .45, 2.1, MAT.timber); box(3.45, y + .45, 2.25, 1.9, .18, 2.0, MAT.linen); box(3.45, y + .58, 3.4, 1.9, .06, .9, MAT.throw);
-  box(3.3, y, 2.1, .1, 1.1, 2.3, MAT.navy); [[3.6, 2.4], [3.6, 3.6]].forEach(([x, z]) => box(x, y + .63, z, .25, .12, .4, MAT.linen));
-  solid(1, 3.3, 2.1, 5.45, 4.4);
+  box(3.8, y, 3.85, 2.0, .45, 2.05, MAT.timber); box(3.85, y + .45, 3.9, 1.9, .18, 1.95, MAT.linen); box(3.85, y + .58, 3.9, 1.9, .06, .8, MAT.throw);
+  box(3.7, y, 5.82, 2.2, 1.15, .12, MAT.navy); [4.05, 4.95].forEach(x => box(x, y + .63, 5.25, .6, .12, .4, MAT.linen));
+  solid(1, 3.7, 3.8, 5.9, 5.94);
+  [3.2, 5.95].forEach(x => { box(x, y, 5.45, .45, .5, .42, MAT.oak, 'wardrobe', { uv: false }); box(x + .02, y + .3, 5.44, .41, .015, .01, MAT.black, null, { uv: false }); sphere(x + .22, y + .62, 5.66, .1, MAT.light); });
+  solid(1, 3.2, 5.45, 3.65, 5.9); solid(1, 5.95, 5.45, 6.4, 5.9);
+  box(4.3, y, 1.6, 1.2, .01, 1.6, MAT.rug, null, { uv: false });
   // fitted wardrobes on x=W wall
   box(W - .62, y, .3, .62, 2.45, 5.4, MAT.white, 'wardrobe', { uv: false }); solid(1, W - .62, .3, W, 5.7);
   for (let z = .3; z < 5.69; z += .6) { box(W - .64, y + .05, z + .02, .02, 2.35, .56, MAT.gloss, 'wardrobe', { uv: false }); box(W - .66, y + 1.0, z + .5, .02, .3, .02, MAT.copper, 'wardrobe', { uv: false }); }
-  box(2.6, y, 4.9, .45, .55, .4, MAT.oak); sphere(2.8, y + .7, 5.1, .12, MAT.light);
 })();
 radiatorX(0, 4.4, 1.5, F1, 1); socketX(0, 2.7, F1, 1); socketZ(W - .62, .2, F1, -1);
 downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
@@ -733,9 +752,9 @@ downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
 (function () {
   const y = F1;
   // tiled walls
-  box(.0, y, 7.45, .02, 2.4, D - 7.45, MAT.metro, 'bathtiles', { uv: .6 });
-  box(0, y, D - .02, 4, 2.4, .02, MAT.metro, 'bathtiles', { uv: .6 });
-  box(3.92, y, 7.45, .02, 2.4, D - 7.45, MAT.metro, 'bathtiles', { uv: .6 });
+  box(.0, y, 7.45, .02, 2.4, D - 7.45, MAT.metroSage, 'bathtiles', { uv: .6 });
+  box(0, y, D - .02, 4, 2.4, .02, MAT.metroSage, 'bathtiles', { uv: .6 });
+  box(3.92, y, 7.45, .02, 2.4, D - 7.45, MAT.metroSage, 'bathtiles', { uv: .6 });
   // bath along rear wall + shower + screen
   box(.02, y, D - .78, 1.75, .56, .76, MAT.porcelain, 'bath', { uv: false }); box(.1, y + .45, D - .7, 1.6, .12, .6, MAT.frosted, 'bath', { uv: false });
   solid(1, 0, D - .8, 1.8, D);
@@ -749,13 +768,13 @@ downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
   box(2.95, y + 1.0, D - .05, .3, .22, .03, MAT.chrome, 'walkin', { uv: false }); cyl(3.0, y + 1.08, D - .03, .03, .04, MAT.chrome, 'walkin', { rx: Math.PI / 2 }); cyl(3.2, y + 1.08, D - .03, .03, .04, MAT.chrome, 'walkin', { rx: Math.PI / 2 });
   cyl(3.6, y + .9, D - .04, .012, .7, MAT.chrome, 'walkin'); box(3.57, y + 1.45, D - .14, .06, .2, .06, MAT.chrome, 'walkin', { uv: false });
   solid(1, 2.35, 10.38, 3.2, 10.5);
-  box(1.4, y + .56, D - .1, .08, .14, .06, MAT.chrome, 'bathtap', { uv: false });
+  cyl(1.3, y + .56, D - .08, .016, .2, MAT.matBlack, 'bathtap'); cyl(1.5, y + .56, D - .08, .016, .2, MAT.matBlack, 'bathtap'); box(1.36, y + .7, D - .2, .08, .04, .16, MAT.matBlack, 'bathtap', { uv: false });
   // toilet on x=0 wall
   box(.02, y + .35, 8.4, .18, .5, .45, MAT.porcelain, 'toilet', { uv: false }); box(.2, y, 8.45, .5, .4, .36, MAT.porcelain, 'toilet', { uv: false }); box(.18, y + .4, 8.43, .55, .04, .4, MAT.gloss, 'toilet', { uv: false });
   solid(1, 0, 8.4, .75, 8.9);
   // vanity + basin + taps + mirror cabinet
   box(.02, y + .15, 9.5, .48, .55, .9, MAT.green, 'basin', { uv: false }); box(.02, y + .7, 9.5, .5, .1, .9, MAT.porcelain, 'basin', { uv: false }); box(.12, y + .78, 9.65, .32, .03, .6, MAT.frosted, 'basin', { uv: false });
-  cyl(.08, y + .8, 9.95, .015, .18, MAT.chrome, 'bathtap'); box(.08, y + .96, 9.95, .14, .02, .02, MAT.chrome, 'bathtap', { uv: false });
+  cyl(.08, y + .8, 9.95, .018, .26, MAT.matBlack, 'bathtap'); box(.08, y + 1.04, 9.94, .2, .025, .025, MAT.matBlack, 'bathtap', { uv: false }); box(.06, y + .96, 10.05, .05, .02, .1, MAT.matBlack, 'bathtap', { uv: false });
   solid(1, 0, 9.5, .55, 10.4);
   box(.02, y + 1.15, 9.5, .14, .7, .9, MAT.white, 'mirror', { uv: false }); box(.16, y + 1.18, 9.53, .01, .64, .84, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: .85 }), 'mirror', { uv: false });
   // towel rail on x=4 wall
@@ -819,8 +838,8 @@ downlights(5, 6, W, D, C1, 2, 2); pointLight(6.5, F1 + 2.2, 9, .7, 7);
   wallZ(2.6, 9.6, D, y, y + 2.45, [], MAT.plaster, 'ensuite', 2, { t: .1, skirt: [1] });
   architraveX(9.6, 1.5, 2.3, y); makeDoor({ ax: 'x', p: 9.6, a: 1.5, b: 2.3, y0: y, side: 1, mat: MAT.dOak, key: 'intdoor', level: 2, open: true });
   box(.02, y + .001, 9.65, 2.53, .008, D - 9.65, MAT.bigtile, 'ensuite', { uv: .8 });
-  box(.02, y, 9.65, .02, 1.2, D - 9.65, MAT.metro, 'ensuite', { uv: .6 });
-  box(1.72, y, D - .02, .83, 2.2, .02, MAT.metro, 'ensuite', { uv: .6 }); box(2.53, y, 10.95, .02, 2.2, D - 10.95, MAT.metro, 'ensuite', { uv: .6 });
+  box(.02, y, 9.65, .02, 1.2, D - 9.65, MAT.metroSage, 'ensuite', { uv: .6 });
+  box(1.72, y, D - .02, .83, 2.2, .02, MAT.metroSage, 'ensuite', { uv: .6 }); box(2.53, y, 10.95, .02, 2.2, D - 10.95, MAT.metroSage, 'ensuite', { uv: .6 });
   box(1.75, y, 10.95, .78, .05, D - .02 - 10.95, MAT.tray, 'shower', { uv: false });
   box(1.73, y + .05, 10.95, .015, 1.95, D - 10.97, MAT.glass, 'shower', { uv: false, cast: false });
   box(1.725, y + .05, 10.93, .025, 1.95, .03, MAT.chrome, 'shower', { uv: false });
@@ -830,7 +849,7 @@ downlights(5, 6, W, D, C1, 2, 2); pointLight(6.5, F1 + 2.2, 9, .7, 7);
   box(.02, y + .35, 10.0, .18, .5, .45, MAT.porcelain, 'toilet', { uv: false }); box(.2, y, 10.05, .5, .4, .36, MAT.porcelain, 'toilet', { uv: false }); box(.18, y + .4, 10.03, .55, .04, .4, MAT.gloss, 'toilet', { uv: false });
   solid(2, 0, 10.0, .75, 10.5);
   box(.02, y + .78, 11.05, .42, .13, .5, MAT.porcelain, 'basin', { uv: false }); box(.1, y + .86, 11.12, .28, .03, .36, MAT.frosted, 'basin', { uv: false });
-  cyl(.07, y + .91, 11.3, .012, .16, MAT.chrome, 'bathtap'); box(.07, y + 1.05, 11.29, .12, .02, .02, MAT.chrome, 'bathtap', { uv: false });
+  cyl(.07, y + .91, 11.3, .016, .2, MAT.matBlack, 'bathtap'); box(.07, y + 1.09, 11.29, .16, .022, .022, MAT.matBlack, 'bathtap', { uv: false });
   box(.02, y + 1.2, 11.0, .03, .65, .6, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: .85 }), 'mirror', { uv: false });
   solid(2, 0, 11.05, .45, 11.55);
   for (let yy = y + .5; yy < y + 1.5; yy += .12) box(.25, yy, 9.66, .5, .025, .04, MAT.copper, 'towelrail', { uv: false });

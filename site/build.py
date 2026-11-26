@@ -225,9 +225,9 @@ def render(page, mode):
 
 H3_ROOMS = [
     ('Front garden', ['Front path', 'Front wall & gate', 'Bike & bin store (bins and bike inside)', 'Front door', 'Guttering']),
-    ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cloakroom (toilet & basin)', 'Internal doors', 'Radiator', 'Skirting & architraves']),
+    ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cloakroom (toilet & basin)', 'Internal doors', 'Fuse board (consumer unit)', 'Radiator', 'Skirting & architraves']),
     ('Living room', ['Wood flooring', 'Alcove units', 'Decorating – plastering & painting', 'Radiator', 'Sockets', 'Downlights']),
-    ('Kitchen', ['Full kitchen', 'Worktops', 'Kitchen sink', 'Kitchen tap', 'Washing machine', 'Dishwasher', 'Fridge freezer', 'Oven', 'Hob', 'Cooker hood', 'Splashback tiles', 'Kitchen island', 'French doors']),
+    ('Kitchen', ['Full kitchen', 'Worktops', 'Kitchen sink', 'Kitchen tap', 'Washing machine', 'Dishwasher', 'Fridge freezer', 'Oven', 'Hob', 'Cooker hood', 'Splashback tiles', 'Kitchen island', 'Boiler & central heating', 'French doors']),
     ('Bathroom', ['Bath', 'Walk-in shower', 'Toilet', 'Basin & vanity unit', 'Taps', 'Mirror cabinet', 'Heated towel rail', 'Extractor fan', 'Bathroom tiles']),
     ('Bedrooms', ['Fitted wardrobes', 'Carpet', 'Internal doors', 'Sockets', 'Downlights']),
     ('Loft room', ['Loft staircase', 'Roof windows', 'En-suite', 'Shower', 'Eaves storage', 'Carpet']),
