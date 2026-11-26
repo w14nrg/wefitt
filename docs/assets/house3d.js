@@ -77,6 +77,8 @@ const ITEMS = {
   decorating: ['Decorating – plastering & painting', 'Cracked or blown plaster cut out and made good, or the whole wall re-skimmed, then a mist coat and finish coats so the repair disappears.', L.plas],
   walkin: ['Walk-in shower', 'Low-profile tray or wet-room floor, fully tanked before tiling, with a fixed glass panel and a ceiling rain head.', L.shower],
   evcharger: ['EV charger', 'A smart 7kW home charger on its own circuit, on the wall or on a post, tested, certified and notified. Parking on the street? Ask about a cable channel across the pavement, where the council allows it.', 'electrics/ev-chargers'],
+  tv: ['TV wall mounting', 'TVs mounted on the right bracket for the wall, with the cables hidden in the wall, plus extra sockets, aerial and data points where you need them.', 'electrics'],
+  alarm: ['Alarm & security systems', 'Burglar alarms with a keypad, sensors and an outside bell box, plus video doorbells and CCTV. Wired or wireless, set up and tested.', 'electrics'],
   fuseboard: ['Fuse board (consumer unit)', 'Old fuse boards replaced with a modern consumer unit with RCD protection, then the circuits tested and certified.', 'electrics'],
   boiler: ['Boiler & central heating', 'New combi or system boilers, radiators and full central heating systems, flushed and balanced. Gas work is done by a Gas Safe registered engineer.', 'plumbing-fittings'],
   eaves: ['Eaves storage', 'Cupboards built into the low space under the roof slope, lined, with doors to match the room.', L.ward],
@@ -201,6 +203,12 @@ const T = {
   sedum: tex(256, (g, s) => { noise(g, s, '#5f8f47', .3, 15000, 101); const r = rnd(103); for (let i = 0; i < 300; i++) { g.fillStyle = ['#a3c96b', '#c98b6b', '#7db86a', '#d9c36a'][i % 4]; g.beginPath(); g.arc(r() * s, r() * s, 2 + r() * 3, 0, 7); g.fill(); } }),
   road: tex(256, (g, s) => noise(g, s, '#45474a', .2, 20000, 111)),
   render: tex(256, (g, s) => noise(g, s, '#e8e2d6', .07, 6000, 121)),
+  tvscreen: tex(512, (g, s) => {
+    const sky = g.createLinearGradient(0, 0, 0, s); sky.addColorStop(0, '#2b5f8f'); sky.addColorStop(.55, '#f0a35c'); sky.addColorStop(1, '#f6d08a'); g.fillStyle = sky; g.fillRect(0, 0, s, s);
+    g.fillStyle = '#ffe3a3'; g.beginPath(); g.arc(s * .62, s * .55, s * .08, 0, 7); g.fill();
+    g.fillStyle = '#23402f'; g.beginPath(); g.moveTo(0, s * .7); for (let x = 0; x <= s; x += 16) g.lineTo(x, s * (.62 + .07 * Math.sin(x / 50))); g.lineTo(s, s); g.lineTo(0, s); g.fill();
+    g.fillStyle = '#16291e'; g.beginPath(); g.moveTo(0, s * .82); for (let x = 0; x <= s; x += 16) g.lineTo(x, s * (.78 + .05 * Math.sin(x / 33 + 2))); g.lineTo(s, s); g.lineTo(0, s); g.fill();
+  }),
   damaged: tex(512, (g, s) => {
     noise(g, s, '#efe9e0', .06, 9000, 3);
     const r = rnd(131), cx = s * .5, cy = s * .56;
@@ -677,6 +685,18 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
   bal(0, STAIR.z0 - .03, STAIR.x1, STAIR.z0 - .03);
   box(STAIR.x1 - .05, F1, STAIR.z0 - .08, .1, 1.05, .1, MAT.oak, 'banister', { uv: false });
 })();
+// alarm system: keypad by the front door, motion sensors, bell box outside, video doorbell
+(function () {
+  const k = 'alarm', W2 = M({ color: '#f4f4f1', roughness: .35 }), led = M({ color: '#3ddc84', emissive: '#3ddc84', emissiveIntensity: 1.2 });
+  box(.0, 1.3, .3, .03, .2, .15, W2, k, { uv: false }); box(.03, 1.42, .33, .004, .05, .09, MAT.screen, k, { uv: false });
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) box(.03, 1.32 + r * .028, .335 + c * .03, .006, .018, .022, MAT.white, k, { uv: false });
+  box(.03, 1.46, .43, .006, .012, .012, led, k, { uv: false });
+  const pir = (x, y, z, sx, sz) => { box(x - .045, y - .1, z - .045, .09, .1, .09, W2, k, { uv: false }); box(x + sx * .045 - .004, y - .07, z + sz * .045 - .004, .008, .04, .008, M({ color: '#d43', emissive: '#d43', emissiveIntensity: .6 }), k, { uv: false }); };
+  pir(2.08, G1, .12, -1, 1); pir(W - .1, G1, .1, -1, 1); pir(.12, G1, D - .12, 1, -1);
+  box(6.8, F1 + 1.75, -.4, .34, .46, .14, M({ color: '#f2f2ee', roughness: .4 }), k, { uv: false }); box(6.82, F1 + 2.12, -.42, .3, .05, .02, M({ color: '#2a6fd6', emissive: '#2a6fd6', emissiveIntensity: .9 }), k, { uv: false });
+  box(2.14, 1.2, -.33, .07, .16, .05, MAT.black, k, { uv: false });
+  const ringL = new THREE.Mesh(new THREE.TorusGeometry(.018, .005, 6, 18), M({ color: '#6cf', emissive: '#6cf', emissiveIntensity: 1.2 })); ringL.position.set(2.175, 1.24, -.335); scene.add(ringL); tag(ringL, k);
+})();
 // hall radiator, socket, lights
 radiatorZ(2.2, 1.6, .9, 0, -1); socketX(.0, 1.95, 0, 1);
 box(2.2 - .06 - .11, 1.75, .3, .11, .32, .5, MAT.gloss, 'fuseboard', { uv: false }); box(2.2 - .06 - .115, 1.8, .34, .006, .2, .42, M({ color: '#cfd6d9', roughness: .2, transparent: true, opacity: .75 }), 'fuseboard', { uv: false });
@@ -688,6 +708,9 @@ downlights(1.2, 0, 2.2, 6, G1, 1, 3); pointLight(1.6, 2.2, 2.5, .7, 7);
   // chimney breast + alcoves on x=W wall
   box(W - .45, 0, 2.1, .45, G1, 1.8, MAT.plaster, 'plaster', { uv: 1 }); solid(0, W - .45, 2.1, W, 3.9);
   box(W - .52, 0, 2.5, .07, 1.15, 1.0, MAT.black); box(W - .6, 1.1, 2.0, .15, .08, 2.0, MAT.oak);
+  box(W - .5, 1.38, 2.33, .045, .76, 1.34, MAT.black, 'tv', { uv: false });
+  box(W - .505, 1.41, 2.36, .006, .7, 1.28, M({ map: T.tvscreen, emissive: '#ffffff', emissiveMap: T.tvscreen, emissiveIntensity: .55, roughness: .2 }), 'tv', { uv: false });
+  box(W - .62, 1.19, 2.6, .08, .06, .8, MAT.black, 'tv', { uv: false });
   [[.3, 2.0], [3.95, 5.7]].forEach(([a, b]) => {
     box(W - .45, 0, a, .45, .85, b - a, MAT.navy, 'alcove', { uv: false }); box(W - .47, .85, a, .47, .04, b - a, MAT.oak, 'alcove', { uv: false });
     for (let y = 1.3; y < 2.4; y += .4) box(W - .3, y, a, .3, .03, b - a, MAT.oak, 'alcove', { uv: false });
@@ -1013,7 +1036,16 @@ cvs.addEventListener('pointermove', e => {
     player.yaw -= dx * .0042; player.pitch = Math.max(-1.2, Math.min(1.2, player.pitch - dy * .0036));
   } else if (e.pointerType === 'mouse') hoverAt(e.clientX, e.clientY);
 });
-cvs.addEventListener('pointerup', e => { if (drag && drag.id === e.pointerId) { if (drag.moved < 8) pickAt(e.clientX, e.clientY); drag = null; } });
+let lastTap = null;
+cvs.addEventListener('pointerup', e => {
+  if (!(drag && drag.id === e.pointerId)) return;
+  if (drag.moved < 8) {
+    const now = performance.now();
+    if (lastTap && now - lastTap.t < 380 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 36) { walkAt(e.clientX, e.clientY); lastTap = null; }
+    else { pickAt(e.clientX, e.clientY); lastTap = { t: now, x: e.clientX, y: e.clientY }; }
+  }
+  drag = null;
+});
 cvs.addEventListener('pointercancel', () => { drag = null; });
 if (joyEl) {
   joyEl.addEventListener('pointerdown', e => { e.stopPropagation(); const r = joyEl.getBoundingClientRect(); joy.id = e.pointerId; joy.cx = r.left + r.width / 2; joy.cy = r.top + r.height / 2; joyEl.setPointerCapture(e.pointerId); joyMove(e); });
@@ -1049,15 +1081,17 @@ function firstHit(x, y) {
   for (const h of ray.intersectObjects(scene.children, true)) { if (!h.object.userData.key && h.object.material && h.object.material.transparent) continue; return h; }
   return null;
 }
+// one tap: show what it is. Two taps: walk there (or up to it)
 function pickAt(x, y) {
-  const h = firstHit(x, y); if (!h) return;
+  const h = firstHit(x, y); if (!h || h.distance > 14) return;
   const o = h.object, k = o.userData.key;
-  if (o.userData.door && h.distance < 12) { show(k, o.userData.door); return; }
-  const n = h.face ? h.face.normal.clone().transformDirection(o.matrixWorld) : null;
-  if (!player.stairs && n && n.y > .7 && Math.abs(h.point.y - targetY()) < .4) {
-    setWalkTo(h.point.x, h.point.z); ring.position.set(h.point.x, h.point.y + .02, h.point.z); ring.material.opacity = .9; if (k) show(k); return;
-  }
-  if (k && h.distance < 12) show(k);
+  if (o.userData.door) { show(k, o.userData.door); return; }
+  if (k) show(k);
+}
+function walkAt(x, y) {
+  const h = firstHit(x, y); if (!h || player.stairs) return;
+  const fy = targetY(), dy = h.point.y - fy; if (dy < -.4 || dy > 2.6) return;
+  setWalkTo(h.point.x, h.point.z); ring.position.set(h.point.x, fy + .02, h.point.z); ring.material.opacity = .9;
 }
 function stepWalk(dt) {
   if (!walkTo) { ring.material.opacity = Math.max(0, ring.material.opacity - dt * 2); return; }

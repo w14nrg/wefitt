@@ -225,8 +225,8 @@ def render(page, mode):
 
 H3_ROOMS = [
     ('Front garden', ['EV charger & car', 'Front path', 'Front wall & gate', 'Bike & bin store (bins and bike inside)', 'Front door', 'Guttering']),
-    ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cloakroom (toilet & basin)', 'Internal doors', 'Fuse board (consumer unit)', 'Radiator', 'Skirting & architraves']),
-    ('Living room', ['Wood flooring', 'Alcove units', 'Decorating – plastering & painting', 'Radiator', 'Sockets', 'Downlights']),
+    ('Hall & stairs', ['Victorian hall tiles', 'Staircase', 'Banister & spindles', 'Stair nosing', 'Stair carpet', 'Understairs cloakroom (toilet & basin)', 'Internal doors', 'Fuse board (consumer unit)', 'Alarm & video doorbell', 'Radiator', 'Skirting & architraves']),
+    ('Living room', ['Wood flooring', 'TV wall mounting', 'Alcove units', 'Decorating – plastering & painting', 'Radiator', 'Sockets', 'Downlights']),
     ('Kitchen', ['Full kitchen', 'Worktops', 'Kitchen sink', 'Kitchen tap', 'Washing machine', 'Dishwasher', 'Fridge freezer', 'Oven', 'Hob', 'Cooker hood', 'Splashback tiles', 'Kitchen island', 'Boiler & central heating', 'French doors']),
     ('Bathroom', ['Bath', 'Walk-in shower', 'Toilet', 'Basin & vanity unit', 'Taps', 'Mirror cabinet', 'Heated towel rail', 'Extractor fan', 'Bathroom tiles']),
     ('Bedrooms', ['Fitted wardrobes', 'Carpet', 'Internal doors', 'Sockets', 'Downlights']),
@@ -309,7 +309,7 @@ a{{color:var(--copper)}}
 <nav id="h3-rooms" aria-label="Jump to a room"></nav>
 <div class="h3-cross" aria-hidden="true"></div>
 <div id="h3-joy" aria-label="Walk"><div id="h3-knob"></div></div>
-<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · click the floor to walk · click anything to see what we fit</span><span class="h3-touch">Tap the floor to walk · tap anything · pinch to zoom</span></div>
+<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · double-click to walk · click anything to see what we fit</span><span class="h3-touch">Double-tap to walk · tap anything · pinch to zoom</span></div>
 <aside id="h3-panel" aria-live="polite">
 <button class="h3-close" type="button" aria-label="Close">×</button>
 <h2>Item</h2>
