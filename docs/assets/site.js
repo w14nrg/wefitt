@@ -80,7 +80,7 @@ const house = document.querySelector('.house');
 if (house) {
   const card = document.querySelector('.room-card');
   const data = JSON.parse(document.getElementById('rooms-data').textContent);
-  const show = key => {
+  const show = (key, open) => {
     const r = data[key]; if (!r) return;
     house.querySelectorAll('.room').forEach(g => { const on = g.dataset.room === key; g.classList.toggle('on', on); g.setAttribute('aria-pressed', String(on)); });
     card.querySelector('h3').textContent = r.title;
@@ -89,10 +89,12 @@ if (house) {
     r.items.forEach(([label, href]) => { const li = document.createElement('li'); const a = document.createElement('a'); a.textContent = label; a.href = href; li.appendChild(a); ul.appendChild(li); });
     const go = card.querySelector('.room-go'); go.textContent = 'Talk to us about ' + r.short;
     go.dataset.pre = r.job;
+    if (open) card.classList.add('open');
   };
+  const x = card.querySelector('.hh-x'); if (x) x.addEventListener('click', () => { card.classList.remove('open'); house.querySelectorAll('.room').forEach(g => g.classList.remove('on')); });
   house.querySelectorAll('.room').forEach(g => {
-    g.addEventListener('click', () => show(g.dataset.room));
-    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(g.dataset.room); } });
+    g.addEventListener('click', () => show(g.dataset.room, true));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(g.dataset.room, true); } });
   });
   show('kitchen');
 }

@@ -168,18 +168,19 @@ HOME = {
 <a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a>
 </div>
 </div>
-<div class="hero-house" role="region" aria-labelledby="house-title">
-<p class="kicker" id="house-title">Pick a room. See what we fit.</p>
-<div class="house">{HOUSE_SVG}<p class="house-hint">Tap a room on the house</p></div>
-</div>
-<div class="room-card hero-card" aria-live="polite">
+<div class="hero-house" role="region" aria-label="Pick a room, see what we fit">
+<p class="kicker hh-top">Pick a room. See what we fit.</p>
+<div class="house">{HOUSE_SVG}</div>
+<div class="hh-foot"><span>Tap a room on the house</span><a href="{{{{link:3d-house}}}}">Walk through in 3D →</a></div>
+<div class="room-card hh-card" aria-live="polite">
+<button class="hh-x" type="button" aria-label="Close">×</button>
 <h3 class="h-m">In the kitchen</h3>
-<p class="muted" style="margin-top:8px"></p>
+<p class="muted" style="margin-top:6px"></p>
 <ul></ul>
-<div class="row"><button class="btn btn-go room-go" data-picker="Kitchen fitting">Talk to us about this</button>
-<a class="btn btn-line" href="{{{{link:3d-house}}}}">Walk through in 3D →</a></div>
+<button class="btn btn-go room-go" data-picker="Kitchen fitting">Talk to us about this</button>
 </div>
 <script type="application/json" id="rooms-data">{rooms_json()}</script>
+</div>
 </section>
 
 <section class="stone band" id="big" aria-labelledby="big-title">
