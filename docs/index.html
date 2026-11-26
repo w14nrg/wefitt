@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=1795698302">
+<link rel="stylesheet" href="assets/site.css?v=1795701846">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HomeAndConstructionBusiness", "name": "We Fitt", "legalName": "En-Suites & Bathrooms Ltd", "url": "https://www.wefitt.uk/", "telephone": "+442073860000", "address": {"@type": "PostalAddress", "streetAddress": "287 Munster Road", "addressLocality": "London", "addressRegion": "Fulham", "postalCode": "SW6 6BW", "addressCountry": "GB"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "07:00", "closes": "20:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:00", "closes": "18:00"}, {"@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "10:00", "closes": "18:00"}], "areaServed": ["Fulham", "Hammersmith", "Kensington", "Chelsea", "Parsons Green", "Putney", "Wandsworth", "West Kensington", "Earl's Court", "Barons Court"]}</script>
 
 </head>
@@ -46,17 +46,9 @@
 <a class="btn btn-line" href="tel:+442073860000">Call 020 7386 0000</a>
 </div>
 </div>
-<div class="ph" role="img" aria-label="Photo to come: Shopfront photo" style="min-height:440px"><strong>Shopfront photo</strong><span>287 Munster Road. Swap for the new We Fitt sign photo once it is up.</span></div>
-</section>
-
-<section class="band raised" aria-labelledby="house-title">
-<div class="wrap">
-<div class="stack reveal" style="max-width:720px;margin-bottom:32px">
-<p class="kicker">Room by room</p>
-<h2 id="house-title" class="h-l">Pick a room. See what we fit.</h2>
-</div>
-<div class="house-wrap">
-<div class="house reveal"><svg viewBox="0 0 640 500" role="group" aria-label="A house cut open. Choose a room to see what we fit there.">
+<div class="hero-house" role="region" aria-labelledby="house-title">
+<p class="kicker" id="house-title">Pick a room. See what we fit.</p>
+<div class="house"><svg viewBox="0 0 640 500" role="group" aria-label="A house cut open. Choose a room to see what we fit there.">
 <rect x="0" y="440" width="640" height="60" fill="#1C2A22"/>
 <rect x="0" y="440" width="640" height="6" fill="#2F4A3A"/>
 <path d="M26 166 L245 22 L464 166 Z" fill="#3A3631"/>
@@ -123,16 +115,15 @@
 <text x="551" y="282" text-anchor="middle">Garden</text>
 </g>
 </svg><p class="house-hint">Tap a room on the house</p></div>
-<div class="room-card reveal" aria-live="polite">
+<div class="room-card" aria-live="polite">
 <h3 class="h-m">In the kitchen</h3>
 <p class="muted" style="margin-top:8px"></p>
 <ul></ul>
 <button class="btn btn-go room-go" data-picker="Kitchen fitting">Talk to us about this</button>
 <a class="btn btn-line" href="3d-house/" style="margin-top:10px">Walk through the house in 3D →</a>
 </div>
-</div>
-</div>
 <script type="application/json" id="rooms-data">{"loft": {"job": "Loft or roof window", "title": "In the loft", "short": "loft work", "text": "Bring daylight into the top of the house and turn a dark loft into a usable room.", "items": [["Loft & roof windows", "loft-windows/roof-window-fitting/"], ["Skylights", "loft-windows/skylights/"], ["Stud walls", "floors-walls-tiling/stud-walls/"], ["Plastering", "floors-walls-tiling/plastering/"]]}, "bathroom": {"job": "Bathroom fitting", "title": "In the bathroom", "short": "bathroom fitting", "text": "A whole new bathroom, or just the one thing that has stopped working.", "items": [["Bathroom fitting", "bathroom-fitting-fulham/"], ["Showers", "plumbing-fittings/shower-fitting/"], ["Toilets", "plumbing-fittings/toilet-fitting/"], ["Taps", "plumbing-fittings/tap-fitting/"], ["Basins & sinks", "plumbing-fittings/basins-sinks/"], ["Mirrors & cabinets", "plumbing-fittings/mirrors-cabinets/"], ["Tiling", "floors-walls-tiling/tiling/"], ["Radiators & towel rails", "plumbing-fittings/radiators-towel-rails/"], ["Extractor fans", "electrics/extractor-fans/"]]}, "bedroom": {"job": "En-suite fitting", "title": "In the bedroom", "short": "en-suite fitting", "text": "Squeeze a shower room in, or build the storage the room is missing.", "items": [["En-suite fitting", "en-suite-fitting-fulham/"], ["Fitted wardrobes", "doors-joinery/fitted-wardrobes/"], ["Flooring", "floors-walls-tiling/flooring/"], ["Sockets", "electrics/sockets/"], ["Downlights", "electrics/downlights/"]]}, "hall": {"job": "Internal doors", "title": "Hall and stairs", "short": "door fitting", "text": "The first thing anyone sees: doors that close properly, stairs that feel solid, clean joinery.", "items": [["Front & back doors", "doors-joinery/external-door-fitting/"], ["Internal doors", "doors-joinery/internal-door-fitting/"], ["Staircases & balustrades", "doors-joinery/staircases/"], ["Skirting & architraves", "doors-joinery/skirting-architraves/"], ["Flooring", "floors-walls-tiling/flooring/"]]}, "kitchen": {"job": "Kitchen fitting", "title": "In the kitchen", "short": "kitchen fitting", "text": "Fit the kitchen you have bought, or let us design, supply and fit one for you.", "items": [["Kitchen fitting", "kitchen-fitting-fulham/"], ["Worktops", "doors-joinery/worktop-fitting/"], ["Appliance fitting", "plumbing-fittings/appliance-fitting/"], ["Taps", "plumbing-fittings/tap-fitting/"], ["Basins & sinks", "plumbing-fittings/basins-sinks/"], ["Tiling", "floors-walls-tiling/tiling/"], ["Sockets", "electrics/sockets/"], ["Downlights", "electrics/downlights/"], ["Extractor fans", "electrics/extractor-fans/"]]}, "garden": {"job": "Bike or bin store", "title": "In the garden", "short": "garden work", "text": "Tidy away the bins and bikes, and build the outside space properly.", "items": [["Bike & bin stores", "bike-and-bin-stores/"], ["EV chargers", "electrics/ev-chargers/"], ["Fencing & gates", "outside/fencing-gates/"], ["Decking", "outside/decking/"], ["Sheds & summer houses", "outside/sheds-summer-houses/"], ["Patios", "outside/patios/"], ["Guttering", "outside/guttering/"]]}}</script>
+</div>
 </section>
 
 <section class="stone band" id="big" aria-labelledby="big-title">
@@ -308,6 +299,6 @@
 <p class="alt">Rather call? <a href="tel:+442073860000">020 7386 0000</a> · WhatsApp 020 7386 0000</p>
 </form>
 </div>
-<script src="assets/site.js?v=1795698302"></script>
+<script src="assets/site.js?v=1795701846"></script>
 </body>
 </html>

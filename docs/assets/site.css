@@ -237,3 +237,11 @@ a{color:var(--copper)}a:hover{color:#E0A56B}
 @keyframes evcharge{0%{transform:scaleX(.15)}80%,100%{transform:scaleX(1)}}
 @media(max-width:900px){.ev-band{grid-template-columns:1fr;grid-template-areas:"text" "draw" "extra";gap:22px}}
 @media(prefers-reduced-motion:reduce){.ev-cable,.ev-led,.ev-fill{animation:none}}
+
+/* little house in the top section (replaces the shop photo for now) */
+.hero-house{display:grid;gap:12px;align-self:start}
+.hero-house .kicker{margin:0}
+.hero-house .house-hint{margin-top:4px}
+.hero-house .room-card{min-height:0;padding:20px 22px}
+.hero-house .room-card ul{margin:12px 0 16px}
+.hero-house .room-card .btn{width:100%;justify-content:center}

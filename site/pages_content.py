@@ -168,27 +168,18 @@ HOME = {
 <a class="btn btn-line" href="tel:{{{{TEL}}}}">Call {{{{PHONE}}}}</a>
 </div>
 </div>
-{_ph('Shopfront photo', '287 Munster Road. Swap for the new We Fitt sign photo once it is up.', '440px')}
-</section>
-
-<section class="band raised" aria-labelledby="house-title">
-<div class="wrap">
-<div class="stack reveal" style="max-width:720px;margin-bottom:32px">
-<p class="kicker">Room by room</p>
-<h2 id="house-title" class="h-l">Pick a room. See what we fit.</h2>
-</div>
-<div class="house-wrap">
-<div class="house reveal">{HOUSE_SVG}<p class="house-hint">Tap a room on the house</p></div>
-<div class="room-card reveal" aria-live="polite">
+<div class="hero-house" role="region" aria-labelledby="house-title">
+<p class="kicker" id="house-title">Pick a room. See what we fit.</p>
+<div class="house">{HOUSE_SVG}<p class="house-hint">Tap a room on the house</p></div>
+<div class="room-card" aria-live="polite">
 <h3 class="h-m">In the kitchen</h3>
 <p class="muted" style="margin-top:8px"></p>
 <ul></ul>
 <button class="btn btn-go room-go" data-picker="Kitchen fitting">Talk to us about this</button>
 <a class="btn btn-line" href="{{{{link:3d-house}}}}" style="margin-top:10px">Walk through the house in 3D →</a>
 </div>
-</div>
-</div>
 <script type="application/json" id="rooms-data">{rooms_json()}</script>
+</div>
 </section>
 
 <section class="stone band" id="big" aria-labelledby="big-title">
