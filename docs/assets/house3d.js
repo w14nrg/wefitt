@@ -464,11 +464,11 @@ function bikeAt(cx, cz) {
   rod([px, .95, -6.73], [px, .06, -6.95], .014, C, k); rod([px, .06, -6.95], [px, .06, -9.86], .014, C, k);
   rod([px, .06, -9.86], [2.05, .05, -10.02], .014, C, k); rod([2.05, .05, -10.02], [1.75, .4, -10.1], .014, C, k); rod([1.75, .4, -10.1], [1.62, .76, -10.13], .014, C, k);
   // the car: modern electric hatchback, nose to the left (parked on the near side)
-  const body = M({ color: '#16324d', roughness: .32, metalness: .25, envMapIntensity: .5 }), z0 = -11.95, z1 = -10.15, x0 = .9, x1 = 5.2;
+  const body = M({ color: '#0f2236', roughness: .4, metalness: .1, envMapIntensity: .4 }), z0 = -11.95, z1 = -10.15, x0 = .9, x1 = 5.2;
   box(x0 + .1, .3, z0, x1 - x0 - .2, .5, z1 - z0, body, k, { uv: false });
   box(x0, .34, z0 + .05, .2, .4, z1 - z0 - .1, body, k, { uv: false }); box(x1 - .2, .34, z0 + .05, .2, .44, z1 - z0 - .1, body, k, { uv: false });
   const hood = box(x0 + .15, .74, z0 + .05, 1.25, .12, z1 - z0 - .1, body, k, { uv: false }); hood.rotation.z = .1;
-  box(x0 + 1.35, .8, z0 + .12, 2.4, .5, z1 - z0 - .24, M({ color: '#1b2833', roughness: .05, metalness: .3, envMapIntensity: 1.2 }), k, { uv: false });
+  box(x0 + 1.35, .8, z0 + .12, 2.4, .5, z1 - z0 - .24, M({ color: '#0b1218', roughness: .12, metalness: .1, envMapIntensity: .45 }), k, { uv: false });
   box(x0 + 1.55, 1.28, z0 + .16, 2.0, .06, z1 - z0 - .32, body, k, { uv: false });
   [x0 + 2.45].forEach(x => box(x, .8, z0 + .1, .07, .5, z1 - z0 - .2, body, k, { uv: false }));
   const head = M({ color: '#fff', emissive: '#fff6d8', emissiveIntensity: 1 }); box(x0 - .005, .58, z0 + .15, .03, .07, .5, head, k, { uv: false });
