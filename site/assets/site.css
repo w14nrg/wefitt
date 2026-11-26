@@ -245,3 +245,6 @@ a{color:var(--copper)}a:hover{color:#E0A56B}
 .hero-house .room-card{min-height:0;padding:20px 22px}
 .hero-house .room-card ul{margin:12px 0 16px}
 .hero-house .room-card .btn{width:100%;justify-content:center}
+.hero:has(.hero-house){align-items:start}
+.hero:has(.hero-house) > .stack{padding-top:40px}
+@media(max-width:900px){.hero:has(.hero-house) > .stack{padding-top:0}}
