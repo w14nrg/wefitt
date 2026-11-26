@@ -56,8 +56,12 @@ def href(target, depth, mode):
     return up + target + ('/index.html' if mode == 'preview' else '/') + anchor
 
 
+import time
+VERSION = str(int(time.time()))
+
+
 def asset(name, depth):
-    return '../' * depth + 'assets/' + name
+    return '../' * depth + 'assets/' + name + '?v=' + VERSION
 
 
 def schema(page):
