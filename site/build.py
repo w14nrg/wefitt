@@ -238,6 +238,8 @@ def build(mode):
             f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + urls + '</urlset>\n')
         with open(os.path.join(out, '.nojekyll'), 'w') as f:
             f.write('')
+        with open(os.path.join(out, 'CNAME'), 'w') as f:
+            f.write('www.wefitt.uk\n')
     return out
 
 
