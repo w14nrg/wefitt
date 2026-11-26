@@ -184,7 +184,7 @@ HOME = {
 <p class="muted" style="margin-top:8px"></p>
 <ul></ul>
 <button class="btn btn-go room-go" data-picker="Kitchen fitting">Talk to us about this</button>
-<a class="btn btn-line" href="{{link:3d-house}}" style="margin-top:10px">Walk through the house in 3D →</a>
+<a class="btn btn-line" href="{{{{link:3d-house}}}}" style="margin-top:10px">Walk through the house in 3D →</a>
 </div>
 </div>
 </div>
