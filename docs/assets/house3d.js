@@ -643,7 +643,7 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
   const sh = new THREE.Shape(); sh.moveTo(STAIR.z0, 0); sh.lineTo(4.28, 0); sh.lineTo(4.28, 1.74); sh.lineTo(4.92, 1.74); sh.lineTo(4.92, 0); sh.lineTo(STAIR.z1 + .5, 0); sh.lineTo(STAIR.z1 + .5, G1); sh.lineTo(STAIR.z0 + (G1 / F1) * (STAIR.z1 - STAIR.z0), G1); sh.lineTo(STAIR.z0, 0);
   const pg = new THREE.ExtrudeGeometry(sh, { depth: .06, bevelEnabled: false });
   const panel = new THREE.Mesh(pg, MAT.string); panel.rotation.y = -Math.PI / 2; panel.position.set(STAIR.x1 + .06, 0, 0); panel.castShadow = panel.receiveShadow = true; scene.add(panel); tag(panel, 'understairs');
-  makeDoor({ ax: 'z', p: STAIR.x1 + .09, a: 4.28, b: 4.92, y0: 0, h: 1.72, t: .035, side: 1, mat: MAT.dPlum, key: 'understairs', level: 0, open: true });
+  makeDoor({ ax: 'z', p: STAIR.x1 + .09, a: 4.28, b: 4.92, y0: 0, h: 1.72, t: .035, side: 1, mat: MAT.dPlum, key: 'understairs', level: 0, open: false });
   // cloakroom under the stairs: toilet, small basin, tiles and a light
   const k = 'understairs';
   box(.12, 0, 4.1, .02, 1.2, 1.88, MAT.metro, k, { uv: .6 });
@@ -654,21 +654,26 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
   for (let yy = .7; yy < 1.2; yy += .1) box(.5, yy, 5.94, .4, .02, .03, MAT.copper, k, { uv: false });
   sphere(.6, 2.1, 5.6, .05, MAT.light, k); pointLight(.6, 1.9, 5.1, .45, 3);
   [[4.23, 4.25], [4.95, 4.97]].forEach(([a]) => box(STAIR.x1 + .07, 0, a, .02, 1.78, .03, MAT.white, 'understairs', { uv: false }));
-  // banister (hall side) + newel posts
-  const slope = F1 / (STAIR.z1 - STAIR.z0);
+  // hall-side banister: rises from the bottom newel until it meets the hall ceiling, then a wall closes the stair in up to the landing
+  const slope = F1 / (STAIR.z1 - STAIR.z0), sy = z => (z - STAIR.z0) * slope, zEnd = STAIR.z0 + (G1 - .95 - .04) / slope;
   box(STAIR.x1 - .05, 0, STAIR.z0 - .12, .1, 1.1, .1, MAT.oak, 'banister', { uv: false });
-  const hr = new THREE.Mesh(new THREE.BoxGeometry(.06, .07, Math.hypot(STAIR.z1 - STAIR.z0, F1)), MAT.oak.clone());
-  hr.position.set(STAIR.x1, .95 + F1 / 2, (STAIR.z0 + STAIR.z1) / 2); hr.rotation.x = -Math.atan(slope); hr.castShadow = true; scene.add(hr); tag(hr, 'banister');
-  for (let z = STAIR.z0 + .06; z < STAIR.z1; z += .12) { const yb = (z - STAIR.z0) * slope + rise; box(STAIR.x1 - .015, yb, z, .03, .93 - rise + .02, .03, MAT.white, 'banister', { uv: false }); }
-  // landing balustrade around the void on the first floor
-    const bal = (x0, z0, x1, z1) => {
+  rod([STAIR.x1, .98, STAIR.z0 - .07], [STAIR.x1, sy(zEnd) + .98, zEnd], .035, MAT.oak, 'banister');
+  for (let z = STAIR.z0 + .06; z < zEnd - .05; z += .12) { const yb = sy(z) + rise; box(STAIR.x1 - .015, yb, z, .03, .93 - rise + .02, .03, MAT.white, 'banister', { uv: false }); }
+  box(STAIR.x1 - .05, sy(zEnd) - .05, zEnd - .05, .1, G1 - sy(zEnd) + .05, .1, MAT.oak, 'banister', { uv: false });
+  { const ws = new THREE.Shape(); ws.moveTo(zEnd, sy(zEnd)); ws.lineTo(STAIR.z0 + G1 / slope, G1); ws.lineTo(zEnd, G1); ws.lineTo(zEnd, sy(zEnd));
+    const wm = new THREE.Mesh(new THREE.ExtrudeGeometry(ws, { depth: .08, bevelEnabled: false }), MAT.plaster); wm.rotation.y = -Math.PI / 2; wm.position.set(STAIR.x1 + .06, 0, 0); wm.castShadow = wm.receiveShadow = true; scene.add(wm); tag(wm, 'plaster'); }
+  box(STAIR.x1 - .02, G1, STAIR.z0 - .03, .08, F1 - G1, STAIR.z1 - STAIR.z0 + .03, MAT.white, null, { uv: false });   // landing edge
+  // wall handrails up the stairs
+  rod([STAIR.x1 - .07, sy(zEnd) + .92, zEnd + .05], [STAIR.x1 - .07, F1 + .92, STAIR.z1], .025, MAT.oak, 'banister');
+  rod([STAIR.x0 + .06, .92, STAIR.z0], [STAIR.x0 + .06, F1 + .92, STAIR.z1], .025, MAT.oak, 'banister');
+  // landing balustrade along the whole stairwell, newels at both ends
+  const bal = (x0, z0, x1, z1) => {
     const len = Math.hypot(x1 - x0, z1 - z0);
-    if (x0 === x1) { box(x0 - .03, F1 + .9, z0, .06, .06, len, MAT.oak, 'banister', { uv: false }); for (let z = z0 + .06; z < z1; z += .12) box(x0 - .015, F1, z, .03, .9, .03, MAT.white, 'banister', { uv: false }); }
-    else { box(x0, F1 + .9, z0 - .03, len, .06, .06, MAT.oak, 'banister', { uv: false }); for (let x = x0 + .06; x < x1; x += .12) box(x, F1, z0 - .015, .03, .9, .03, MAT.white, 'banister', { uv: false }); }
+    if (x0 === x1) { box(x0 - .035, F1 + .9, z0, .07, .07, len, MAT.oak, 'banister', { uv: false }); box(x0 - .045, F1, z0, .09, .06, len, MAT.oak, 'banister', { uv: false }); for (let z = z0 + .08; z < z1 - .04; z += .12) box(x0 - .015, F1 + .06, z, .03, .84, .03, MAT.white, 'banister', { uv: false }); }
+    else { box(x0, F1 + .9, z0 - .035, len, .07, .07, MAT.oak, 'banister', { uv: false }); box(x0, F1, z0 - .045, len, .06, .09, MAT.oak, 'banister', { uv: false }); for (let x = x0 + .08; x < x1 - .04; x += .12) box(x, F1 + .06, z0 - .015, .03, .84, .03, MAT.white, 'banister', { uv: false }); }
   };
-  bal(STAIR.x1, STAIR.z0 - .03, STAIR.x1, 3.85);
-  box(STAIR.x1 - .05, F1 - .35, 3.8, .1, 1.4, .1, MAT.oak, 'banister', { uv: false });
-  box(STAIR.x1 - .055, F1 - .02, STAIR.z1 - .1, .11, 1.07, .11, MAT.oak, 'banister', { uv: false }); box(STAIR.x1 - .07, F1 + 1.05, STAIR.z1 - .115, .14, .05, .14, MAT.oak, 'banister', { uv: false });
+  bal(STAIR.x1, STAIR.z0 - .03, STAIR.x1, STAIR.z1 - .05);
+  box(STAIR.x1 - .06, F1 - .2, STAIR.z1 - .11, .12, 1.25, .12, MAT.oak, 'banister', { uv: false }); box(STAIR.x1 - .075, F1 + 1.05, STAIR.z1 - .125, .15, .05, .15, MAT.oak, 'banister', { uv: false });
   bal(0, STAIR.z0 - .03, STAIR.x1, STAIR.z0 - .03);
   box(STAIR.x1 - .05, F1, STAIR.z0 - .08, .1, 1.05, .1, MAT.oak, 'banister', { uv: false });
 })();
@@ -1047,10 +1052,10 @@ function firstHit(x, y) {
 function pickAt(x, y) {
   const h = firstHit(x, y); if (!h) return;
   const o = h.object, k = o.userData.key;
-  if (o.userData.door && h.distance < 12) { toggleDoor(o.userData.door); show(k); return; }
+  if (o.userData.door && h.distance < 12) { show(k, o.userData.door); return; }
   const n = h.face ? h.face.normal.clone().transformDirection(o.matrixWorld) : null;
   if (!player.stairs && n && n.y > .7 && Math.abs(h.point.y - targetY()) < .4) {
-    setWalkTo(h.point.x, h.point.z); ring.position.set(h.point.x, h.point.y + .02, h.point.z); ring.material.opacity = .9; return;
+    setWalkTo(h.point.x, h.point.z); ring.position.set(h.point.x, h.point.y + .02, h.point.z); ring.material.opacity = .9; if (k) show(k); return;
   }
   if (k && h.distance < 12) show(k);
 }
@@ -1067,7 +1072,8 @@ function stepWalk(dt) {
   if (walkTo.stuck > .4) walkTo = null;
 }
 function price(k) { const p = PRICES[k]; return (typeof p === 'number' && p > 0) ? 'We fit from £' + p : 'Ask us for a price'; }
-function show(k) {
+function show(k, door) {
+  panelDoor = door || null; syncDoorBtn();
   if (selected) setGlow(selected, false); selected = k; setGlow(k, true, .6);
   const [n, t, l] = ITEMS[k];
   panel.querySelector('h2').textContent = n;
@@ -1078,7 +1084,15 @@ function show(k) {
   panel.querySelector('.h3-wa').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hi We Fitt, I\'m interested in: ' + n + '.');
   panel.classList.add('open');
 }
-panel.querySelector('.h3-close').addEventListener('click', () => { panel.classList.remove('open'); if (selected) setGlow(selected, false); selected = null; });
+/* open / close button for doors */
+let panelDoor = null;
+const doorBtn = document.createElement('button'); doorBtn.type = 'button'; doorBtn.className = 'h3-door'; doorBtn.hidden = true; panel.querySelector('.row').before(doorBtn);
+function syncDoorBtn() { if (!panelDoor) { doorBtn.hidden = true; return; } doorBtn.hidden = false; const t = panelDoor.open ? 'Close door' : 'Open door'; if (doorBtn.textContent !== t && !doorBtn.dataset.hold) doorBtn.textContent = t; }
+doorBtn.addEventListener('click', () => {
+  if (!panelDoor) return; const was = panelDoor.open; toggleDoor(panelDoor);
+  if (was && panelDoor.open) { doorBtn.textContent = 'Step back out of the doorway first'; doorBtn.dataset.hold = 1; setTimeout(() => { delete doorBtn.dataset.hold; syncDoorBtn(); }, 1600); } else syncDoorBtn();
+});
+panel.querySelector('.h3-close').addEventListener('click', () => { panelDoor = null; panel.classList.remove('open'); if (selected) setGlow(selected, false); selected = null; });
 
 /* teleport menu */
 const SPOTS = {
@@ -1111,7 +1125,7 @@ function loop(now) {
     const n = Math.hypot(mf, ms) > 1 ? Math.hypot(mf, ms) : 1;
     tryMove((sx * mf + rx * ms) / n * speed, (sz * mf + rz * ms) / n * speed);
   }
-  stepWalk(dt);
+  stepWalk(dt); if (panelDoor) syncDoorBtn();
   for (const d of DOORS) { const t = d.open ? d.ang : 0; if (Math.abs(t - d.cur) > 1e-3) { d.cur += (t - d.cur) * Math.min(1, dt * 7); d.pivot.rotation.y = d.cur; } }
   const ty = targetY(); player.y += (ty - player.y) * Math.min(1, dt * 12);
   camera.position.set(player.x, player.y + EYE, player.z);

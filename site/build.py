@@ -283,6 +283,8 @@ a{{color:var(--copper)}}
 #h3-panel p{{color:#D6D0C7;margin:0 0 16px;font-size:15px}}
 #h3-panel .row{{display:flex;gap:8px;flex-wrap:wrap}}
 #h3-panel .row a{{flex:1 1 140px;justify-content:center;display:inline-flex;align-items:center;min-height:46px;border-radius:999px;font-weight:600;text-decoration:none;font-size:15px}}
+.h3-door{{display:flex;width:100%;justify-content:center;align-items:center;min-height:46px;margin:0 0 10px;border-radius:999px;border:1.5px solid var(--go);background:rgba(31,122,77,.15);color:var(--ink);font:inherit;font-weight:600;font-size:15px;cursor:pointer}}
+.h3-door[hidden]{{display:none}}
 .h3-close{{position:absolute;right:10px;top:10px;width:44px;height:44px;border:0;background:none;color:var(--muted);font-size:26px;cursor:pointer}}
 @media (max-width:600px){{#h3-panel{{left:12px;right:12px;width:auto;bottom:12px}} .h3-bar .btn-line{{display:none}} #h3-joy{{bottom:60px}}}}
 .h3-list{{max-width:1240px;margin:0 auto;padding:56px 24px 80px}}
@@ -307,7 +309,7 @@ a{{color:var(--copper)}}
 <nav id="h3-rooms" aria-label="Jump to a room"></nav>
 <div class="h3-cross" aria-hidden="true"></div>
 <div id="h3-joy" aria-label="Walk"><div id="h3-knob"></div></div>
-<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · click the floor to walk · scroll to zoom · click anything</span><span class="h3-touch">Tap the floor to walk · drag to look · pinch to zoom</span></div>
+<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · click the floor to walk · click anything to see what we fit</span><span class="h3-touch">Tap the floor to walk · tap anything · pinch to zoom</span></div>
 <aside id="h3-panel" aria-live="polite">
 <button class="h3-close" type="button" aria-label="Close">×</button>
 <h2>Item</h2>
