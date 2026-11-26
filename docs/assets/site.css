@@ -239,12 +239,11 @@ a{color:var(--copper)}a:hover{color:#E0A56B}
 @media(prefers-reduced-motion:reduce){.ev-cable,.ev-led,.ev-fill{animation:none}}
 
 /* little house in the top section (replaces the shop photo for now) */
-.hero-house{display:grid;gap:12px;align-self:start}
-.hero-house .kicker{margin:0}
-.hero-house .house-hint{margin-top:4px}
-.hero-house .room-card{min-height:0;padding:20px 22px}
-.hero-house .room-card ul{margin:12px 0 16px}
-.hero-house .room-card .btn{width:100%;justify-content:center}
-.hero:has(.hero-house){align-items:start}
-.hero:has(.hero-house) > .stack{padding-top:40px}
-@media(max-width:900px){.hero:has(.hero-house) > .stack{padding-top:0}}
+.hero:has(.hero-house){grid-template-areas:"text house" "card house";align-items:start;row-gap:28px}
+.hero:has(.hero-house) > .stack{grid-area:text}
+.hero-house{grid-area:house;align-self:center;display:grid;gap:10px}
+.hero-card{grid-area:card;min-height:0;padding:20px 22px}
+.hero-house .kicker{margin:0}.hero-house .house-hint{margin-top:4px}
+.hero-card ul{margin:12px 0 16px}
+.hero-card .row{gap:10px}
+@media(max-width:900px){.hero:has(.hero-house){grid-template-areas:"text" "house" "card"}}
