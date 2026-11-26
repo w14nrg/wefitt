@@ -64,7 +64,7 @@ const ITEMS = {
   towelrail: ['Heated towel rail', 'On the heating, electric or dual fuel, sized for the room.', L.rad],
   fan: ['Extractor fan', 'Sized for the room and ducted all the way outside.', L.fan],
   bathtiles: ['Bathroom tiles', 'Wet areas on tile backer board and tanked before tiling.', L.tile],
-  ensuite: ['En-suite', 'A shower room built into the bedroom: drainage, stud walls, extraction and tiling.', L.ens],
+  ensuite: ['En-suite', 'A shower room built into a bedroom or loft: drainage, stud walls, extraction and tiling.', L.ens],
   roofwindow: ['Roof window', 'Daylight into the loft, flashed properly into the roof and lined inside.', L.roof],
   gutter: ['Guttering', 'Leaks fixed, gutters cleared, and uPVC, aluminium or cast iron replaced.', L.gut],
   fence: ['Fencing', 'Slatted, closeboard or panel fencing on posts set deep so it stays straight.', L.fence],
@@ -73,7 +73,10 @@ const ITEMS = {
   patio: ['Patio', 'Porcelain or stone on a compacted sub-base and full mortar bed.', L.patio],
   decking: ['Decking', 'Timber or composite decks on frames with ventilation and drainage underneath.', L.deck],
   shed: ['Shed / garden room', 'Built on a level base, with power and insulation if you want it.', L.shed],
-  binstore: ['Bike & bin store', 'Built to measure with lockable doors and an optional living sedum roof.', L.store],
+  binstore: ['Bike & bin store', 'Built to measure for your bins and bikes, with lockable doors and an optional living sedum roof.', L.store],
+  decorating: ['Decorating – plastering & painting', 'Cracked or blown plaster cut out and made good, or the whole wall re-skimmed, then a mist coat and finish coats so the repair disappears.', L.plas],
+  walkin: ['Walk-in shower', 'Low-profile tray or wet-room floor, fully tanked before tiling, with a fixed glass panel and a ceiling rain head.', L.shower],
+  eaves: ['Eaves storage', 'Cupboards built into the low space under the roof slope, lined, with doors to match the room.', L.ward],
   outsidetap: ['Outside tap', 'With a double check valve to protect your drinking water.', L.tap],
   outdoorsocket: ['Outdoor socket', 'Weatherproof and RCD protected, tested and certified.', L.sock]
 };
@@ -194,7 +197,17 @@ const T = {
   hob: tex(256, (g, s) => { g.fillStyle = '#111214'; g.fillRect(0, 0, s, s); g.strokeStyle = '#555'; g.lineWidth = 3; [[64, 64, 40], [190, 64, 30], [64, 190, 30], [190, 190, 40]].forEach(([x, y, r]) => { g.beginPath(); g.arc(x, y, r, 0, 7); g.stroke(); }); }),
   sedum: tex(256, (g, s) => { noise(g, s, '#5f8f47', .3, 15000, 101); const r = rnd(103); for (let i = 0; i < 300; i++) { g.fillStyle = ['#a3c96b', '#c98b6b', '#7db86a', '#d9c36a'][i % 4]; g.beginPath(); g.arc(r() * s, r() * s, 2 + r() * 3, 0, 7); g.fill(); } }),
   road: tex(256, (g, s) => noise(g, s, '#45474a', .2, 20000, 111)),
-  render: tex(256, (g, s) => noise(g, s, '#e8e2d6', .07, 6000, 121))
+  render: tex(256, (g, s) => noise(g, s, '#e8e2d6', .07, 6000, 121)),
+  damaged: tex(512, (g, s) => {
+    noise(g, s, '#efe9e0', .06, 9000, 3);
+    const r = rnd(131), cx = s * .5, cy = s * .56;
+    const blob = (sc, col, seed) => { const q = rnd(seed); g.fillStyle = col; g.beginPath(); for (let i = 0; i <= 28; i++) { const a = i / 28 * Math.PI * 2, rr = s * sc * (.75 + q() * .4); const x = cx + Math.cos(a) * rr * 1.25, y = cy + Math.sin(a) * rr; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.closePath(); g.fill(); };
+    const grd = g.createRadialGradient(cx, cy + s * .08, 10, cx, cy + s * .08, s * .48); grd.addColorStop(0, 'rgba(150,115,70,.28)'); grd.addColorStop(1, 'rgba(150,115,70,0)'); g.fillStyle = grd; g.fillRect(0, 0, s, s);
+    blob(.24, '#d6c4ad', 133); blob(.17, '#b9a088', 137); blob(.09, '#a2715a', 139);
+    for (let i = 0; i < 90; i++) { const a = r() * Math.PI * 2, rr = s * (.19 + r() * .09); g.fillStyle = `rgba(255,251,244,${.6 + r() * .4})`; g.fillRect(cx + Math.cos(a) * rr * 1.25, cy + Math.sin(a) * rr, 4 + r() * 12, 3 + r() * 8); g.fillStyle = 'rgba(80,60,40,.35)'; g.fillRect(cx + Math.cos(a) * rr * 1.25, cy + Math.sin(a) * rr + 6, 6, 1.5); }
+    g.strokeStyle = 'rgba(60,45,32,.85)'; g.lineWidth = 2.2;
+    for (let k = 0; k < 6; k++) { let x = cx + (r() - .5) * s * .25, y = cy + (r() - .5) * s * .15; const dx = (r() - .5) * 2, dy = k % 2 ? -1 : 1; g.beginPath(); g.moveTo(x, y); for (let j = 0; j < 12; j++) { x += dx * 14 + (r() - .5) * 18; y += dy * (8 + r() * 16); g.lineTo(x, y); } g.stroke(); g.lineWidth = 1.2; }
+  })
 };
 
 /* ------------------------------------------------------------------ materials */
@@ -217,7 +230,11 @@ const MAT = {
   trunk: M({ color: '#5b4632', roughness: 1 }), soil: M({ color: '#4a3a2b', roughness: 1 }), gutter: M({ color: '#2b2e31', roughness: .4, metalness: .3 }),
   light: M({ color: '#ffffff', emissive: '#fff3dd', emissiveIntensity: 1.2 }), screen: M({ color: '#111', roughness: .2 }),
   washer: M({ map: T.washer, roughness: .3 }), oven: M({ map: T.oven, roughness: .3 }), hob: M({ map: T.hob, roughness: .1 }),
-  stone: M({ color: '#d7cfc0', roughness: .8 })
+  stone: M({ color: '#d7cfc0', roughness: .8 }),
+  damaged: M({ map: T.damaged, roughness: .95 }), tray: M({ color: '#ebe8e2', roughness: .35 }),
+  sky: M({ color: '#dcebf7', emissive: '#b9d6ee', emissiveIntensity: .9, roughness: .2 }),
+  bike: M({ color: '#a8362a', roughness: .35, metalness: .3 }), felt: M({ color: '#2a2b2d', roughness: .7 }), pot: M({ color: '#a8553a', roughness: .8 }),
+  binBlack: M({ color: '#222426', roughness: .55 }), binGreen: M({ color: '#2f6b3c', roughness: .55 }), binBlue: M({ color: '#2c5a8c', roughness: .55 })
 };
 
 /* ------------------------------------------------------------------ helpers */
@@ -242,7 +259,7 @@ function box(x0, y0, z0, w, h, d, mat, key, o) {
   const m = new THREE.Mesh(g, mat);
   m.position.set(x0 + w / 2, y0 + h / 2, z0 + d / 2);
   m.castShadow = o.cast !== false; m.receiveShadow = true;
-  scene.add(m); return tag(m, key);
+  (o.parent || scene).add(m); return tag(m, key);
 }
 function cyl(x, y, z, r, h, mat, key, o) {
   o = o || {};
@@ -255,13 +272,19 @@ function bush(x, y, z, r, key) {
   const n = 7; for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2, rr = r * (.45 + (i % 3) * .12); sphere(x + Math.cos(a) * r * .45, y + (i % 2) * r * .25, z + Math.sin(a) * r * .45, rr, i % 2 ? MAT.leaf : MAT.leaf2, key, .85); }
   sphere(x, y + r * .35, z, r * .55, MAT.leaf2, key, .9);
 }
+function rod(a, b, r, mat, key) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2], len = Math.hypot(dx, dy, dz); const v = new THREE.Vector3(dx / len, dy / len, dz / len);
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, len, 8), mat);
+  m.position.set((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), v);
+  m.castShadow = true; scene.add(m); return tag(m, key);
+}
 function sphere(x, y, z, r, mat, key, sy) {
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), mat); m.position.set(x, y, z); if (sy) m.scale.y = sy;
   m.castShadow = true; m.receiveShadow = true; scene.add(m); return tag(m, key);
 }
 
 /* collision: list of AABBs per level (0 ground/outside, 1 first floor) */
-const SOLID = [[], []];
+const SOLID = [[], [], []];
 function solid(level, x0, z0, x1, z1) { SOLID[level].push([Math.min(x0, x1), Math.min(z0, z1), Math.max(x0, x1), Math.max(z0, z1)]); }
 
 /* wall along X at depth z (thickness t centred on z) between x0..x1, y0..y1, with gaps [a,b,gy0,gy1] */
@@ -312,14 +335,43 @@ function windowX(z, a, b, y0, y1, frosted) {
   box(a, (y0 + y1) / 2 - .02, z - .05, b - a, .04, .1, MAT.frame, null, { uv: false });
   box(a - .04, y0 - .04, z - .2, b - a + .08, .04, .3, MAT.stone, null, { uv: false });
 }
-function doorLeafX(z, a, b, y0, side, mat, key) {
-  // leaf hinged at a, swung 90° into side (+1 means towards +z)
-  const w = b - a; box(a - .02, y0, side > 0 ? z + .06 : z - .06 - w, .04, 2.0, w, mat, key, { uv: false });
-  box(a + .0, y0 + .95, side > 0 ? z + .06 + w - .1 : z - .06 - w + .05, .09, .03, .05, MAT.chrome, null, { uv: false });
+/* doors that open and close: click one, or walk into a closed one.
+   ax 'x' = door in a wall running along x at depth p, opening a..b; ax 'z' = wall along z at x=p.
+   side +1 swings towards +z (ax x) or +x (ax z). hingeB hangs it on the b end. */
+const DOORS = [];
+function makeDoor(o) {
+  const w = o.b - o.a, h = o.h || 2.03, t = o.t || .045, dir = o.hingeB ? -1 : 1;
+  const pivot = new THREE.Group(), inner = new THREE.Group(); pivot.add(inner);
+  if (o.ax === 'x') pivot.position.set(o.hingeB ? o.b : o.a, o.y0, o.p);
+  else { pivot.position.set(o.p, o.y0, o.hingeB ? o.b : o.a); inner.rotation.y = -Math.PI / 2; }
+  scene.add(pivot);
+  const d = { o, pivot, level: o.level, open: !!o.open, key: o.key, ang: o.side * (o.ax === 'x' ? -1 : 1) * dir * Math.PI / 2 };
+  d.box = o.ax === 'x' ? [o.a, o.p - .07, o.b, o.p + .07] : [o.p - .07, o.a, o.p + .07, o.b];
+  const x0 = dir > 0 ? 0 : -w, P = { parent: inner, uv: false };
+  const add = (x, y, z, ww, hh, dd, mat) => { const m = box(x, y, z, ww, hh, dd, mat, o.key, P); m.userData.door = d; return m; };
+  d.add = add;
+  if (o.glazed) {
+    const f = .085, kick = .42, gw = w - 2 * f, gh = h - kick - f;
+    add(x0, 0, -t / 2, f, h, t, o.mat); add(x0 + w - f, 0, -t / 2, f, h, t, o.mat);
+    add(x0 + f, 0, -t / 2, gw, kick, t, o.mat); add(x0 + f, h - f, -t / 2, gw, f, t, o.mat);
+    add(x0 + f, kick, -.006, gw, gh, .012, MAT.glass);
+    add(x0 + f + gw / 2 - .016, kick, -.022, .032, gh, .044, o.mat);
+    for (let i = 1; i < 4; i++) add(x0 + f, kick + gh * i / 4 - .016, -.022, gw, .032, .044, o.mat);
+  } else if (o.slatted) {
+    add(x0, 0, -.008, w, h, .016, MAT.timber);
+    for (let x = .03; x < w - .06; x += .115) add(x0 + x, .03, -t / 2, .085, h - .06, t, MAT.oak);
+  } else {
+    add(x0, 0, -t / 2, w, h, t, o.mat);
+    [[.14, .8], [1.0, h - .14]].forEach(([ya, yb]) => [-1, 1].forEach(sd => add(x0 + .12, ya, sd > 0 ? t / 2 : -t / 2 - .008, w - .24, yb - ya, .008, o.mat)));
+  }
+  if (!o.slatted) {
+    const hx = dir > 0 ? w - .1 : -w + .04, hm = o.handle || MAT.chrome;
+    [-1, 1].forEach(sd => { add(hx, .96, sd > 0 ? t / 2 : -t / 2 - .045, .06, .03, .045, hm); add(dir > 0 ? hx - .08 : hx, .965, sd > 0 ? t / 2 + .03 : -t / 2 - .045, .14, .02, .015, hm); });
+  }
+  d.cur = d.open ? d.ang : 0; pivot.rotation.y = d.cur;
+  DOORS.push(d); return d;
 }
-function doorLeafZ(x, a, b, y0, side, mat, key) {
-  const w = b - a; box(side > 0 ? x + .06 : x - .06 - w, y0, a - .02, w, 2.0, .04, mat, key, { uv: false });
-}
+function pair(a, b) { a.pair = b; b.pair = a; }
 function architraveX(z, a, b, y0) { [-1, 1].forEach(s => { const zz = s > 0 ? z + .06 : z - .08; box(a - .07, y0, zz, .07, 2.1, .02, MAT.white, 'architrave', { uv: false }); box(b, y0, zz, .07, 2.1, .02, MAT.white, 'architrave', { uv: false }); box(a - .07, y0 + 2.05, zz, b - a + .14, .07, .02, MAT.white, 'architrave', { uv: false }); }); }
 function architraveZ(x, a, b, y0) { [-1, 1].forEach(s => { const xx = s > 0 ? x + .06 : x - .08; box(xx, y0, a - .07, .02, 2.1, .07, MAT.white, 'architrave', { uv: false }); box(xx, y0, b, .02, 2.1, .07, MAT.white, 'architrave', { uv: false }); box(xx, y0 + 2.05, a - .07, .02, .07, b - a + .14, MAT.white, 'architrave', { uv: false }); }); }
 function radiatorX(z, a, len, y0, side) { const zz = side > 0 ? z + .08 : z - .18; const g = new THREE.Group(); box(a, y0 + .15, zz, len, .6, .1, MAT.gloss, 'radiator', { uv: false }); for (let x = a + .05; x < a + len; x += .08) box(x, y0 + .15, side > 0 ? zz + .1 : zz - .01, .02, .6, .01, MAT.white, 'radiator', { uv: false }); cyl(a + .03, y0, zz + .05, .015, .15, MAT.chrome, 'radiator'); }
@@ -333,6 +385,8 @@ function pointLight(x, y, z, i, d) { if (LOW) return; const l = new THREE.PointL
 // House: x 0..8 (width), z 0..12 (depth). Ground floor 0..2.5, slab 2.5..2.7, first floor 2.7..5.2, slab 5.2..5.4, roof above.
 const W = 8, D = 12, G1 = 2.5, F1 = 2.7, C1 = 5.2, TOP = 5.4;
 const STAIR = { x0: .12, x1: 1.1, z0: 1.5, z1: 5.5 };
+const STAIRS = [Object.assign({ from: 0, to: 1, base: 0, rise: F1, blockTo: 6 }, STAIR),
+  { x0: 4.1, x1: 4.93, z0: 7.6, z1: 10.6, from: 1, to: 2, base: F1, rise: TOP - F1, blockTo: D }];
 
 /* ------------------------------------------------------------------ outside: street, gardens, neighbours */
 box(-30, -.1, -40, 70, .1, 30, MAT.road, null, { uv: 4 });
@@ -341,20 +395,48 @@ box(-30, -.05, -10, 70, .15, .15, MAT.stone, null, { uv: false });
 // front garden
 box(0, -.1, -7, W, .1, 7, MAT.grass, null, { uv: 2 });
 box(.85, -.05, -7, 1.2, .07, 7, MAT.victorian, 'path', { uv: .8 });
-box(2.3, -.05, -6.3, 5.4, .06, 1.2, MAT.paving, 'patio', { uv: 1.2 });
+box(2.3, -.05, -5.85, 5.4, .06, 1.25, MAT.paving, 'patio', { uv: 1.2 });
 // front wall + gate
 wallX(-7, 0, W, -.05, .75, [[.85, 2.05, -.05, 2]], MAT.brick, 'gate', 0, { t: .25 });
 box(.85, 0, -7.03, .05, 1, .06, MAT.black, 'gate', { uv: false });
 for (let x = .9; x < 2.05; x += .09) box(x, .05, -7.02, .025, .9, .025, MAT.black, 'gate', { uv: false });
 box(.85, .9, -7.03, 1.2, .04, .05, MAT.black, 'gate', { uv: false });
-// bin store with sedum roof
+// bike & bin store: open fronted bays with doors, bins and a bike inside, sedum roof
+function wheelieBin(cx, cz, mat) {
+  const k = 'binstore';
+  box(cx - .29, .08, cz - .34, .58, .92, .64, mat, k, { uv: false });
+  box(cx - .31, 1.0, cz - .37, .62, .05, .72, mat, k, { uv: false });
+  box(cx - .26, .9, cz + .3, .52, .04, .07, mat, k, { uv: false });
+  [-1, 1].forEach(sd => cyl(cx + sd * .32, .07, cz + .24, .1, .06, MAT.black, k, { rz: Math.PI / 2 }));
+}
+function bikeAt(cx, cz) {
+  const k = 'binstore', fr = MAT.bike;
+  const RW = [cx - .53, .34, cz], FW = [cx + .53, .34, cz], BB = [cx - .08, .3, cz], S = [cx - .2, .86, cz], H = [cx + .38, .84, cz];
+  [RW, FW].forEach(p => {
+    const w = new THREE.Mesh(new THREE.TorusGeometry(.31, .026, 8, 36), MAT.black); w.position.set(p[0], p[1], p[2]); w.castShadow = true; scene.add(w); tag(w, k);
+    for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI; rod([p[0] + Math.cos(a) * .29, p[1] + Math.sin(a) * .29, p[2]], [p[0] - Math.cos(a) * .29, p[1] - Math.sin(a) * .29, p[2]], .004, MAT.steel, k); }
+  });
+  rod(RW, BB, .018, fr, k); rod(RW, S, .016, fr, k); rod(BB, S, .022, fr, k); rod(S, H, .022, fr, k); rod(BB, H, .026, fr, k); rod(H, FW, .018, MAT.steel, k);
+  rod([S[0], S[1], cz], [S[0] - .03, S[1] + .12, cz], .014, MAT.steel, k); box(S[0] - .16, S[1] + .12, cz - .06, .24, .05, .12, MAT.black, k, { uv: false });
+  rod(H, [H[0] - .04, H[1] + .15, cz], .016, MAT.steel, k); rod([H[0] - .04, H[1] + .15, cz - .24], [H[0] - .04, H[1] + .15, cz + .24], .014, MAT.black, k);
+  rod([BB[0], BB[1], cz - .12], [BB[0], BB[1], cz + .12], .012, MAT.steel, k);
+}
 (function () {
-  const x0 = 4.4, z0 = -6.6, w = 2.8, d = .9, h = 1.35;
-  box(x0, 0, z0, w, h, d, MAT.timber, 'binstore', { uv: .5 }); solid(0, x0, z0, x0 + w, z0 + d);
-  for (let x = x0 + .05; x < x0 + w; x += .12) box(x, .05, z0 - .02, .08, h - .1, .02, MAT.oak, 'binstore', { uv: false });
-  box(x0 - .05, h, z0 - .05, w + .1, .06, d + .1, MAT.black, 'binstore', { uv: false });
-  box(x0, h + .06, z0, w, .08, d, MAT.sedum, 'binstore', { uv: .5 });
-  for (let i = 0; i < 26; i++) sphere(x0 + .1 + (i * .107) % w, h + .16, z0 + .15 + ((i * 37) % 7) / 10, .06, i % 3 ? MAT.leaf : MAT.sedum, 'binstore', .6);
+  const x0 = 3.0, x1 = 7.6, z0 = -6.85, z1 = -5.85, h = 1.4, k = 'binstore';
+  box(x0, 0, z0, x1 - x0, .05, z1 - z0, MAT.paving, k, { uv: .6 });
+  box(x0, 0, z0, x1 - x0, h, .04, MAT.timber, k, { uv: .5 });
+  [3.0, 4.9, 5.8, 6.7, x1 - .05].forEach(a => box(a, 0, z0, .05, h, z1 - z0, MAT.timber, k, { uv: .5 }));
+  for (let y = .06; y < h; y += .11) { box(x0 - .03, y, z0, .03, .07, z1 - z0, MAT.oak, k, { uv: false }); box(x1, y, z0, .03, .07, z1 - z0, MAT.oak, k, { uv: false }); }
+  box(x0 - .06, h, z0 - .04, x1 - x0 + .12, .06, z1 - z0 + .1, MAT.black, k, { uv: false });
+  box(x0, h + .06, z0, x1 - x0, .08, z1 - z0, MAT.sedum, k, { uv: .5 });
+  for (let i = 0; i < 40; i++) sphere(x0 + .1 + (i * .113) % (x1 - x0 - .2), h + .16, z0 + .12 + ((i * 37) % 8) / 10, .06, i % 3 ? MAT.leaf : MAT.sedum, k, .6);
+  solid(0, x0 - .03, z0, x1 + .03, z1);
+  const zp = z1 + .03, dy = .05, dh = h - .1;
+  pair(makeDoor({ ax: 'x', p: zp, a: 3.05, b: 3.95, y0: dy, h: dh, side: 1, key: k, level: 0, open: true, slatted: true }),
+       makeDoor({ ax: 'x', p: zp, a: 3.95, b: 4.85, y0: dy, h: dh, side: 1, key: k, level: 0, open: true, slatted: true, hingeB: true }));
+  [[4.95, 5.75], [5.85, 6.65], [6.75, 7.55]].forEach(([a, b]) => makeDoor({ ax: 'x', p: zp, a, b, y0: dy, h: dh, side: 1, key: k, level: 0, open: true, slatted: true }));
+  bikeAt(3.95, -6.4);
+  wheelieBin(5.35, -6.4, MAT.binBlack); wheelieBin(6.25, -6.4, MAT.binGreen); wheelieBin(7.15, -6.4, MAT.binBlue);
 })();
 // hedges + plants front
 bush(7.3, .45, -2.2, .6); bush(3, .35, -1, .45); bush(6.4, .3, -.9, .38);
@@ -402,8 +484,8 @@ wallX(-.03, 0, W, F1, C1, FRONT_G.filter(g => g[2] > G1), MAT.plaster, 'plaster'
 windowX(-.12, 3.4, 7, .75, 2.25); windowX(-.12, .5, 1.6, F1 + 1, F1 + 2.05); windowX(-.12, 3.4, 7, F1 + .85, F1 + 2.2);
 // fanlight + front door (open inward)
 box(.9, 2.05, -.14, 1, .15, .02, MAT.glass, null, { uv: false, cast: false });
-doorLeafX(-.06, .9, 1.9, 0, 1, MAT.green, 'frontdoor');
-box(1.85, 1.0, .02, .04, .04, .1, MAT.copper, 'frontdoor', { uv: false });
+const FRONT = makeDoor({ ax: 'x', p: -.12, a: .9, b: 1.9, y0: 0, h: 2.03, t: .06, side: 1, mat: MAT.green, key: 'frontdoor', level: 0, open: false, handle: MAT.copper });
+FRONT.add(.3, 1.05, -.042, .4, .07, .012, MAT.copper); FRONT.add(.44, 1.5, -.045, .12, .16, .015, MAT.copper);
 box(.82, 0, -.3, 1.16, .12, .3, MAT.stone, 'frontdoor', { uv: false });
 // porch light
 sphere(2.2, 2.2, -.32, .08, MAT.light);
@@ -414,9 +496,11 @@ wallX(D + .03, 0, W, 0, G1, BACK_G.filter(g => g[2] < G1), MAT.plaster, 'plaster
 wallX(D + .03, 0, W, F1, C1, BACK_G.filter(g => g[2] > G1), MAT.plaster, 'plaster', 1, { t: .06 });
 windowX(D + .12, 1.5, 3, .9, 2.2); windowX(D + .12, 2.2, 3.2, F1 + 1.1, F1 + 2.0, true); windowX(D + .12, 5.2, 6.8, F1 + .9, F1 + 2.1);
 // French doors (open outward)
-box(5, 0, D + .2, .04, 2.2, .9, MAT.frame, 'frenchdoors', { uv: false }); box(5.02, .1, D + .25, .02, 2.0, .8, MAT.glass, 'frenchdoors', { uv: false, cast: false });
-box(6.96, 0, D + .2, .04, 2.2, .9, MAT.frame, 'frenchdoors', { uv: false }); box(6.96, .1, D + .25, .02, 2.0, .8, MAT.glass, 'frenchdoors', { uv: false, cast: false });
-box(4.95, 2.2, D + .05, 2.1, .08, .25, MAT.frame, 'frenchdoors', { uv: false });
+box(5, 0, D + .02, .07, 2.2, .22, MAT.frame, 'frenchdoors', { uv: false }); box(6.93, 0, D + .02, .07, 2.2, .22, MAT.frame, 'frenchdoors', { uv: false });
+box(5, 2.12, D + .02, 2, .08, .22, MAT.frame, 'frenchdoors', { uv: false });
+box(4.95, 0, D + .02, 2.1, .03, .32, MAT.stone, 'frenchdoors', { uv: false });
+pair(makeDoor({ ax: 'x', p: D + .14, a: 5.07, b: 6.0, y0: .03, h: 2.09, t: .056, side: 1, mat: MAT.frame, key: 'frenchdoors', level: 0, glazed: true }),
+     makeDoor({ ax: 'x', p: D + .14, a: 6.0, b: 6.93, y0: .03, h: 2.09, t: .056, side: 1, mat: MAT.frame, key: 'frenchdoors', level: 0, glazed: true, hingeB: true }));
 // outside tap + socket + light
 box(4.3, .55, D + .26, .06, .12, .1, MAT.copper, 'outsidetap', { uv: false }); cyl(4.33, .42, D + .33, .015, .14, MAT.copper, 'outsidetap');
 box(4.6, .5, D + .26, .12, .14, .06, MAT.white, 'outdoorsocket', { uv: false });
@@ -443,35 +527,63 @@ slab(2.2, 0, W - 2.2, 6, F1, MAT.carpet, 'carpet', MAT.ceiling);
 slab(0, 6, 4, 1.4, F1, MAT.carpet, 'carpet', MAT.ceiling);
 slab(0, 7.4, 4, D - 7.4, F1, MAT.bigtile, 'bathtiles', MAT.ceiling, .8);
 slab(4, 6, 4, D - 6, F1, MAT.carpet2, 'carpet', MAT.ceiling);
-// top ceiling
-slab(0, 0, W, D, TOP, MAT.slate, null, MAT.ceiling);
-// roof: two slopes, ridge along x at z=D/2
+// loft floor (stair void x 4.1..4.93, z 7.6..10.6); underside is the first-floor ceiling
+slab(0, 0, W, 7.6, TOP, MAT.carpet, 'carpet', MAT.ceiling);
+slab(0, 7.6, 4.1, D - 7.6, TOP, MAT.carpet, 'carpet', MAT.ceiling);
+slab(4.93, 7.6, W - 4.93, D - 7.6, TOP, MAT.carpet, 'carpet', MAT.ceiling);
+slab(4.1, 10.6, .83, D - 10.6, TOP, MAT.carpet, 'carpet', MAT.ceiling);
+// roof: front slope up to the ridge at z=6, full-width flat-roofed rear dormer behind it
+const ROOF = { rise: 2.6, half: D / 2 + .45 };
+ROOF.ang = Math.atan2(ROOF.rise, ROOF.half);
+function roofY(z) { return TOP + ROOF.rise * (z + .45) / ROOF.half; }
 (function () {
-  const rise = 2.6, half = D / 2 + .45; const len = Math.hypot(half, rise); const ang = Math.atan2(rise, half);
-  [-1, 1].forEach(s => {
-    const g = new THREE.BoxGeometry(W + .4, .14, len); scaleUV(g, W + .4, .14, len, 1.2);
-    const m = new THREE.Mesh(g, MAT.slate); m.castShadow = true; m.receiveShadow = true;
-    m.position.set(W / 2, TOP + rise / 2, D / 2 + s * half / 2); m.rotation.x = s * ang; scene.add(m);
-  });
+  const { rise, half, ang } = ROOF; const len = Math.hypot(half, rise);
+  const g = new THREE.BoxGeometry(W + .4, .14, len); scaleUV(g, W + .4, .14, len, 1.2);
+  const m = new THREE.Mesh(g, [MAT.slate, MAT.slate, MAT.slate, MAT.ceiling, MAT.slate, MAT.slate]); m.castShadow = true; m.receiveShadow = true;
+  m.position.set(W / 2, TOP + rise / 2, D / 2 - half / 2); m.rotation.x = -ang; scene.add(m);
   box(-.1, TOP + rise - .05, D / 2 - .1, W + .2, .14, .2, MAT.black, null, { uv: false });
-  // roof window on rear slope
-  const rw = new THREE.Group();
-  const f = new THREE.Mesh(new THREE.BoxGeometry(.9, .12, 1.2), MAT.black.clone()); const gl = new THREE.Mesh(new THREE.BoxGeometry(.75, .13, 1.05), MAT.glass.clone());
-  f.userData.key = gl.userData.key = 'roofwindow'; picks.push(f, gl); groupsByKey.roofwindow = [f, gl];
-  rw.add(f, gl); rw.position.set(5.6, TOP + rise * .45 + .08, D / 2 + half * .55); rw.rotation.x = ang; scene.add(rw);
+  // dormer roof
+  const dg = new THREE.BoxGeometry(W + .3, .15, D + .35 - 5.9);
+  const dm = new THREE.Mesh(dg, [MAT.felt, MAT.felt, MAT.felt, MAT.ceiling, MAT.felt, MAT.felt]); dm.position.set(W / 2, TOP + 2.525, (5.9 + D + .35) / 2); dm.castShadow = dm.receiveShadow = true; scene.add(dm);
+  box(-.15, TOP + 2.42, D + .3, W + .3, .2, .05, MAT.white, null, { uv: false });
+  // party walls up into the loft (brick outside, plaster inside)
+  const gable = (x, depth, mat, key) => {
+    const sh = new THREE.Shape(); sh.moveTo(0, TOP); sh.lineTo(0, roofY(0)); sh.lineTo(6, TOP + 2.6); sh.lineTo(D + .26, TOP + 2.6); sh.lineTo(D + .26, TOP); sh.lineTo(0, TOP);
+    const gm = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false }), mat); gm.rotation.y = -Math.PI / 2; gm.position.set(x, 0, 0); gm.castShadow = gm.receiveShadow = true; scene.add(gm); if (key) tag(gm, key);
+  };
+  gable(0, .2, MAT.brick); gable(W + .2, .2, MAT.brick); gable(.02, .02, MAT.plaster, 'plaster'); gable(W, .02, MAT.plaster, 'plaster');
+  // dormer face with windows
+  const DG = [[.6, 1.6, TOP + 1.0, TOP + 2.05], [5.2, 7.2, TOP + .8, TOP + 2.1]];
+  wallX(D + .16, 0, W, TOP, TOP + 2.45, DG, MAT.brick, null, undefined, { t: .2 });
+  wallX(D + .03, 0, W, TOP, TOP + 2.45, DG, MAT.plaster, 'plaster', undefined, { t: .06, skirt: [-1] });
+  windowX(D + .12, .6, 1.6, TOP + 1.0, TOP + 2.05, true); windowX(D + .12, 5.2, 7.2, TOP + .8, TOP + 2.1);
+  // roof windows on the front slope (seen from outside and from the loft)
+  [1.9, 5.6].forEach(cx => {
+    const cz = 4.75, yl = roofY(cz);
+    const out = new THREE.Group(); out.position.set(cx, yl + .075, cz); out.rotation.x = -ang;
+    const f = new THREE.Mesh(new THREE.BoxGeometry(.9, .06, 1.2), MAT.black); const gl = new THREE.Mesh(new THREE.BoxGeometry(.76, .066, 1.04), MAT.glass);
+    out.add(f, gl); tag(f, 'roofwindow'); tag(gl, 'roofwindow'); scene.add(out);
+    const inn = new THREE.Group(); inn.position.set(cx, yl - .088, cz); inn.rotation.x = -ang;
+    const sky = new THREE.Mesh(new THREE.BoxGeometry(.76, .01, 1.04), MAT.sky); inn.add(sky); tag(sky, 'roofwindow');
+    [[.9, .08, 0, .56], [.9, .08, 0, -.56], [.08, 1.2, .42, 0], [.08, 1.2, -.42, 0]].forEach(([w, d, x, z]) => { const b = new THREE.Mesh(new THREE.BoxGeometry(w, .03, d), MAT.frame); b.position.set(x, -.008, z); inn.add(b); tag(b, 'roofwindow'); });
+    box(cx + .25, roofY(cz + .5) - .2, cz + .45, .02, .12, .02, MAT.chrome, 'roofwindow', { uv: false });
+    scene.add(inn);
+  });
   // gutters + downpipes
-  [[-.45, -.45], [D + .45, D + .45]].forEach(([z]) => { box(-.1, TOP - .12, z - .06, W + .2, .1, .12, MAT.gutter, 'gutter', { uv: false }); cyl(W - .25, 0, z, .05, TOP - .1, MAT.gutter, 'gutter'); });
-  // chimney
-  box(W - .9, TOP + 1.4, D / 2 - .4, .8, 1.9, .8, MAT.brick, null, { uv: 1 });
+  box(-.1, TOP - .12, -.51, W + .2, .1, .12, MAT.gutter, 'gutter', { uv: false }); cyl(W - .25, 0, -.45, .05, TOP - .1, MAT.gutter, 'gutter');
+  box(-.1, TOP + 2.32, D + .35, W + .2, .1, .12, MAT.gutter, 'gutter', { uv: false }); cyl(W - .25, 0, D + .42, .05, TOP + 2.35, MAT.gutter, 'gutter');
+  // chimney stack above the living-room breast
+  box(W - .8, TOP, 2.6, .7, 2.5, .75, MAT.brick, null, { uv: 1 }); box(W - .84, TOP + 2.45, 2.56, .78, .08, .83, MAT.stone, null, { uv: false });
+  [W - .62, W - .3].forEach(x => cyl(x, TOP + 2.53, 2.97, .08, .32, MAT.pot, null, { r2: .065 }));
 })();
 
 /* ------------------------------------------------------------------ ground floor interior */
 // hall | living wall x=2.2 (door z 4.4..5.3)
 wallZ(2.2, 0, 6, 0, G1, [[4.4, 5.3, 0, 2.05]], MAT.plaster, 'plaster', 0, { skirt: [-1, 1] });
-architraveZ(2.2, 4.4, 5.3, 0); doorLeafZ(2.2, 4.4, 5.3, 0, 1, MAT.white, 'intdoor');
+architraveZ(2.2, 4.4, 5.3, 0); makeDoor({ ax: 'z', p: 2.2, a: 4.4, b: 5.3, y0: 0, side: 1, mat: MAT.white, key: 'intdoor', level: 0, open: true });
 // hall | kitchen z=6 (door x 1.2..2.1); living | kitchen z=6 wide opening x 4.4..7
 wallX(6, 0, 2.2, 0, G1, [[1.2, 2.1, 0, 2.05]], MAT.plaster, 'plaster', 0, { skirt: [-1, 1] });
-architraveX(6, 1.2, 2.1, 0);
+architraveX(6, 1.2, 2.1, 0); makeDoor({ ax: 'x', p: 6, a: 1.2, b: 2.1, y0: 0, side: 1, mat: MAT.white, key: 'intdoor', level: 0, open: true });
 wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt: [-1, 1] });
 // stairs: 14 steps rising +z
 (function () {
@@ -484,11 +596,12 @@ wallX(6, 2.2, W, 0, G1, [[4.4, 7, 0, 2.15]], MAT.plaster, 'plaster', 0, { skirt:
     box(STAIR.x0 + .18, y + rise - .04, z - .02, w - .36, .05, .03, MAT.runner, 'stairrunner', { uv: false });
   }
   // stringer / understairs panel under the stairs on hall side (x=1.1)
-  const sh = new THREE.Shape(); sh.moveTo(STAIR.z0, 0); sh.lineTo(STAIR.z1 + .5, 0); sh.lineTo(STAIR.z1 + .5, G1); sh.lineTo(STAIR.z0 + (G1 / F1) * (STAIR.z1 - STAIR.z0), G1); sh.lineTo(STAIR.z0, 0);
+  const sh = new THREE.Shape(); sh.moveTo(STAIR.z0, 0); sh.lineTo(4.28, 0); sh.lineTo(4.28, 1.74); sh.lineTo(4.92, 1.74); sh.lineTo(4.92, 0); sh.lineTo(STAIR.z1 + .5, 0); sh.lineTo(STAIR.z1 + .5, G1); sh.lineTo(STAIR.z0 + (G1 / F1) * (STAIR.z1 - STAIR.z0), G1); sh.lineTo(STAIR.z0, 0);
   const pg = new THREE.ExtrudeGeometry(sh, { depth: .06, bevelEnabled: false });
   const panel = new THREE.Mesh(pg, MAT.white); panel.rotation.y = -Math.PI / 2; panel.position.set(STAIR.x1 + .06, 0, 0); panel.castShadow = panel.receiveShadow = true; scene.add(panel); tag(panel, 'understairs');
-  box(STAIR.x1 + .06, 0, 4.25, .02, 1.75, .7, MAT.white, 'understairs', { uv: false });
-  box(STAIR.x1 + .08, .9, 4.85, .03, .03, .03, MAT.chrome, 'understairs', { uv: false });
+  makeDoor({ ax: 'z', p: STAIR.x1 + .09, a: 4.28, b: 4.92, y0: 0, h: 1.72, t: .035, side: 1, mat: MAT.white, key: 'understairs', level: 0, open: false });
+  box(.14, 0, 4.0, .02, 1.6, 1.3, MAT.ceiling, 'understairs', { uv: 1 }); box(.16, .9, 4.0, .4, .03, 1.2, MAT.oak, 'understairs', { uv: false });
+  cyl(.55, 0, 4.7, .13, .38, MAT.navy, 'understairs'); sphere(.4, 1.45, 4.6, .05, MAT.light, 'understairs');
   [[4.23, 4.25], [4.95, 4.97]].forEach(([a]) => box(STAIR.x1 + .07, 0, a, .02, 1.78, .03, MAT.white, 'understairs', { uv: false }));
   // banister (hall side) + newel posts
   const slope = F1 / (STAIR.z1 - STAIR.z0);
@@ -526,6 +639,8 @@ downlights(1.2, 0, 2.2, 6, G1, 1, 3); pointLight(1.6, 2.2, 2.5, .7, 7);
   box(5.2, 0, 2.6, 1.0, .4, .6, MAT.oak); solid(0, 5.2, 2.6, 6.2, 3.2);
   bush(2.7, 1.05, .6, .28); cyl(2.7, 0, .6, .2, .5, MAT.white);
 })();
+// damaged plaster in the lounge -> decorating
+box(2.262, .75, .7, .006, 1.4, 1.8, MAT.damaged, 'decorating', { uv: false });
 radiatorX(0, 4.4, 1.5, 0, 1); socketX(0, 2.6, 0, 1); socketZ(W - .45, 1.2, 0, -1); socketZ(W - .45, 4.6, 0, -1);
 downlights(2.2, 0, W, 6, G1, 2, 2); pointLight(5, 2.2, 3, .9, 9);
 // kitchen
@@ -575,15 +690,17 @@ downlights(0, 6, W, D, G1, 3, 2); pointLight(2.5, 2.2, 9, 1.0, 9); pointLight(6,
 /* ------------------------------------------------------------------ first floor */
 // landing | front bedroom x=2.2 (door z 4.4..5.3)
 wallZ(2.2, 0, 6, F1, C1, [[4.4, 5.3, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
-architraveZ(2.2, 4.4, 5.3, F1); doorLeafZ(2.2, 4.4, 5.3, F1, 1, MAT.white, 'intdoor');
+architraveZ(2.2, 4.4, 5.3, F1); makeDoor({ ax: 'z', p: 2.2, a: 4.4, b: 5.3, y0: F1, side: 1, mat: MAT.white, key: 'intdoor', level: 1, open: true });
 // front bedroom | rear z=6 x 2.2..8 solid; corridor top wall z=6 x 0..2.2 open (landing continues)
 wallX(6, 2.2, W, F1, C1, [], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
 // corridor | bathroom z=7.4 x 0..4 (door 1.2..2.0)
 wallX(7.4, 0, 4, F1, C1, [[1.2, 2.0, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
-architraveX(7.4, 1.2, 2.0, F1); doorLeafX(7.4, 1.2, 2.0, F1, 1, MAT.white, 'intdoor');
-// bedroom 2 wall x=4 z 6..12 (door 6.3..7.1)
-wallZ(4, 6, D, F1, C1, [[6.3, 7.1, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
-architraveZ(4, 6.3, 7.1, F1); doorLeafZ(4, 6.3, 7.1, F1, 1, MAT.white, 'intdoor');
+architraveX(7.4, 1.2, 2.0, F1); makeDoor({ ax: 'x', p: 7.4, a: 1.2, b: 2.0, y0: F1, side: 1, mat: MAT.white, key: 'intdoor', level: 1, open: true });
+// bathroom | loft stairs wall x=4 (the corridor runs on into the stair lobby x 4..5)
+wallZ(4, 7.4, D, F1, C1, [], MAT.plaster, 'plaster', 1);
+// stair lobby | bedroom 2 wall x=5 (door z 6.5..7.3)
+wallZ(5, 6, D, F1, C1, [[6.5, 7.3, F1, F1 + 2.05]], MAT.plaster, 'plaster', 1, { skirt: [-1, 1] });
+architraveZ(5, 6.5, 7.3, F1); makeDoor({ ax: 'z', p: 5, a: 6.5, b: 7.3, y0: F1, side: 1, mat: MAT.white, key: 'intdoor', level: 1, open: true });
 // stair void protection for level 1 (balustrade lines)
 solid(1, STAIR.x1 - .03, STAIR.z0 - .06, STAIR.x1 + .03, STAIR.z1 - .9);
 solid(1, 0, STAIR.z0 - .06, STAIR.x1 + .03, STAIR.z0);
@@ -612,8 +729,16 @@ downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
   // bath along rear wall + shower + screen
   box(.02, y, D - .78, 1.75, .56, .76, MAT.porcelain, 'bath', { uv: false }); box(.1, y + .45, D - .7, 1.6, .12, .6, MAT.frosted, 'bath', { uv: false });
   solid(1, 0, D - .8, 1.8, D);
-  box(1.0, y + .56, D - .78, .02, 1.4, .76, MAT.glass, 'shower', { uv: false, cast: false });
-  box(.3, y + 1.1, D - .06, .2, .2, .04, MAT.chrome, 'shower', { uv: false }); cyl(.4, y + 1.2, D - .05, .015, .8, MAT.chrome, 'shower'); box(.3, y + 2.0, D - .35, .2, .02, .3, MAT.chrome, 'shower', { uv: false }); box(.39, y + 2.0, D - .35, .02, .02, .3, MAT.chrome, 'shower', { uv: false });
+  // walk-in shower in the far corner: low tray, fixed glass panel, ceiling rain head
+  box(2.35, y, 10.45, 1.55, .04, D - .02 - 10.45, MAT.tray, 'walkin', { uv: false });
+  box(2.5, y + .041, D - .3, 1.25, .004, .07, MAT.steel, 'walkin', { uv: false });
+  box(2.35, y + .04, 10.43, .85, 1.95, .015, MAT.glass, 'walkin', { uv: false, cast: false });
+  box(2.35, y + .04, 10.415, .85, .03, .045, MAT.chrome, 'walkin', { uv: false }); box(3.17, y + .04, 10.415, .03, 1.95, .045, MAT.chrome, 'walkin', { uv: false });
+  box(3.175, y + 1.95, 10.43, .015, .015, D - 10.45, MAT.chrome, 'walkin', { uv: false });
+  cyl(3.1, C1 - .3, 11.25, .012, .3, MAT.chrome, 'walkin'); cyl(3.1, C1 - .32, 11.25, .16, .015, MAT.chrome, 'walkin', { seg: 32 });
+  box(2.95, y + 1.0, D - .05, .3, .22, .03, MAT.chrome, 'walkin', { uv: false }); cyl(3.0, y + 1.08, D - .03, .03, .04, MAT.chrome, 'walkin', { rx: Math.PI / 2 }); cyl(3.2, y + 1.08, D - .03, .03, .04, MAT.chrome, 'walkin', { rx: Math.PI / 2 });
+  cyl(3.6, y + .9, D - .04, .012, .7, MAT.chrome, 'walkin'); box(3.57, y + 1.45, D - .14, .06, .2, .06, MAT.chrome, 'walkin', { uv: false });
+  solid(1, 2.35, 10.38, 3.2, 10.5);
   box(1.4, y + .56, D - .1, .08, .14, .06, MAT.chrome, 'bathtap', { uv: false });
   // toilet on x=0 wall
   box(.02, y + .35, 8.4, .18, .5, .45, MAT.porcelain, 'toilet', { uv: false }); box(.2, y, 8.45, .5, .4, .36, MAT.porcelain, 'toilet', { uv: false }); box(.18, y + .4, 8.43, .55, .04, .4, MAT.gloss, 'toilet', { uv: false });
@@ -628,28 +753,82 @@ downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
   box(3.86, y + .35, 8.38, .06, 1.2, .03, MAT.copper, 'towelrail', { uv: false }); box(3.86, y + .35, 8.95, .06, 1.2, .03, MAT.copper, 'towelrail', { uv: false });
   // extractor fan on ceiling
   cyl(2, C1 - .02, 10, .12, .02, MAT.white, 'fan'); cyl(2, C1 - .03, 10, .08, .01, MAT.black, 'fan');
-  bush(3.6, y + .3, 11.6, .2); cyl(3.6, y, 11.6, .14, .28, MAT.white);
+  bush(3.6, y + .3, 7.75, .2); cyl(3.6, y, 7.75, .14, .28, MAT.white);
 })();
 downlights(0, 7.4, 4, D, C1, 2, 2); pointLight(2, F1 + 2.2, 9.7, .7, 6);
-// bedroom 2 with en-suite pod
+// bedroom 2 x 5..8, z 6..12
 (function () {
   const y = F1;
-  box(5.0, y, 9.6, 2.0, .45, 2.1, MAT.timber); box(5.05, y + .45, 9.65, 1.9, .18, 2.0, MAT.linen); box(5.05, y + .58, 9.65, 1.9, .06, .8, MAT.throw);
-  box(5.0, y, D - .2, 2.0, 1.1, .12, MAT.navy); solid(1, 5.0, 9.6, 7.0, D);
-  // en-suite: stud walls x 6.4..8, z 6..7.8, door 6.6..7.3 on z=7.8
-  wallX(7.8, 6.4, W, y, C1, [[6.6, 7.3, y, y + 2.05]], MAT.plaster, 'ensuite', 1, { t: .1, skirt: [1] });
-  wallZ(6.4, 6, 7.8, y, C1, [], MAT.plaster, 'ensuite', 1, { t: .1, skirt: [-1] });
-  box(6.45, y, 6.05, 1.5, 2.4, .02, MAT.metro, 'ensuite', { uv: .6 });
-  box(7.0, y, 6.1, .95, .05, .9, MAT.porcelain, 'ensuite', { uv: false }); box(6.98, y + .05, 6.1, .02, 1.9, .9, MAT.glass, 'ensuite', { uv: false, cast: false });
-  box(7.6, y + 1.9, 6.4, .25, .02, .25, MAT.chrome, 'ensuite', { uv: false });
-  box(6.5, y + .35, 6.9, .45, .45, .4, MAT.porcelain, 'ensuite', { uv: false });
-  doorLeafX(7.8, 6.6, 7.3, y, 1, MAT.white, 'intdoor');
-  // wardrobe on x=4 wall
-  box(4.06, y, 8.2, .6, 2.3, 1.2, MAT.white, 'wardrobe', { uv: false }); box(4.66, y + .05, 8.22, .02, 2.2, .57, MAT.gloss, 'wardrobe', { uv: false }); box(4.66, y + .05, 8.81, .02, 2.2, .57, MAT.gloss, 'wardrobe', { uv: false });
-  solid(1, 4.06, 8.2, 4.66, 9.4);
+  box(5.9, y, 8.2, 2.0, .45, 2.0, MAT.timber); box(5.95, y + .45, 8.25, 1.9, .18, 1.9, MAT.linen); box(5.95, y + .58, 8.25, .8, .06, 1.9, MAT.throw);
+  box(W - .12, y, 8.1, .1, 1.1, 2.2, MAT.navy); [8.45, 9.35].forEach(z => box(W - .55, y + .63, z, .4, .12, .6, MAT.linen));
+  solid(1, 5.9, 8.1, W, 10.3);
+  box(6.2, y, 6.06, 1.8, 2.3, .6, MAT.white, 'wardrobe', { uv: false }); for (let i = 0; i < 3; i++) { box(6.22 + i * .6, y + .05, 6.66, .57, 2.2, .02, MAT.gloss, 'wardrobe', { uv: false }); box(6.7 + i * .6, y + 1.0, 6.68, .02, .3, .02, MAT.copper, 'wardrobe', { uv: false }); }
+  solid(1, 6.2, 6.06, W, 6.7);
+  box(W - .45, y, 7.5, .4, .5, .4, MAT.oak); sphere(W - .25, y + .65, 7.7, .1, MAT.light);
 })();
-radiatorX(D, 5.1, 1.2, F1, -1); socketZ(W, 9, F1, -1); socketX(D, 7.4, F1, -1);
-downlights(4, 7.8, W, D, C1, 2, 2); pointLight(6, F1 + 2.2, 9.5, .7, 7);
+radiatorX(D, 5.3, 1.2, F1, -1); socketZ(W, 10.8, F1, -1); socketX(D, 7.4, F1, -1);
+downlights(5, 6, W, D, C1, 2, 2); pointLight(6.5, F1 + 2.2, 9, .7, 7);
+
+/* ------------------------------------------------------------------ loft conversion */
+// second staircase: first-floor lobby up to the loft, rising +z between the x=4 and x=5 walls
+(function () {
+  const S = STAIRS[1], n = 13, rise = S.rise / n, go = (S.z1 - S.z0) / n, w = S.x1 - S.x0;
+  for (let i = 0; i < n; i++) {
+    const z = S.z0 + i * go, y = S.base + i * rise;
+    box(S.x0, y, z, w, rise, go, MAT.oak, 'stairs', { uv: .5 });
+    box(S.x0 + .12, y + rise, z, w - .24, .012, go, MAT.runner, 'stairrunner', { uv: .6 });
+    box(S.x0, y + rise - .03, z - .015, w, .035, .04, MAT.oak, 'nosing', { uv: false });
+  }
+  rod([S.x0 + .06, S.base + .95, S.z0 - .2], [S.x0 + .06, S.base + S.rise + .95, S.z1], .025, MAT.oak, 'banister');
+  // balustrade round the stairwell in the loft
+  const y = TOP;
+  const rail = (x0, z0, x1, z1) => {
+    if (x0 === x1) { box(x0 - .03, y + .9, z0, .06, .06, z1 - z0, MAT.oak, 'banister', { uv: false }); for (let z = z0 + .08; z < z1; z += .12) box(x0 - .015, y, z, .03, .9, .03, MAT.white, 'banister', { uv: false }); }
+    else { box(x0, y + .9, z0 - .03, x1 - x0, .06, .06, MAT.oak, 'banister', { uv: false }); for (let x = x0 + .08; x < x1; x += .12) box(x, y, z0 - .015, .03, .9, .03, MAT.white, 'banister', { uv: false }); }
+  };
+  rail(4.05, 7.58, 4.05, 10.6); rail(4.98, 7.58, 4.98, 10.6); rail(4.05, 7.58, 4.98, 7.58);
+  [[4.05, 7.58], [4.98, 7.58], [4.05, 10.6], [4.98, 10.6]].forEach(([x, z]) => box(x - .05, y, z - .05, .1, 1.05, .1, MAT.oak, 'banister', { uv: false }));
+  solid(2, 3.99, 7.52, 4.11, 10.65); solid(2, 4.92, 7.52, 5.04, 10.65); solid(2, 3.99, 7.52, 5.04, 7.64); solid(2, 4.11, 7.64, 4.92, 10.5);
+})();
+// loft room
+(function () {
+  const y = TOP;
+  // knee wall under the front slope with eaves cupboards
+  wallX(3.5, 0, W, y, y + 1.5, [], MAT.plaster, 'plaster', undefined, { skirt: [1] });
+  [.5, 2.3, 4.6, 6.5].forEach(a => { box(a, y + .12, 3.56, .75, .95, .02, MAT.gloss, 'eaves', { uv: false }); box(a + .64, y + .55, 3.58, .025, .12, .025, MAT.chrome, 'eaves', { uv: false }); });
+  // bed with headboard on the party wall
+  box(5.9, y, 6.9, 2.0, .45, 2.0, MAT.oak); box(5.95, y + .45, 6.95, 1.9, .18, 1.9, MAT.linen); box(5.95, y + .58, 6.95, .8, .06, 1.9, MAT.throw);
+  box(W - .12, y, 6.8, .1, 1.1, 2.2, MAT.green); [7.15, 8.05].forEach(z => box(W - .55, y + .63, z, .4, .12, .6, MAT.linen));
+  solid(2, 5.9, 6.8, W, 9.0);
+  box(W - .45, y, 9.2, .4, .5, .4, MAT.oak); sphere(W - .25, y + .65, 9.4, .1, MAT.light);
+  // reading corner
+  box(.8, y, 5.4, 2.4, .01, 2.0, MAT.rug, null, { uv: false });
+  box(1.0, y, 5.0, .8, .42, .8, MAT.sofa); box(1.0, y + .42, 5.0, .8, .45, .2, MAT.sofa); solid(2, 1.0, 5.0, 1.8, 5.8);
+  // en-suite in the rear corner x 0..2.6, z 9.6..12
+  wallX(9.6, 0, 2.6, y, y + 2.45, [[1.5, 2.3, y, y + 2.05]], MAT.plaster, 'ensuite', 2, { t: .1, skirt: [-1] });
+  wallZ(2.6, 9.6, D, y, y + 2.45, [], MAT.plaster, 'ensuite', 2, { t: .1, skirt: [1] });
+  architraveX(9.6, 1.5, 2.3, y); makeDoor({ ax: 'x', p: 9.6, a: 1.5, b: 2.3, y0: y, side: 1, mat: MAT.white, key: 'intdoor', level: 2, open: true });
+  box(.02, y + .001, 9.65, 2.53, .008, D - 9.65, MAT.bigtile, 'ensuite', { uv: .8 });
+  box(.02, y, 9.65, .02, 1.2, D - 9.65, MAT.metro, 'ensuite', { uv: .6 });
+  box(1.72, y, D - .02, .83, 2.2, .02, MAT.metro, 'ensuite', { uv: .6 }); box(2.53, y, 10.95, .02, 2.2, D - 10.95, MAT.metro, 'ensuite', { uv: .6 });
+  box(1.75, y, 10.95, .78, .05, D - .02 - 10.95, MAT.tray, 'shower', { uv: false });
+  box(1.73, y + .05, 10.95, .015, 1.95, D - 10.97, MAT.glass, 'shower', { uv: false, cast: false });
+  box(1.725, y + .05, 10.93, .025, 1.95, .03, MAT.chrome, 'shower', { uv: false });
+  cyl(2.15, y + 2.15, 11.5, .012, .3, MAT.chrome, 'shower'); cyl(2.15, y + 2.13, 11.5, .13, .015, MAT.chrome, 'shower', { seg: 32 });
+  box(2.0, y + 1.0, D - .05, .26, .2, .03, MAT.chrome, 'shower', { uv: false });
+  solid(2, 1.7, 10.93, 1.77, D);
+  box(.02, y + .35, 10.0, .18, .5, .45, MAT.porcelain, 'toilet', { uv: false }); box(.2, y, 10.05, .5, .4, .36, MAT.porcelain, 'toilet', { uv: false }); box(.18, y + .4, 10.03, .55, .04, .4, MAT.gloss, 'toilet', { uv: false });
+  solid(2, 0, 10.0, .75, 10.5);
+  box(.02, y + .78, 11.05, .42, .13, .5, MAT.porcelain, 'basin', { uv: false }); box(.1, y + .86, 11.12, .28, .03, .36, MAT.frosted, 'basin', { uv: false });
+  cyl(.07, y + .91, 11.3, .012, .16, MAT.chrome, 'bathtap'); box(.07, y + 1.05, 11.29, .12, .02, .02, MAT.chrome, 'bathtap', { uv: false });
+  box(.02, y + 1.2, 11.0, .03, .65, .6, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: .85 }), 'mirror', { uv: false });
+  solid(2, 0, 11.05, .45, 11.55);
+  for (let yy = y + .5; yy < y + 1.5; yy += .12) box(.25, yy, 9.66, .5, .025, .04, MAT.copper, 'towelrail', { uv: false });
+  cyl(1.2, y + 2.43, 10.6, .12, .02, MAT.white, 'fan');
+})();
+radiatorZ(W, 9.6, 1.0, TOP, -1); socketZ(W, 6.5, TOP, -1); socketX(D, 3.5, TOP, -1); socketZ(.0, 7.5, TOP, 1);
+downlights(2.6, 6, W, D, TOP + 2.45, 2, 2); downlights(0, 9.6, 2.6, D, TOP + 2.45, 1, 1); downlights(0, 6, 2.6, 9.6, TOP + 2.45, 1, 1);
+pointLight(4.5, TOP + 2.1, 8.2, .9, 10); pointLight(1.3, TOP + 2.1, 10.8, .5, 5); pointLight(3.5, TOP + 1.6, 5.0, .5, 6);
 
 /* ------------------------------------------------------------------ lighting */
 scene.add(new THREE.HemisphereLight('#e8f1fa', '#7a6a55', LOW ? .5 : .28));
@@ -661,33 +840,46 @@ scene.add(new THREE.AmbientLight('#fff6ea', .12));
 
 /* ------------------------------------------------------------------ player + movement */
 const EYE = 1.6, R = .22;
-const player = { x: 1.4, z: -6.2, level: 0, stairs: false, y: 0, yaw: Math.PI, pitch: -.05 };
+const player = { x: 1.4, z: -6.2, level: 0, stairs: false, st: 0, y: 0, yaw: Math.PI, pitch: -.05 };
 const BOUNDS = { x0: .25, x1: W - .25, z0: -9.2, z1: D + 8.75 };
-function onRamp(z) { return Math.max(0, Math.min(F1, (z - STAIR.z0) / (STAIR.z1 - STAIR.z0) * F1)); }
-function inStairX(x) { return x > STAIR.x0 && x < STAIR.x1; }
+const LEVEL_Y = [0, F1, TOP];
+function onRamp(S, z) { return S.base + Math.max(0, Math.min(1, (z - S.z0) / (S.z1 - S.z0))) * S.rise; }
+function doorAt(x, z, level) {
+  for (const d of DOORS) { if (d.open || d.level !== level) continue; const b = d.box; if (x + R > b[0] && x - R < b[2] && z + R > b[1] && z - R < b[3]) return d; }
+  return null;
+}
+function setDoor(d, open) { d.open = open; if (d.pair) d.pair.open = open; }
+function playerIn(d) { return !player.stairs && player.level === d.level && player.x + R > d.box[0] && player.x - R < d.box[2] && player.z + R > d.box[1] && player.z - R < d.box[3]; }
+function toggleDoor(d) { if (d.open && (playerIn(d) || (d.pair && playerIn(d.pair)))) return; setDoor(d, !d.open); }
 function blocked(x, z, level) {
   if (x < BOUNDS.x0 || x > BOUNDS.x1 || z < BOUNDS.z0 || z > BOUNDS.z1) return true;
-  if (level === 1 && (x < .1 || x > W - .1 || z < .1 || z > D - .1)) return true;
+  if (level >= 1 && (x < .1 || x > W - .1 || z < .1 || z > D - .1)) return true;
+  if (level === 2 && z < 3.95) return true;
   const list = SOLID[level];
   for (let i = 0; i < list.length; i++) { const b = list[i]; if (x + R > b[0] && x - R < b[2] && z + R > b[1] && z - R < b[3]) return true; }
-  return false;
+  return !!doorAt(x, z, level);
 }
 function tryMove(dx, dz) {
   if (player.stairs) {
-    let nx = Math.min(STAIR.x1 - .2, Math.max(STAIR.x0 + .2, player.x + dx)); let nz = player.z + dz;
-    if (nz < STAIR.z0 - R - .06) { if (!blocked(nx, nz, 0)) { player.stairs = false; player.level = 0; } else return; }
-    else if (nz > STAIR.z1 + R + .06) { if (!blocked(nx, nz, 1)) { player.stairs = false; player.level = 1; } else return; }
+    const S = STAIRS[player.st];
+    const nx = Math.min(S.x1 - .2, Math.max(S.x0 + .2, player.x + dx)), nz = player.z + dz;
+    if (nz < S.z0 - R - .06) { if (!blocked(nx, nz, S.from)) { player.stairs = false; player.level = S.from; } else return; }
+    else if (nz > S.z1 + R + .06) { if (!blocked(nx, nz, S.to)) { player.stairs = false; player.level = S.to; } else return; }
     player.x = nx; player.z = nz; return;
   }
-  const lvl = player.level;
-  const enter = (nx, nz) => inStairX(nx) && ((lvl === 0 && nz > player.z && nz >= STAIR.z0 - R - .03 && player.z < STAIR.z0) || (lvl === 1 && nz < player.z && nz <= STAIR.z1 + R && player.z > STAIR.z1 - .05));
-  let nx = player.x + dx, nz = player.z + dz;
-  if (enter(nx, nz)) { player.stairs = true; player.x = Math.min(STAIR.x1 - .2, Math.max(STAIR.x0 + .2, nx)); player.z = nz; return; }
-  const stairBlock = (x, z) => lvl === 0 && x + R > STAIR.x0 && x - R < STAIR.x1 + .06 && z + R > STAIR.z0 && z - R < 6;
-  if (!blocked(nx, player.z, lvl) && !stairBlock(nx, player.z)) player.x = nx;
-  if (!blocked(player.x, nz, lvl) && !stairBlock(player.x, nz)) player.z = nz;
+  const lvl = player.level, nx = player.x + dx, nz = player.z + dz;
+  for (let i = 0; i < STAIRS.length; i++) {
+    const S = STAIRS[i]; if (!(nx > S.x0 && nx < S.x1)) continue;
+    if ((lvl === S.from && nz > player.z && nz >= S.z0 - R - .03 && player.z < S.z0) || (lvl === S.to && nz < player.z && nz <= S.z1 + R && player.z > S.z1 - .05)) {
+      player.stairs = true; player.st = i; player.x = Math.min(S.x1 - .2, Math.max(S.x0 + .2, nx)); player.z = nz; return;
+    }
+  }
+  const sb = (x, z) => STAIRS.some(S => lvl === S.from && x + R > S.x0 && x - R < S.x1 + .06 && z + R > S.z0 && z - R < S.blockTo);
+  const dr = doorAt(nx, nz, lvl); if (dr) setDoor(dr, true);   // walking into a closed door opens it
+  if (!blocked(nx, player.z, lvl) && !sb(nx, player.z)) player.x = nx;
+  if (!blocked(player.x, nz, lvl) && !sb(player.x, nz)) player.z = nz;
 }
-function targetY() { return player.stairs ? onRamp(player.z) : (player.level ? F1 : (player.z > D + 2.6 && player.x > 4.6 && player.z < D + 5.4 ? .16 : 0)); }
+function targetY() { if (player.stairs) return onRamp(STAIRS[player.st], player.z); if (player.level) return LEVEL_Y[player.level]; return (player.z > D + 2.6 && player.x > 4.6 && player.z < D + 5.4) ? .16 : 0; }
 
 /* input */
 const keys = {};
@@ -723,12 +915,12 @@ function hit(x, y) {
   const r = cvs.getBoundingClientRect(); ndc.set(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ndc, camera); ray.far = 12;
   const all = ray.intersectObjects(scene.children, true);
-  for (const h of all) { if (h.object.userData.key) return h.object.userData.key; if (h.object.material && h.object.material.transparent) continue; return null; }
+  for (const h of all) { if (h.object.userData.key) return h.object; if (h.object.material && h.object.material.transparent) continue; return null; }
   return null;
 }
 let hoverT = 0;
-function hoverAt(x, y) { const now = performance.now(); if (now - hoverT < 60) return; hoverT = now; const k = hit(x, y); if (k !== hovered) { if (hovered && hovered !== selected) setGlow(hovered, false); hovered = k; if (k && k !== selected) setGlow(k, true, .35); cvs.style.cursor = k ? 'pointer' : 'grab'; } }
-function pickAt(x, y) { const k = hit(x, y); if (k) show(k); }
+function hoverAt(x, y) { const now = performance.now(); if (now - hoverT < 60) return; hoverT = now; const o = hit(x, y), k = o ? o.userData.key : null; if (k !== hovered) { if (hovered && hovered !== selected) setGlow(hovered, false); hovered = k; if (k && k !== selected) setGlow(k, true, .35); cvs.style.cursor = k ? 'pointer' : 'grab'; } }
+function pickAt(x, y) { const o = hit(x, y); if (!o) return; if (o.userData.door) toggleDoor(o.userData.door); show(o.userData.key); }
 function price(k) { const p = PRICES[k]; return (typeof p === 'number' && p > 0) ? 'We fit from £' + p : 'Ask us for a price'; }
 function show(k) {
   if (selected) setGlow(selected, false); selected = k; setGlow(k, true, .6);
@@ -745,9 +937,10 @@ panel.querySelector('.h3-close').addEventListener('click', () => { panel.classLi
 
 /* teleport menu */
 const SPOTS = {
-  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
+  'Front garden': [1.4, -6.2, 0, Math.PI, -.05], 'Bike & bin store': [5.3, -4.1, 0, 0, -.3], 'Hall': [1.6, .9, 0, Math.PI, -.05], 'Living room': [3.4, 5.2, 0, -2.4, -.1],
   'Kitchen': [3.0, 6.9, 0, Math.PI * .85, -.15], 'Rear garden': [4, D + 7.5, 0, 0, -.05], 'Landing': [1.7, 5.7, 1, 0, -.05],
-  'Bathroom': [2.6, 8.0, 1, Math.PI * .75, -.15], 'Front bedroom': [2.9, 5.0, 1, -2.2, -.1], 'Bedroom 2 & en-suite': [4.6, 6.8, 1, Math.PI * 1.25, -.1]
+  'Bathroom': [2.6, 8.0, 1, Math.PI * .75, -.15], 'Front bedroom': [2.9, 5.0, 1, -2.2, -.1], 'Bedroom 2': [5.6, 7.6, 1, -2.5, -.1],
+  'Loft & en-suite': [3.3, 6.3, 2, Math.PI, -.12]
 };
 const nav = document.getElementById('h3-rooms');
 Object.keys(SPOTS).forEach(name => { const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.addEventListener('click', () => { const [x, z, lv, yaw, pitch] = SPOTS[name]; Object.assign(player, { x, z, level: lv, stairs: false, yaw, pitch }); player.y = targetY(); }); nav.appendChild(b); });
@@ -772,6 +965,7 @@ function loop(now) {
     const n = Math.hypot(mf, ms) > 1 ? Math.hypot(mf, ms) : 1;
     tryMove((sx * mf + rx * ms) / n * speed, (sz * mf + rz * ms) / n * speed);
   }
+  for (const d of DOORS) { const t = d.open ? d.ang : 0; if (Math.abs(t - d.cur) > 1e-3) { d.cur += (t - d.cur) * Math.min(1, dt * 7); d.pivot.rotation.y = d.cur; } }
   const ty = targetY(); player.y += (ty - player.y) * Math.min(1, dt * 12);
   camera.position.set(player.x, player.y + EYE, player.z);
   camera.rotation.y = player.yaw; camera.rotation.x = player.pitch;
@@ -781,5 +975,5 @@ function loop(now) {
 if (elLoad) elLoad.remove();
 document.body.classList.add('h3-ready');
 requestAnimationFrame(loop);
-window.__h3 = { player, scene, picks: () => picks.length, show, tryMove, targetY, SOLID };
+window.__h3 = { player, scene, picks: () => picks.length, show, tryMove, targetY, SOLID, DOORS, STAIRS, setDoor, toggleDoor, groupsByKey };
 })();

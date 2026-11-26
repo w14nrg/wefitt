@@ -11,5 +11,6 @@ window.WEFITT_PRICES = {
   woodfloor: null, carpet: null, alcove: null, wardrobe: null, radiator: null, socket: null, downlight: null, plaster: null,
   bath: null, shower: null, toilet: null, basin: null, bathtap: null, mirror: null, towelrail: null, fan: null, bathtiles: null, ensuite: null,
   roofwindow: null, gutter: null, fence: null, gate: null, path: null, patio: null, decking: null, shed: null, binstore: null,
-  outsidetap: null, outdoorsocket: null
+  outsidetap: null, outdoorsocket: null,
+  decorating: null, walkin: null, eaves: null
 };
