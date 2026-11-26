@@ -84,7 +84,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'hi
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.matchMedia('(pointer: coarse)').matches ? 1.5 : 1.75));
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
+renderer.toneMappingExposure = 1.1;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 stage.prepend(renderer.domElement);
@@ -198,7 +198,7 @@ const T = {
 };
 
 /* ------------------------------------------------------------------ materials */
-function M(o) { return new THREE.MeshStandardMaterial(Object.assign({ roughness: .8, metalness: 0 }, o)); }
+function M(o) { const m = new THREE.MeshStandardMaterial(Object.assign({ roughness: .8, metalness: 0 }, o)); if (o.envMapIntensity === undefined) m.envMapIntensity = (o.metalness || 0) > .5 ? .8 : .25; return m; }
 const MAT = {
   plaster: M({ map: T.plaster, roughness: .95 }), ceiling: M({ map: T.ceiling, roughness: .95 }),
   wood: M({ map: T.wood, roughness: .55 }), oak: M({ map: T.oak, roughness: .5 }), victorian: M({ map: T.victorian, roughness: .35 }),
@@ -208,8 +208,8 @@ const MAT = {
   slate: M({ map: T.slate, roughness: .6 }), shaker: M({ map: T.shaker, roughness: .55 }), quartz: M({ map: T.quartz, roughness: .2 }),
   fence: M({ map: T.fence, roughness: .9 }), sedum: M({ map: T.sedum, roughness: 1 }), road: M({ map: T.road, roughness: .95 }), render: M({ map: T.render, roughness: .9 }),
   white: M({ color: '#f4f2ee', roughness: .45 }), gloss: M({ color: '#fbfaf8', roughness: .15 }), porcelain: M({ color: '#ffffff', roughness: .08, metalness: .05 }),
-  chrome: M({ color: '#e4e7ea', roughness: .14, metalness: 1, envMapIntensity: 1.4 }), copper: M({ color: '#d0905a', roughness: .28, metalness: .95, envMapIntensity: 1.3 }), black: M({ color: '#1a1a1a', roughness: .5 }),
-  steel: M({ color: '#c8ccd0', roughness: .28, metalness: .9, envMapIntensity: 1.3 }), glass: M({ color: '#bcd9e6', roughness: .05, metalness: 0, transparent: true, opacity: .28 }),
+  chrome: M({ color: '#e4e7ea', roughness: .14, metalness: 1, envMapIntensity: .85 }), copper: M({ color: '#d0905a', roughness: .28, metalness: .95, envMapIntensity: .85 }), black: M({ color: '#1a1a1a', roughness: .5 }),
+  steel: M({ color: '#c8ccd0', roughness: .28, metalness: .9, envMapIntensity: .85 }), glass: M({ color: '#bcd9e6', roughness: .05, metalness: 0, transparent: true, opacity: .28 }),
   frosted: M({ color: '#e6eef2', roughness: .3, transparent: true, opacity: .7 }), frame: M({ color: '#f7f6f2', roughness: .4 }),
   green: M({ color: '#1f4f3a', roughness: .35 }), navy: M({ color: '#26364a', roughness: .5 }), sofa: M({ color: '#7d8b86', roughness: .95 }),
   rug: M({ color: '#b5866a', roughness: 1 }), linen: M({ color: '#ece7df', roughness: .95 }), throw: M({ color: '#2f5d4a', roughness: .95 }),
@@ -622,7 +622,7 @@ downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
   box(.02, y + .15, 9.5, .48, .55, .9, MAT.green, 'basin', { uv: false }); box(.02, y + .7, 9.5, .5, .1, .9, MAT.porcelain, 'basin', { uv: false }); box(.12, y + .78, 9.65, .32, .03, .6, MAT.frosted, 'basin', { uv: false });
   cyl(.08, y + .8, 9.95, .015, .18, MAT.chrome, 'bathtap'); box(.08, y + .96, 9.95, .14, .02, .02, MAT.chrome, 'bathtap', { uv: false });
   solid(1, 0, 9.5, .55, 10.4);
-  box(.02, y + 1.15, 9.5, .14, .7, .9, MAT.white, 'mirror', { uv: false }); box(.16, y + 1.18, 9.53, .01, .64, .84, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: 1.6 }), 'mirror', { uv: false });
+  box(.02, y + 1.15, 9.5, .14, .7, .9, MAT.white, 'mirror', { uv: false }); box(.16, y + 1.18, 9.53, .01, .64, .84, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: .85 }), 'mirror', { uv: false });
   // towel rail on x=4 wall
   for (let yy = y + .4; yy < y + 1.5; yy += .12) box(3.88, yy, 8.4, .04, .025, .55, MAT.copper, 'towelrail', { uv: false });
   box(3.86, y + .35, 8.38, .06, 1.2, .03, MAT.copper, 'towelrail', { uv: false }); box(3.86, y + .35, 8.95, .06, 1.2, .03, MAT.copper, 'towelrail', { uv: false });
@@ -652,7 +652,7 @@ radiatorX(D, 5.1, 1.2, F1, -1); socketZ(W, 9, F1, -1); socketX(D, 7.4, F1, -1);
 downlights(4, 7.8, W, D, C1, 2, 2); pointLight(6, F1 + 2.2, 9.5, .7, 7);
 
 /* ------------------------------------------------------------------ lighting */
-scene.add(new THREE.HemisphereLight('#e8f1fa', '#7a6a55', LOW ? .55 : .32));
+scene.add(new THREE.HemisphereLight('#e8f1fa', '#7a6a55', LOW ? .5 : .28));
 const sun = new THREE.DirectionalLight('#fff1dc', 1.6);
 sun.position.set(-14, 22, -10); sun.target.position.set(4, 0, 6); scene.add(sun.target);
 sun.castShadow = true; sun.shadow.mapSize.set(LOW ? 1024 : 2048, LOW ? 1024 : 2048); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
