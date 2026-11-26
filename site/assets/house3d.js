@@ -95,6 +95,19 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color('#c9dbe8');
 scene.fog = new THREE.Fog('#c9dbe8', 35, 90);
 const camera = new THREE.PerspectiveCamera(70, 1, 0.05, 200);
+/* soft image-based lighting so metal, glass and gloss reflect something real */
+(function () {
+  const env = new THREE.Scene();
+  const geo = new THREE.SphereGeometry(50, 32, 16); const cols = []; const pos = geo.attributes.position;
+  const top = new THREE.Color('#dfeaf5'), mid = new THREE.Color('#f3efe8'), bot = new THREE.Color('#7d705f');
+  for (let i = 0; i < pos.count; i++) { const y = pos.getY(i) / 50; const c = y > 0 ? mid.clone().lerp(top, y) : mid.clone().lerp(bot, -y); cols.push(c.r, c.g, c.b); }
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+  env.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide })));
+  const panel = (x, y, z, w, h, k) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(k, k, k * .95), side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); env.add(m); };
+  panel(0, 30, 0, 30, 30, 2.2); panel(30, 12, 10, 18, 12, 1.6); panel(-25, 10, -20, 14, 10, 1.2);
+  const pm = new THREE.PMREMGenerator(renderer);
+  scene.environment = pm.fromScene(env, .03).texture;
+})();
 camera.rotation.order = 'YXZ';
 
 /* ------------------------------------------------------------------ textures */
@@ -195,12 +208,12 @@ const MAT = {
   slate: M({ map: T.slate, roughness: .6 }), shaker: M({ map: T.shaker, roughness: .55 }), quartz: M({ map: T.quartz, roughness: .2 }),
   fence: M({ map: T.fence, roughness: .9 }), sedum: M({ map: T.sedum, roughness: 1 }), road: M({ map: T.road, roughness: .95 }), render: M({ map: T.render, roughness: .9 }),
   white: M({ color: '#f4f2ee', roughness: .45 }), gloss: M({ color: '#fbfaf8', roughness: .15 }), porcelain: M({ color: '#ffffff', roughness: .08, metalness: .05 }),
-  chrome: M({ color: '#d9dde0', roughness: .12, metalness: 1 }), copper: M({ color: '#c9874a', roughness: .3, metalness: .9 }), black: M({ color: '#1a1a1a', roughness: .5 }),
-  steel: M({ color: '#b9bec2', roughness: .3, metalness: .85 }), glass: M({ color: '#bcd9e6', roughness: .05, metalness: 0, transparent: true, opacity: .28 }),
+  chrome: M({ color: '#e4e7ea', roughness: .14, metalness: 1, envMapIntensity: 1.4 }), copper: M({ color: '#d0905a', roughness: .28, metalness: .95, envMapIntensity: 1.3 }), black: M({ color: '#1a1a1a', roughness: .5 }),
+  steel: M({ color: '#c8ccd0', roughness: .28, metalness: .9, envMapIntensity: 1.3 }), glass: M({ color: '#bcd9e6', roughness: .05, metalness: 0, transparent: true, opacity: .28 }),
   frosted: M({ color: '#e6eef2', roughness: .3, transparent: true, opacity: .7 }), frame: M({ color: '#f7f6f2', roughness: .4 }),
   green: M({ color: '#1f4f3a', roughness: .35 }), navy: M({ color: '#26364a', roughness: .5 }), sofa: M({ color: '#7d8b86', roughness: .95 }),
   rug: M({ color: '#b5866a', roughness: 1 }), linen: M({ color: '#ece7df', roughness: .95 }), throw: M({ color: '#2f5d4a', roughness: .95 }),
-  timber: M({ color: '#8a6a48', roughness: .8 }), shed: M({ color: '#55665d', roughness: .8 }), leaf: M({ color: '#3f6b33', roughness: .9 }),
+  timber: M({ color: '#8a6a48', roughness: .8 }), shed: M({ color: '#55665d', roughness: .8 }), leaf: M({ color: '#2d5524', roughness: .85 }), leaf2: M({ color: '#3d6e2c', roughness: .85 }),
   trunk: M({ color: '#5b4632', roughness: 1 }), soil: M({ color: '#4a3a2b', roughness: 1 }), gutter: M({ color: '#2b2e31', roughness: .4, metalness: .3 }),
   light: M({ color: '#ffffff', emissive: '#fff3dd', emissiveIntensity: 1.2 }), screen: M({ color: '#111', roughness: .2 }),
   washer: M({ map: T.washer, roughness: .3 }), oven: M({ map: T.oven, roughness: .3 }), hob: M({ map: T.hob, roughness: .1 }),
@@ -237,6 +250,10 @@ function cyl(x, y, z, r, h, mat, key, o) {
   const m = new THREE.Mesh(g, mat); m.position.set(x, y + h / 2, z);
   if (o.rx) m.rotation.x = o.rx; if (o.rz) m.rotation.z = o.rz;
   m.castShadow = true; m.receiveShadow = true; scene.add(m); return tag(m, key);
+}
+function bush(x, y, z, r, key) {
+  const n = 7; for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2, rr = r * (.45 + (i % 3) * .12); sphere(x + Math.cos(a) * r * .45, y + (i % 2) * r * .25, z + Math.sin(a) * r * .45, rr, i % 2 ? MAT.leaf : MAT.leaf2, key, .85); }
+  sphere(x, y + r * .35, z, r * .55, MAT.leaf2, key, .9);
 }
 function sphere(x, y, z, r, mat, key, sy) {
   const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), mat); m.position.set(x, y, z); if (sy) m.scale.y = sy;
@@ -340,7 +357,7 @@ box(.85, .9, -7.03, 1.2, .04, .05, MAT.black, 'gate', { uv: false });
   for (let i = 0; i < 26; i++) sphere(x0 + .1 + (i * .107) % w, h + .16, z0 + .15 + ((i * 37) % 7) / 10, .06, i % 3 ? MAT.leaf : MAT.sedum, 'binstore', .6);
 })();
 // hedges + plants front
-sphere(7.4, .5, -2.2, .55, MAT.leaf, null, .9); sphere(3, .4, -1, .4, MAT.leaf, null, .9); sphere(6.4, .35, -.9, .35, MAT.leaf, null, .9);
+bush(7.3, .45, -2.2, .6); bush(3, .35, -1, .45); bush(6.4, .3, -.9, .38);
 // rear garden
 box(0, -.06, D, W, .06, 2.6, MAT.paving, 'patio', { uv: 1.2 });
 box(0, -.1, D + 2.6, W, .1, 6.4, MAT.grass, null, { uv: 2 });
@@ -359,8 +376,8 @@ for (let z = D; z <= D + 9; z += 2.25) { box(-.06, 0, z - .05, .1, 1.9, .1, MAT.
   const roof = box(x0 - .15, 2.1, z0 - .15, w + .3, .08, d + .3, MAT.black, 'shed', { uv: false }); roof.rotation.x = -.06;
 })();
 // tree + beds
-cyl(6.6, 0, D + 7.6, .14, 2.4, MAT.trunk); sphere(6.6, 3.1, D + 7.6, 1.3, MAT.leaf); sphere(6.1, 2.6, D + 7.2, .9, MAT.leaf);
-box(.1, 0, D + 2.7, .8, .3, 3.4, MAT.soil); for (let z = D + 3; z < D + 6; z += .55) sphere(.5, .45, z, .3, MAT.leaf, null, .8);
+cyl(6.6, 0, D + 7.6, .14, 2.4, MAT.trunk); bush(6.6, 2.9, D + 7.6, 1.5); bush(6.1, 2.5, D + 7.2, 1.0);
+box(.1, 0, D + 2.7, .8, .3, 3.4, MAT.soil); for (let z = D + 3; z < D + 6; z += .7) bush(.5, .4, z, .35);
 // garden table
 box(1.8, .72, D + .8, 1.2, .04, .8, MAT.timber); [[1.85, D + .85], [2.9, D + .85], [1.85, D + 1.5], [2.9, D + 1.5]].forEach(([x, z]) => box(x, 0, z, .05, .72, .05, MAT.black, null, { uv: false }));
 // neighbours (solid shells either side)
@@ -507,7 +524,7 @@ downlights(1.2, 0, 2.2, 6, G1, 1, 3); pointLight(1.6, 2.2, 2.5, .7, 7);
   solid(0, 3.2, 1.6, 4.1, 4.42);
   box(4.6, 0, 1.9, 2.3, .01, 2.2, MAT.rug, null, { uv: false });
   box(5.2, 0, 2.6, 1.0, .4, .6, MAT.oak); solid(0, 5.2, 2.6, 6.2, 3.2);
-  sphere(2.7, 1.2, .6, .25, MAT.leaf); cyl(2.7, 0, .6, .2, .5, MAT.white);
+  bush(2.7, 1.05, .6, .28); cyl(2.7, 0, .6, .2, .5, MAT.white);
 })();
 radiatorX(0, 4.4, 1.5, 0, 1); socketX(0, 2.6, 0, 1); socketZ(W - .45, 1.2, 0, -1); socketZ(W - .45, 4.6, 0, -1);
 downlights(2.2, 0, W, 6, G1, 2, 2); pointLight(5, 2.2, 3, .9, 9);
@@ -605,13 +622,13 @@ downlights(2.2, 0, W, 6, C1, 2, 2); pointLight(5, F1 + 2.2, 3, .8, 8);
   box(.02, y + .15, 9.5, .48, .55, .9, MAT.green, 'basin', { uv: false }); box(.02, y + .7, 9.5, .5, .1, .9, MAT.porcelain, 'basin', { uv: false }); box(.12, y + .78, 9.65, .32, .03, .6, MAT.frosted, 'basin', { uv: false });
   cyl(.08, y + .8, 9.95, .015, .18, MAT.chrome, 'bathtap'); box(.08, y + .96, 9.95, .14, .02, .02, MAT.chrome, 'bathtap', { uv: false });
   solid(1, 0, 9.5, .55, 10.4);
-  box(.02, y + 1.15, 9.5, .14, .7, .9, MAT.white, 'mirror', { uv: false }); box(.16, y + 1.18, 9.53, .01, .64, .84, M({ color: '#cfe3ec', roughness: .02, metalness: 1 }), 'mirror', { uv: false });
+  box(.02, y + 1.15, 9.5, .14, .7, .9, MAT.white, 'mirror', { uv: false }); box(.16, y + 1.18, 9.53, .01, .64, .84, M({ color: '#e8f1f5', roughness: .04, metalness: 1, envMapIntensity: 1.6 }), 'mirror', { uv: false });
   // towel rail on x=4 wall
   for (let yy = y + .4; yy < y + 1.5; yy += .12) box(3.88, yy, 8.4, .04, .025, .55, MAT.copper, 'towelrail', { uv: false });
   box(3.86, y + .35, 8.38, .06, 1.2, .03, MAT.copper, 'towelrail', { uv: false }); box(3.86, y + .35, 8.95, .06, 1.2, .03, MAT.copper, 'towelrail', { uv: false });
   // extractor fan on ceiling
   cyl(2, C1 - .02, 10, .12, .02, MAT.white, 'fan'); cyl(2, C1 - .03, 10, .08, .01, MAT.black, 'fan');
-  sphere(3.6, y + .3, 11.6, .18, MAT.leaf);
+  bush(3.6, y + .3, 11.6, .2); cyl(3.6, y, 11.6, .14, .28, MAT.white);
 })();
 downlights(0, 7.4, 4, D, C1, 2, 2); pointLight(2, F1 + 2.2, 9.7, .7, 6);
 // bedroom 2 with en-suite pod
@@ -635,7 +652,7 @@ radiatorX(D, 5.1, 1.2, F1, -1); socketZ(W, 9, F1, -1); socketX(D, 7.4, F1, -1);
 downlights(4, 7.8, W, D, C1, 2, 2); pointLight(6, F1 + 2.2, 9.5, .7, 7);
 
 /* ------------------------------------------------------------------ lighting */
-scene.add(new THREE.HemisphereLight('#e8f1fa', '#7a6a55', LOW ? .95 : .62));
+scene.add(new THREE.HemisphereLight('#e8f1fa', '#7a6a55', LOW ? .55 : .32));
 const sun = new THREE.DirectionalLight('#fff1dc', 1.6);
 sun.position.set(-14, 22, -10); sun.target.position.set(4, 0, 6); scene.add(sun.target);
 sun.castShadow = true; sun.shadow.mapSize.set(LOW ? 1024 : 2048, LOW ? 1024 : 2048); sun.shadow.bias = -.0004; sun.shadow.normalBias = .02;
