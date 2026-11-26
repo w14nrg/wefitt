@@ -916,13 +916,47 @@ function doorAt(x, z, level) {
 function setDoor(d, open) { d.open = open; if (d.pair) d.pair.open = open; }
 function playerIn(d) { return !player.stairs && player.level === d.level && player.x + R > d.box[0] && player.x - R < d.box[2] && player.z + R > d.box[1] && player.z - R < d.box[3]; }
 function toggleDoor(d) { if (d.open && (playerIn(d) || (d.pair && playerIn(d.pair)))) return; setDoor(d, !d.open); }
-function blocked(x, z, level) {
+function blocked(x, z, level, noDoors) {
   if (x < BOUNDS.x0 || x > BOUNDS.x1 || z < BOUNDS.z0 || z > BOUNDS.z1) return true;
   if (level >= 1 && (x < .1 || x > W - .1 || z < .1 || z > D - .1)) return true;
   if (level === 2 && z < 3.95) return true;
   const list = SOLID[level];
   for (let i = 0; i < list.length; i++) { const b = list[i]; if (x + R > b[0] && x - R < b[2] && z + R > b[1] && z - R < b[3]) return true; }
-  return !!doorAt(x, z, level);
+  return noDoors ? false : !!doorAt(x, z, level);
+}
+function stairBlocked(x, z, lvl) { return STAIRS.some(S => lvl === S.from && x + R > S.x0 && x - R < S.x1 + .06 && z + R > S.z0 && z - R < S.blockTo); }
+/* route-finding on a 0.2 m grid for tap-to-walk (closed doors count as open: they open as you reach them) */
+function findPath(sx, sz, tx, tz, lvl) {
+  const C = .2, b = lvl === 0 ? BOUNDS : { x0: .1, x1: W - .1, z0: .1, z1: D - .1 };
+  const nx = Math.ceil((b.x1 - b.x0) / C) + 1, nz = Math.ceil((b.z1 - b.z0) / C) + 1, N = nx * nz;
+  const cx = i => b.x0 + i * C, cz = j => b.z0 + j * C, st = new Int8Array(N).fill(-1);
+  const bad = (x, z) => [[0, 0], [.06, 0], [-.06, 0], [0, .06], [0, -.06]].some(([ox, oz]) => blocked(x + ox, z + oz, lvl, true) || stairBlocked(x + ox, z + oz, lvl));
+  const free = (i, j) => { if (i < 0 || j < 0 || i >= nx || j >= nz) return false; const k = j * nx + i; if (st[k] < 0) st[k] = bad(cx(i), cz(j)) ? 0 : 1; return st[k] === 1; };
+  const snap = (x, z) => { const i0 = Math.round((x - b.x0) / C), j0 = Math.round((z - b.z0) / C); for (let r = 0; r < 6; r++) for (let dj = -r; dj <= r; dj++) for (let di = -r; di <= r; di++) if (Math.max(Math.abs(di), Math.abs(dj)) === r && free(i0 + di, j0 + dj)) return [i0 + di, j0 + dj]; return null; };
+  const s0 = snap(sx, sz), t0 = snap(tx, tz); if (!s0 || !t0) return null;
+  const g = new Float32Array(N).fill(Infinity), from = new Int32Array(N).fill(-1), done = new Uint8Array(N), heap = [];
+  const key = (i, j) => j * nx + i, tk = key(t0[0], t0[1]), hcost = k => Math.hypot(k % nx - t0[0], Math.floor(k / nx) - t0[1]);
+  const push = (k, f) => { heap.push([f, k]); let c = heap.length - 1; while (c) { const p = (c - 1) >> 1; if (heap[p][0] <= heap[c][0]) break; [heap[p], heap[c]] = [heap[c], heap[p]]; c = p; } };
+  const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let c = 0; for (;;) { const l = 2 * c + 1, r = l + 1; let m = c; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === c) break; [heap[m], heap[c]] = [heap[c], heap[m]]; c = m; } } return top; };
+  const sk = key(s0[0], s0[1]); g[sk] = 0; push(sk, hcost(sk));
+  let n = 0;
+  while (heap.length && n++ < 40000) {
+    const [, k] = pop(); if (done[k]) continue; done[k] = 1; if (k === tk) break;
+    const i = k % nx, j = Math.floor(k / nx);
+    for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
+      if (!di && !dj) continue; const ni = i + di, nj = j + dj; if (!free(ni, nj)) continue;
+      if (di && dj && (!free(i + di, j) || !free(i, j + dj))) continue;
+      const nk = key(ni, nj), ng = g[k] + (di && dj ? 1.414 : 1); if (ng < g[nk]) { g[nk] = ng; from[nk] = k; push(nk, ng + hcost(nk)); }
+    }
+  }
+  if (!done[tk]) return null;
+  const pts = []; for (let k = tk; k !== -1; k = from[k]) pts.unshift([cx(k % nx), cz(Math.floor(k / nx))]);
+  pts[pts.length - 1] = [tx, tz];
+  // straighten: skip points while the straight line stays clear
+  const clear = (a, c) => { const L = Math.hypot(c[0] - a[0], c[1] - a[1]), m = Math.ceil(L / .08); for (let q = 1; q < m; q++) { const x = a[0] + (c[0] - a[0]) * q / m, z = a[1] + (c[1] - a[1]) * q / m; if (bad(x, z)) return false; } return true; };
+  const out = [[sx, sz]]; let a = 0;
+  while (a < pts.length - 1) { let c = pts.length - 1; while (c > a + 1 && !clear(a === 0 ? out[0] : pts[a], pts[c])) c--; out.push(pts[c]); a = c; }
+  return out.slice(1);
 }
 function tryMove(dx, dz) {
   if (player.stairs) {
@@ -939,7 +973,7 @@ function tryMove(dx, dz) {
       player.stairs = true; player.st = i; player.x = Math.min(S.x1 - .2, Math.max(S.x0 + .2, nx)); player.z = nz; return;
     }
   }
-  const sb = (x, z) => STAIRS.some(S => lvl === S.from && x + R > S.x0 && x - R < S.x1 + .06 && z + R > S.z0 && z - R < S.blockTo);
+  const sb = (x, z) => stairBlocked(x, z, lvl);
   const dr = doorAt(nx, nz, lvl); if (dr) setDoor(dr, true);   // walking into a closed door opens it
   if (!blocked(nx, player.z, lvl) && !sb(nx, player.z)) player.x = nx;
   if (!blocked(player.x, nz, lvl) && !sb(player.x, nz)) player.z = nz;
@@ -999,7 +1033,39 @@ function hit(x, y) {
 }
 let hoverT = 0;
 function hoverAt(x, y) { const now = performance.now(); if (now - hoverT < 60) return; hoverT = now; const o = hit(x, y), k = o ? o.userData.key : null; if (k !== hovered) { if (hovered && hovered !== selected) setGlow(hovered, false); hovered = k; if (k && k !== selected) setGlow(k, true, .35); cvs.style.cursor = k ? 'pointer' : 'grab'; } }
-function pickAt(x, y) { const o = hit(x, y); if (!o) return; if (o.userData.door) toggleDoor(o.userData.door); show(o.userData.key); }
+/* click / tap to walk: a tap on the floor walks you there; a tap on anything else shows what it is */
+const ring = new THREE.Mesh(new THREE.RingGeometry(.16, .24, 32), new THREE.MeshBasicMaterial({ color: '#3ddc84', transparent: true, opacity: 0, depthWrite: false }));
+ring.rotation.x = -Math.PI / 2; ring.raycast = () => {}; scene.add(ring);
+let walkTo = null;
+function setWalkTo(x, z) { const path = findPath(player.x, player.z, x, z, player.level) || [[x, z]]; walkTo = { path, x: path[0][0], z: path[0][1], stuck: 0 }; }
+function firstHit(x, y) {
+  const r = cvs.getBoundingClientRect(); ndc.set(((x - r.left) / r.width) * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera); ray.far = 30;
+  for (const h of ray.intersectObjects(scene.children, true)) { if (!h.object.userData.key && h.object.material && h.object.material.transparent) continue; return h; }
+  return null;
+}
+function pickAt(x, y) {
+  const h = firstHit(x, y); if (!h) return;
+  const o = h.object, k = o.userData.key;
+  if (o.userData.door && h.distance < 12) { toggleDoor(o.userData.door); show(k); return; }
+  const n = h.face ? h.face.normal.clone().transformDirection(o.matrixWorld) : null;
+  if (!player.stairs && n && n.y > .7 && Math.abs(h.point.y - targetY()) < .4) {
+    setWalkTo(h.point.x, h.point.z); ring.position.set(h.point.x, h.point.y + .02, h.point.z); ring.material.opacity = .9; return;
+  }
+  if (k && h.distance < 12) show(k);
+}
+function stepWalk(dt) {
+  if (!walkTo) { ring.material.opacity = Math.max(0, ring.material.opacity - dt * 2); return; }
+  const dx = walkTo.x - player.x, dz = walkTo.z - player.z, dist = Math.hypot(dx, dz);
+  if (dist < .12 || player.stairs) { walkTo.path.shift(); if (walkTo.path.length && !player.stairs) { walkTo.x = walkTo.path[0][0]; walkTo.z = walkTo.path[0][1]; } else walkTo = null; return; }
+  let ty = Math.atan2(-dx, -dz), d = ty - player.yaw; d = Math.atan2(Math.sin(d), Math.cos(d));
+  player.yaw += d * Math.min(1, dt * 5);
+  const step = Math.min(dist, 2.2 * dt), ox = player.x, oz = player.z;
+  tryMove(dx / dist * step, dz / dist * step);
+  const moved = Math.hypot(player.x - ox, player.z - oz);
+  walkTo.stuck = moved < step * .25 ? walkTo.stuck + dt : 0;
+  if (walkTo.stuck > .4) walkTo = null;
+}
 function price(k) { const p = PRICES[k]; return (typeof p === 'number' && p > 0) ? 'We fit from £' + p : 'Ask us for a price'; }
 function show(k) {
   if (selected) setGlow(selected, false); selected = k; setGlow(k, true, .6);
@@ -1022,7 +1088,7 @@ const SPOTS = {
   'Loft & en-suite': [3.3, 6.3, 2, Math.PI, -.12]
 };
 const nav = document.getElementById('h3-rooms');
-Object.keys(SPOTS).forEach(name => { const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.addEventListener('click', () => { const [x, z, lv, yaw, pitch] = SPOTS[name]; Object.assign(player, { x, z, level: lv, stairs: false, yaw, pitch }); player.y = targetY(); }); nav.appendChild(b); });
+Object.keys(SPOTS).forEach(name => { const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.addEventListener('click', () => { const [x, z, lv, yaw, pitch] = SPOTS[name]; Object.assign(player, { x, z, level: lv, stairs: false, yaw, pitch }); walkTo = null; player.y = targetY(); }); nav.appendChild(b); });
 
 /* resize + loop */
 function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (!zoomed) fov = w / h < .9 ? 88 : 70; camera.fov = fov; camera.updateProjectionMatrix(); }
@@ -1039,11 +1105,13 @@ function loop(now) {
   if (joy.id !== null) { mf -= joy.y; ms += joy.x; }
   const speed = (keys.ShiftLeft || keys.ShiftRight ? 3.6 : 2.0) * dt;
   if (mf || ms) {
+    walkTo = null;
     const sx = -Math.sin(player.yaw), sz = -Math.cos(player.yaw);
     const rx = Math.cos(player.yaw), rz = -Math.sin(player.yaw);
     const n = Math.hypot(mf, ms) > 1 ? Math.hypot(mf, ms) : 1;
     tryMove((sx * mf + rx * ms) / n * speed, (sz * mf + rz * ms) / n * speed);
   }
+  stepWalk(dt);
   for (const d of DOORS) { const t = d.open ? d.ang : 0; if (Math.abs(t - d.cur) > 1e-3) { d.cur += (t - d.cur) * Math.min(1, dt * 7); d.pivot.rotation.y = d.cur; } }
   const ty = targetY(); player.y += (ty - player.y) * Math.min(1, dt * 12);
   camera.position.set(player.x, player.y + EYE, player.z);
@@ -1054,5 +1122,5 @@ function loop(now) {
 if (elLoad) elLoad.remove();
 document.body.classList.add('h3-ready');
 requestAnimationFrame(loop);
-window.__h3 = { player, scene, picks: () => picks.length, show, tryMove, targetY, SOLID, DOORS, STAIRS, setDoor, toggleDoor, groupsByKey };
+window.__h3 = { stepWalk, setWalk: setWalkTo, getWalk: () => walkTo, player, scene, picks: () => picks.length, show, tryMove, targetY, SOLID, DOORS, STAIRS, setDoor, toggleDoor, groupsByKey };
 })();

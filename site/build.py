@@ -307,7 +307,7 @@ a{{color:var(--copper)}}
 <nav id="h3-rooms" aria-label="Jump to a room"></nav>
 <div class="h3-cross" aria-hidden="true"></div>
 <div id="h3-joy" aria-label="Walk"><div id="h3-knob"></div></div>
-<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · scroll to zoom · click anything, doors open</span><span class="h3-touch">Drag to look · pinch to zoom · tap anything</span></div>
+<div class="h3-hint"><span class="h3-keys">Drag to look · W A S D or arrows to walk · click the floor to walk · scroll to zoom · click anything</span><span class="h3-touch">Tap the floor to walk · drag to look · pinch to zoom</span></div>
 <aside id="h3-panel" aria-live="polite">
 <button class="h3-close" type="button" aria-label="Close">×</button>
 <h2>Item</h2>
